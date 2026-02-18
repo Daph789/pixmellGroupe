@@ -1,0 +1,3670 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>avatarOnn - Quiz Avatar</title>
+    <meta
+      name="description"
+      content="avatarOnn, mini app de quiz Avatar avec niveaux, difficultés et progression."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f4fbf3;
+        --surface: #ffffff;
+        --ink: #16302b;
+        --muted: #5f7872;
+        --line: #d8ebe1;
+        --brand: #2ebf68;
+        --brand-dark: #16984e;
+        --blue: #2c8fff;
+        --yellow: #ffd85a;
+        --danger: #ff5b6b;
+        --danger-dark: #e84253;
+        --shadow: 0 18px 40px rgba(22, 48, 43, 0.12);
+        --radius-xl: 24px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Nunito", system-ui, sans-serif;
+        background: radial-gradient(circle at top, #f8fff8, #eef8f2 70%, #e7f4ec);
+        color: var(--ink);
+      }
+
+      .app {
+        max-width: 460px;
+        min-height: 100dvh;
+        margin: 0 auto;
+        background: linear-gradient(170deg, #f8fff7, #edf8f1);
+        position: relative;
+        padding-bottom: 104px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(248, 255, 247, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line);
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        font-family: "Baloo 2", system-ui, sans-serif;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--brand-dark);
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .lang-btn {
+        border: 2px solid #cce8d8;
+        background: #ffffff;
+        color: #1e7f48;
+        border-radius: 999px;
+        height: 42px;
+        min-width: 56px;
+        padding: 0 12px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .account {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 2px solid #cce8d8;
+        background: #ffffff;
+        color: var(--brand-dark);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        text-decoration: none;
+      }
+
+      .screen {
+        display: none;
+        padding: 18px 16px 26px;
+      }
+
+      .screen.active {
+        display: block;
+        animation: fadeIn 0.24s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .hero-card {
+        background: linear-gradient(150deg, #38c76f 0%, #1eac57 70%);
+        color: #ecfff2;
+        border-radius: var(--radius-xl);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero-card h1 {
+        margin: 0 0 6px;
+        font-family: "Baloo 2", system-ui, sans-serif;
+        font-size: 1.8rem;
+        line-height: 1.08;
+      }
+
+      .hero-card p {
+        margin: 0;
+        opacity: 0.96;
+      }
+
+      .path-title {
+        margin: 18px 0 12px;
+        font-weight: 800;
+        font-size: 1.05rem;
+      }
+
+      .level-path {
+        display: grid;
+        gap: 14px;
+      }
+
+      .level-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .level-pill {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-weight: 800;
+        font-size: 0.92rem;
+        background: #dff3e6;
+        color: #246948;
+      }
+
+      .level-btn {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        border: none;
+        font-size: 1.7rem;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 10px 0 #d6e9dc, 0 15px 26px rgba(28, 74, 55, 0.15);
+        transition: transform 0.1s ease;
+      }
+
+      .level-btn:active {
+        transform: translateY(2px);
+      }
+
+      .level-btn.unlocked {
+        background: linear-gradient(180deg, #57d88a, #2eba68);
+        color: #ffffff;
+      }
+
+      .level-btn.locked {
+        background: linear-gradient(180deg, #f2f4f3, #e2e8e5);
+        color: #8ba39a;
+        cursor: not-allowed;
+      }
+
+      .mini-note {
+        color: var(--muted);
+        margin-top: 16px;
+        font-size: 0.9rem;
+      }
+
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-xl);
+        padding: 16px;
+        box-shadow: var(--shadow);
+      }
+
+      .back-btn {
+        border: none;
+        border-radius: 999px;
+        background: #e8f5ee;
+        color: #255f47;
+        padding: 10px 14px;
+        font-weight: 800;
+        margin-bottom: 12px;
+        cursor: pointer;
+      }
+
+      .back-btn.locked-back {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+
+      .diff-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .diff-btn {
+        border: 2px solid var(--line);
+        border-radius: 18px;
+        padding: 14px;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 800;
+        color: #205542;
+      }
+
+      .diff-btn.available {
+        border-color: #ffd89a;
+        background: #fff5e5;
+        color: #8c4f00;
+        cursor: pointer;
+      }
+
+      .diff-btn.done {
+        border-color: #b9e7ca;
+        background: #effcf3;
+        color: #1f6d43;
+        cursor: pointer;
+      }
+
+      .diff-btn.locked {
+        color: #7e9c92;
+        background: #f7faf8;
+      }
+
+      .quiz-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .progress-shell {
+        height: 11px;
+        border-radius: 999px;
+        background: #e1efe7;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, #57d88a, #2ebf68);
+        transition: width 0.25s ease;
+      }
+
+      .question {
+        margin-top: 16px;
+        font-size: 1.15rem;
+        font-weight: 800;
+        line-height: 1.3;
+      }
+
+      .answers {
+        margin-top: 14px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .answer {
+        border: 2px solid #d6ebe0;
+        border-radius: 14px;
+        padding: 13px 12px;
+        background: #ffffff;
+        color: #2b5648;
+        text-align: left;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .answer.correct {
+        border-color: #2ebf68;
+        background: #e8fbeF;
+        color: #17693c;
+      }
+
+      .answer.wrong {
+        border-color: var(--danger);
+        background: #ffeef1;
+        color: #9b2333;
+      }
+
+      .answer.good-answer {
+        border-color: #6db0ff;
+        background: #edf5ff;
+        color: #1f63c5;
+      }
+
+      .feedback {
+        margin-top: 14px;
+        border-radius: 14px;
+        padding: 12px;
+        font-weight: 800;
+        display: none;
+      }
+
+      .feedback.show {
+        display: block;
+      }
+
+      .feedback.ok {
+        background: #e4fbe9;
+        color: #1c7843;
+      }
+
+      .feedback.ko {
+        background: #ffecf0;
+        color: #a62b3a;
+      }
+
+      .feedback .correct-line {
+        margin-top: 6px;
+        color: #2973db;
+      }
+
+      .next-btn {
+        margin-top: 12px;
+        border: none;
+        width: 100%;
+        border-radius: 14px;
+        padding: 13px;
+        font-weight: 800;
+        background: #2ebf68;
+        color: #ffffff;
+        cursor: pointer;
+        display: none;
+      }
+
+      .next-btn.show {
+        display: block;
+      }
+
+      .result-box {
+        margin-top: 14px;
+        background: #f0fbf3;
+        border: 2px solid #cbeed7;
+        border-radius: 16px;
+        padding: 14px;
+        display: none;
+      }
+
+      .result-box.show {
+        display: block;
+      }
+
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(460px, 100%);
+        background: rgba(255, 255, 255, 0.96);
+        border-top: 1px solid #d8ebe1;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+        z-index: 30;
+      }
+
+      .nav-btn {
+        border: none;
+        background: transparent;
+        color: #6f877f;
+        border-radius: 12px;
+        padding: 8px 4px;
+        font-weight: 800;
+        display: grid;
+        gap: 2px;
+        justify-items: center;
+        cursor: pointer;
+      }
+
+      .nav-btn .ico {
+        font-size: 1.2rem;
+      }
+
+      .nav-btn.active {
+        background: #edfaf1;
+        color: #1b8c4a;
+      }
+
+      .small {
+        font-size: 0.85rem;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .auth-form {
+        display: grid;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .auth-row {
+        display: grid;
+        gap: 5px;
+      }
+
+      .auth-row label {
+        font-size: 0.9rem;
+        font-weight: 800;
+        color: #2a5e49;
+      }
+
+      .auth-row input {
+        border: 2px solid #d7ece1;
+        border-radius: 12px;
+        padding: 12px 11px;
+        font: inherit;
+        background: #ffffff;
+      }
+
+      .auth-submit {
+        border: none;
+        border-radius: 12px;
+        padding: 12px;
+        color: #ffffff;
+        font-weight: 800;
+        background: linear-gradient(180deg, #43cd75, #2ebf68);
+        cursor: pointer;
+      }
+
+      .auth-toggle {
+        border: 2px solid #d2e8dc;
+        border-radius: 12px;
+        padding: 11px;
+        color: #2a604c;
+        font-weight: 800;
+        background: #f7fcf9;
+        cursor: pointer;
+      }
+
+      .auth-msg {
+        min-height: 22px;
+        margin: 0;
+        font-weight: 700;
+        color: #1f63c5;
+      }
+
+      .bottom-nav.locked {
+        opacity: 0.45;
+      }
+
+      .fan-strip {
+        margin-top: 14px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .fan-card {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 13px;
+        background: #ffffff;
+      }
+
+      .fan-card h3 {
+        margin: 0 0 4px;
+        font-size: 1rem;
+      }
+
+      .fan-card p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .cta-home {
+        margin-top: 12px;
+        border: none;
+        border-radius: 14px;
+        background: #16302b;
+        color: #ffffff;
+        padding: 11px 13px;
+        width: 100%;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .leaderboard-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .podium {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+
+      .podium-item {
+        border-radius: 15px;
+        padding: 10px 8px;
+        text-align: center;
+        border: 1px solid var(--line);
+        background: #ffffff;
+      }
+
+      .podium-item strong {
+        display: block;
+        font-size: 0.85rem;
+      }
+
+      .podium-item .rank {
+        font-size: 1.1rem;
+      }
+
+      .podium-item.first {
+        background: #fff8dd;
+        border-color: #ffe08c;
+      }
+
+      .podium-item.second {
+        background: #f3f6fa;
+        border-color: #dce3ef;
+      }
+
+      .podium-item.third {
+        background: #fff1e5;
+        border-color: #ffd8b5;
+      }
+
+      .leader-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .leader-row {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .leader-row .left {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+
+      .rank-badge {
+        min-width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        background: #ebf8ef;
+        color: #22814b;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 800;
+      }
+
+      .leader-score {
+        font-weight: 800;
+        color: #1f63c5;
+      }
+
+      .profile-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .feed-shell {
+        display: grid;
+        gap: 12px;
+      }
+
+      .feed-filters {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .chip-btn {
+        border: 2px solid #d2e8dc;
+        background: #f7fcf9;
+        color: #2a604c;
+        border-radius: 999px;
+        padding: 8px 10px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .chip-btn.active {
+        background: #e8f8ee;
+        border-color: #9bd9b7;
+        color: #146d3f;
+      }
+
+      .feed-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .post-card {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        overflow: hidden;
+      }
+
+      .post-head {
+        padding: 12px 12px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .post-author {
+        font-weight: 800;
+      }
+
+      .post-time {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .post-media {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 0 12px 8px;
+      }
+
+      .post-media img {
+        width: 100%;
+        min-width: 100%;
+        max-height: 290px;
+        object-fit: cover;
+        border-radius: 14px;
+        border: 1px solid #dceee4;
+        scroll-snap-align: start;
+      }
+
+      .post-body {
+        padding: 0 12px 12px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .post-desc {
+        margin: 0;
+      }
+
+      .tag {
+        color: #1f63c5;
+        font-weight: 800;
+      }
+
+      .mention {
+        color: #168f4a;
+        font-weight: 800;
+      }
+
+      .post-stats {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+
+      .like-btn {
+        border: 1px solid #d6ebe0;
+        background: #f8fcfa;
+        border-radius: 12px;
+        padding: 8px 11px;
+        font-weight: 800;
+        color: #2b5648;
+        cursor: pointer;
+      }
+
+      .like-btn.done {
+        color: #b31f40;
+        border-color: #f3c6d2;
+        background: #fff2f6;
+      }
+
+      .post-poll {
+        border: 1px solid #d7ece1;
+        background: #f8fcfa;
+        border-radius: 14px;
+        padding: 10px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .post-poll .poll-question {
+        font-weight: 800;
+      }
+
+      .post-poll .poll-option {
+        border: 1px solid #cfe6da;
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 9px 10px;
+        text-align: left;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .post-poll .poll-option:disabled {
+        opacity: 0.75;
+        cursor: default;
+      }
+
+      .poll-rank-line {
+        color: #2a5e49;
+        font-size: 0.85rem;
+      }
+
+      .composer-grid {
+        display: grid;
+        gap: 10px;
+      }
+
+      .share-hero {
+        border-radius: 16px;
+        padding: 12px;
+        background: linear-gradient(145deg, #1fbe63, #138d48);
+        color: #eafff1;
+      }
+
+      .share-hero h2 {
+        margin: 0 0 4px;
+      }
+
+      .share-hero p {
+        margin: 0;
+      }
+
+      .composer-grid textarea,
+      .composer-grid input,
+      .composer-grid select {
+        width: 100%;
+        border: 2px solid #d7ece1;
+        border-radius: 12px;
+        padding: 10px;
+        font: inherit;
+        background: #ffffff;
+      }
+
+      .question-block {
+        border: 1px solid #d7ece1;
+        background: #f9fdfb;
+        border-radius: 12px;
+        padding: 10px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .question-block h4 {
+        margin: 0;
+        font-size: 0.95rem;
+      }
+
+      .q-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .mini-danger {
+        border: 1px solid #f1d0d7;
+        background: #fff4f7;
+        color: #a62b3a;
+        border-radius: 10px;
+        padding: 7px 10px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .plus-btn {
+        border: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #43cd75, #2ebf68);
+        color: #ffffff;
+        font-size: 1.5rem;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .share-actions-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .share-actions-row .small {
+        color: var(--muted);
+      }
+
+      .preview-wrap {
+        border: 1px solid #d7ece1;
+        border-radius: 14px;
+        padding: 10px;
+        background: #fbfffd;
+        display: grid;
+        gap: 8px;
+      }
+
+      .preview-main {
+        width: 100%;
+        height: 240px;
+        border-radius: 12px;
+        border: 1px solid #dceee4;
+        object-fit: cover;
+        background: #f0f7f3;
+      }
+
+      .preview-thumbs {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+      }
+
+      .preview-thumb {
+        width: 64px;
+        height: 64px;
+        border-radius: 10px;
+        border: 2px solid #d7ece1;
+        object-fit: cover;
+        cursor: pointer;
+      }
+
+      .preview-thumb.active {
+        border-color: #2ebf68;
+      }
+
+      .stat-block {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 13px;
+        background: #ffffff;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+      }
+
+      .badge-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-weight: 800;
+        background: #ebf8ef;
+        color: #1e7f48;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <div class="brand">avatarOnn</div>
+        <div class="top-actions">
+          <button class="lang-btn" id="lang-btn" type="button">EN</button>
+          <button class="account" id="account-btn" aria-label="Compte utilisateur">👤</button>
+        </div>
+      </header>
+
+      <section id="screen-loading" class="screen active">
+        <div class="panel">
+          <h2 id="loading-title">Chargement...</h2>
+          <p class="small" id="loading-subtitle">Connexion en cours.</p>
+        </div>
+      </section>
+
+      <section id="screen-auth-login" class="screen">
+        <div class="panel">
+          <h2 id="login-title">Connexion avatarOnn</h2>
+          <p class="small" id="login-subtitle">
+            Connecte-toi pour reprendre ta progression et suivre ton classement.
+          </p>
+          <form id="login-form" class="auth-form">
+            <div class="auth-row">
+              <label for="login-email" id="label-login-email">Email</label>
+              <input id="login-email" name="email" type="email" required />
+            </div>
+            <div class="auth-row">
+              <label for="login-password" id="label-login-password">Mot de passe</label>
+              <input id="login-password" name="password" type="password" minlength="6" required />
+            </div>
+            <button class="auth-submit" id="login-submit" type="submit">Se connecter</button>
+            <button class="auth-toggle" id="goto-signup" type="button">Je veux créer un compte</button>
+            <p class="auth-msg" id="auth-msg-login"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="screen-auth-signup" class="screen">
+        <div class="panel">
+          <h2 id="signup-title">Créer ton compte avatarOnn</h2>
+          <p class="small" id="signup-subtitle">
+            Ton compte sert a enregistrer le score et preparer un classement competitif entre utilisateurs.
+          </p>
+          <form id="signup-form" class="auth-form">
+            <div class="auth-row">
+              <label for="signup-pseudo" id="label-signup-pseudo">Pseudo</label>
+              <input id="signup-pseudo" name="pseudo" type="text" maxlength="24" required />
+            </div>
+            <div class="auth-row">
+              <label for="signup-email" id="label-signup-email">Email</label>
+              <input id="signup-email" name="email" type="email" required />
+            </div>
+            <div class="auth-row">
+              <label for="signup-password" id="label-signup-password">Mot de passe</label>
+              <input id="signup-password" name="password" type="password" minlength="6" required />
+            </div>
+            <div class="auth-row">
+              <label for="signup-confirm" id="label-signup-confirm">Confirmation mot de passe</label>
+              <input id="signup-confirm" name="confirm" type="password" minlength="6" required />
+            </div>
+            <button class="auth-submit" id="signup-submit" type="submit">Créer mon compte</button>
+            <button class="auth-toggle" id="goto-login" type="button">J'ai deja un compte</button>
+            <p class="auth-msg" id="auth-msg-signup"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="screen-home" class="screen">
+        <div class="hero-card">
+          <h1 id="home-title">Parcours Avatar</h1>
+          <p id="home-subtitle">Monte en niveau sur la saga Avatar avec des quiz progressifs.</p>
+        </div>
+        <p class="path-title" id="path-title">Niveaux disponibles</p>
+        <div class="level-path">
+          <div class="level-row">
+            <button class="level-btn unlocked" id="level-1" aria-label="Niveau 1">1</button>
+            <span class="level-pill">Niveau 1 - Débloqué</span>
+          </div>
+          <div class="level-row"><button class="level-btn locked" aria-label="Niveau 2">🔒</button><span class="level-pill">Niveau 2 - Bloqué</span></div>
+          <div class="level-row"><button class="level-btn locked" aria-label="Niveau 3">🔒</button><span class="level-pill">Niveau 3 - Bloqué</span></div>
+          <div class="level-row"><button class="level-btn locked" aria-label="Niveau 4">🔒</button><span class="level-pill">Niveau 4 - Bloqué</span></div>
+          <div class="level-row"><button class="level-btn locked" aria-label="Niveau 5">🔒</button><span class="level-pill">Niveau 5 - Bloqué</span></div>
+          <div class="level-row"><button class="level-btn locked" aria-label="Niveau 6">🔒</button><span class="level-pill">Niveau 6 - Bloqué</span></div>
+          <div class="level-row"><button class="level-btn locked" aria-label="Niveau 7">🔒</button><span class="level-pill">Niveau 7 - Bloqué</span></div>
+          <div class="level-row"><button class="level-btn locked" aria-label="Niveau 8">🔒</button><span class="level-pill">Niveau 8 - Bloqué</span></div>
+          <div class="level-row"><button class="level-btn locked" aria-label="Niveau 9">🔒</button><span class="level-pill">Niveau 9 - Bloqué</span></div>
+          <div class="level-row"><button class="level-btn locked" aria-label="Niveau 10">🔒</button><span class="level-pill">Niveau 10 - Bloqué</span></div>
+        </div>
+        <p class="mini-note" id="home-note">Seul le niveau 1 est ouvert pour le moment.</p>
+        <button class="cta-home" id="start-path-btn">Commencer le niveau 1</button>
+
+        <div class="fan-strip">
+          <article class="fan-card">
+            <h3 id="fan-title-1">Défi fan du jour</h3>
+            <p id="fan-text-1">Fais 7/7 au niveau facile pour débloquer ton badge "Pandora Scout".</p>
+          </article>
+          <article class="fan-card">
+            <h3 id="fan-title-2">Lore Capsule</h3>
+            <p id="fan-text-2">Pandora orbite autour de Polyphemus. Les Na'vi appellent leur monde Eywa.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="screen-feed" class="screen">
+        <div class="feed-shell">
+          <div class="panel">
+            <h2 id="feed-title">Feed fan Avatar</h2>
+            <p class="small" id="feed-subtitle">
+              Découvre les posts de la communauté, vote et participe aux mini-quiz.
+            </p>
+            <div class="feed-filters">
+              <button class="chip-btn active" id="feed-filter-all" type="button">Tout</button>
+              <button class="chip-btn" id="feed-filter-vote" type="button">Votes</button>
+              <button class="chip-btn" id="feed-filter-quiz" type="button">Quiz</button>
+            </div>
+          </div>
+          <div class="feed-list" id="feed-list"></div>
+        </div>
+      </section>
+
+      <section id="screen-share" class="screen">
+        <div class="panel">
+          <div class="share-hero">
+            <h2 id="share-title">Publier un post</h2>
+            <p class="small" id="share-subtitle">
+              Ajoute des images, une description, des tags et un vote ou quiz.
+            </p>
+          </div>
+          <form id="share-form" class="composer-grid">
+            <input id="share-images" type="file" accept="image/*" multiple required />
+            <div class="preview-wrap hidden" id="share-preview">
+              <img id="share-preview-main" class="preview-main" alt="Prévisualisation principale" />
+              <div id="share-preview-thumbs" class="preview-thumbs"></div>
+            </div>
+            <textarea
+              id="share-description"
+              rows="3"
+              maxlength="260"
+              placeholder="Ex: Eywa vibes aujourd'hui #avatar @ami"
+            ></textarea>
+            <input id="share-tags" type="text" placeholder="tags (ex: avatar,pandora,fanart)" />
+            <input id="share-mentions" type="text" placeholder="mentions (ex: @leo @maria)" />
+            <select id="share-type">
+              <option value="vote" id="share-type-vote">Vote simple</option>
+              <option value="quiz" id="share-type-quiz">Quiz</option>
+            </select>
+            <div id="share-questions"></div>
+            <div class="share-actions-row">
+              <button class="plus-btn" id="share-add-question" type="button" aria-label="Ajouter une question">+</button>
+              <span class="small" id="share-add-help">Ajouter une question (max 3)</span>
+            </div>
+            <button class="auth-submit" id="share-submit" type="submit">Publier</button>
+            <p class="auth-msg" id="share-msg"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="screen-level" class="screen">
+        <button class="back-btn" id="back-home">← Retour aux niveaux</button>
+        <div class="panel">
+          <h2 id="level-title">Niveau 1 - Choix de la partie</h2>
+          <p class="small" id="level-desc">
+            Sélectionne ton mode de jeu. Les modes Moyen et Difficile seront débloqués ensuite.
+          </p>
+          <div class="diff-grid">
+            <button class="diff-btn done" id="start-easy">
+              <span id="difficulty-easy">Facile</span>
+              <span id="easy-icon">Terminé ✅</span>
+            </button>
+            <button class="diff-btn locked" id="start-medium" aria-disabled="true">
+              <span id="difficulty-medium">Moyen</span>
+              <span id="medium-icon">🔒</span>
+            </button>
+            <button class="diff-btn locked" id="start-hard" aria-disabled="true">
+              <span id="difficulty-hard">Difficile</span>
+              <span id="hard-icon">🔒</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-quiz" class="screen">
+        <button class="back-btn" id="back-level">← Retour au niveau 1</button>
+        <div class="panel">
+          <div class="quiz-head">
+            <strong id="quiz-mode-label">Mode Facile</strong>
+            <span id="score-view">Score: 0</span>
+          </div>
+          <div class="progress-shell">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+          <p class="question" id="question-text"></p>
+          <div class="answers" id="answers"></div>
+          <div class="feedback" id="feedback"></div>
+          <button class="next-btn" id="next-btn">Question suivante</button>
+          <div class="result-box" id="result-box"></div>
+        </div>
+      </section>
+
+      <section id="screen-leaderboard" class="screen">
+        <div class="panel leaderboard-grid">
+          <h2 id="leaderboard-title">Classement des fans</h2>
+          <p class="small" id="leaderboard-subtitle">Top joueurs du mode Facile (niveau 1).</p>
+          <select id="leaderboard-level-filter" class="auth-toggle" style="width:100%;">
+            <option value="1">Niveau 1</option>
+            <option value="2">Niveau 2</option>
+            <option value="3">Niveau 3</option>
+            <option value="4">Niveau 4</option>
+            <option value="5">Niveau 5</option>
+            <option value="6">Niveau 6</option>
+            <option value="7">Niveau 7</option>
+            <option value="8">Niveau 8</option>
+            <option value="9">Niveau 9</option>
+            <option value="10">Niveau 10</option>
+            <option value="all">Tous niveaux</option>
+          </select>
+          <div class="podium" id="podium"></div>
+          <div class="leader-list" id="leader-list"></div>
+        </div>
+      </section>
+
+      <section id="screen-profile" class="screen">
+        <div class="panel profile-grid">
+          <h2 id="profile-title">Profil joueur</h2>
+          <div class="stat-block">
+            <div class="small" id="profile-label-pseudo">Pseudo</div>
+            <div class="stat-value" id="profile-pseudo">-</div>
+          </div>
+          <div class="stat-block">
+            <div class="small" id="profile-label-first">Score 1 (référence)</div>
+            <div class="stat-value" id="profile-first">-</div>
+          </div>
+          <div class="stat-block">
+            <div class="small" id="profile-label-second">Score 2 (rejouable)</div>
+            <div class="stat-value" id="profile-second">-</div>
+          </div>
+          <div class="stat-block">
+            <div class="small" id="profile-label-rank">Rang actuel</div>
+            <div class="stat-value" id="profile-rank">#-</div>
+          </div>
+          <div class="badge-box" id="profile-badge">Badge: Debutant</div>
+          <button class="cta-home" id="profile-play-btn">Rejouer maintenant</button>
+        </div>
+      </section>
+
+      <nav class="bottom-nav locked" id="bottom-nav">
+        <button class="nav-btn active" data-target="home">
+          <span class="ico">🏠</span>
+          <span class="small" id="nav-home">Accueil</span>
+        </button>
+        <button class="nav-btn" data-target="feed">
+          <span class="ico">📰</span>
+          <span class="small" id="nav-feed">Feed</span>
+        </button>
+        <button class="nav-btn" data-target="share">
+          <span class="ico">➕</span>
+          <span class="small" id="nav-share">Partager</span>
+        </button>
+        <button class="nav-btn" data-target="leaderboard">
+          <span class="ico">🏆</span>
+          <span class="small" id="nav-leaderboard">Classement</span>
+        </button>
+        <button class="nav-btn" data-target="profile">
+          <span class="ico">🪪</span>
+          <span class="small" id="nav-profile">Profil</span>
+        </button>
+      </nav>
+    </main>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+      import {
+        getFirestore,
+        doc,
+        getDoc,
+        setDoc,
+        collection,
+        serverTimestamp,
+        query,
+        orderBy,
+        limit,
+        getDocs,
+        addDoc,
+        increment,
+        runTransaction,
+      } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+      import {
+        getStorage,
+        ref as storageRef,
+        uploadBytes,
+        getDownloadURL,
+      } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
+
+      const screens = {
+        loading: document.getElementById("screen-loading"),
+        authLogin: document.getElementById("screen-auth-login"),
+        authSignup: document.getElementById("screen-auth-signup"),
+        home: document.getElementById("screen-home"),
+        feed: document.getElementById("screen-feed"),
+        share: document.getElementById("screen-share"),
+        level: document.getElementById("screen-level"),
+        quiz: document.getElementById("screen-quiz"),
+        leaderboard: document.getElementById("screen-leaderboard"),
+        profile: document.getElementById("screen-profile"),
+      };
+
+      const bottomNav = document.getElementById("bottom-nav");
+      const navButtons = [...document.querySelectorAll(".nav-btn")];
+      const langBtn = document.getElementById("lang-btn");
+      const accountBtn = document.getElementById("account-btn");
+      const loadingTitle = document.getElementById("loading-title");
+      const loadingSubtitle = document.getElementById("loading-subtitle");
+      const loginTitle = document.getElementById("login-title");
+      const loginSubtitle = document.getElementById("login-subtitle");
+      const labelLoginEmail = document.getElementById("label-login-email");
+      const labelLoginPassword = document.getElementById("label-login-password");
+      const loginForm = document.getElementById("login-form");
+      const loginEmail = document.getElementById("login-email");
+      const loginPassword = document.getElementById("login-password");
+      const loginSubmit = document.getElementById("login-submit");
+      const gotoSignup = document.getElementById("goto-signup");
+      const authMsgLogin = document.getElementById("auth-msg-login");
+      const signupTitle = document.getElementById("signup-title");
+      const signupSubtitle = document.getElementById("signup-subtitle");
+      const labelSignupPseudo = document.getElementById("label-signup-pseudo");
+      const labelSignupEmail = document.getElementById("label-signup-email");
+      const labelSignupPassword = document.getElementById("label-signup-password");
+      const labelSignupConfirm = document.getElementById("label-signup-confirm");
+      const signupForm = document.getElementById("signup-form");
+      const signupPseudo = document.getElementById("signup-pseudo");
+      const signupEmail = document.getElementById("signup-email");
+      const signupPassword = document.getElementById("signup-password");
+      const signupConfirm = document.getElementById("signup-confirm");
+      const signupSubmit = document.getElementById("signup-submit");
+      const gotoLogin = document.getElementById("goto-login");
+      const authMsgSignup = document.getElementById("auth-msg-signup");
+      const startPathBtn = document.getElementById("start-path-btn");
+      const level1Btn = document.getElementById("level-1");
+      const backHome = document.getElementById("back-home");
+      const startEasy = document.getElementById("start-easy");
+      const startMedium = document.getElementById("start-medium");
+      const startHard = document.getElementById("start-hard");
+      const easyIcon = document.getElementById("easy-icon");
+      const mediumIcon = document.getElementById("medium-icon");
+      const hardIcon = document.getElementById("hard-icon");
+      const backLevel = document.getElementById("back-level");
+      const questionText = document.getElementById("question-text");
+      const answersNode = document.getElementById("answers");
+      const feedbackNode = document.getElementById("feedback");
+      const nextBtn = document.getElementById("next-btn");
+      const scoreView = document.getElementById("score-view");
+      const progressBar = document.getElementById("progress-bar");
+      const resultBox = document.getElementById("result-box");
+      const podium = document.getElementById("podium");
+      const leaderList = document.getElementById("leader-list");
+      const profilePseudo = document.getElementById("profile-pseudo");
+      const profileFirst = document.getElementById("profile-first");
+      const profileSecond = document.getElementById("profile-second");
+      const profileRank = document.getElementById("profile-rank");
+      const profileBadge = document.getElementById("profile-badge");
+      const profilePlayBtn = document.getElementById("profile-play-btn");
+      const levelRows = [...document.querySelectorAll(".level-row")];
+      const levelButtons = levelRows.map((row) => row.querySelector(".level-btn"));
+      const levelPills = [...document.querySelectorAll(".level-pill")];
+      const homeTitle = document.getElementById("home-title");
+      const homeSubtitle = document.getElementById("home-subtitle");
+      const pathTitle = document.getElementById("path-title");
+      const homeNote = document.getElementById("home-note");
+      const fanTitle1 = document.getElementById("fan-title-1");
+      const fanText1 = document.getElementById("fan-text-1");
+      const fanTitle2 = document.getElementById("fan-title-2");
+      const fanText2 = document.getElementById("fan-text-2");
+      const levelTitle = document.getElementById("level-title");
+      const levelDesc = document.getElementById("level-desc");
+      const feedTitle = document.getElementById("feed-title");
+      const feedSubtitle = document.getElementById("feed-subtitle");
+      const feedList = document.getElementById("feed-list");
+      const feedFilterAll = document.getElementById("feed-filter-all");
+      const feedFilterVote = document.getElementById("feed-filter-vote");
+      const feedFilterQuiz = document.getElementById("feed-filter-quiz");
+      const shareTitle = document.getElementById("share-title");
+      const shareSubtitle = document.getElementById("share-subtitle");
+      const shareForm = document.getElementById("share-form");
+      const shareImages = document.getElementById("share-images");
+      const shareDescription = document.getElementById("share-description");
+      const shareTags = document.getElementById("share-tags");
+      const shareMentions = document.getElementById("share-mentions");
+      const shareType = document.getElementById("share-type");
+      const shareTypeVote = document.getElementById("share-type-vote");
+      const shareTypeQuiz = document.getElementById("share-type-quiz");
+      const shareSubmitBtn = document.getElementById("share-submit");
+      const shareQuestions = document.getElementById("share-questions");
+      const shareMsg = document.getElementById("share-msg");
+      const shareAddQuestion = document.getElementById("share-add-question");
+      const shareAddHelp = document.getElementById("share-add-help");
+      const sharePreview = document.getElementById("share-preview");
+      const sharePreviewMain = document.getElementById("share-preview-main");
+      const sharePreviewThumbs = document.getElementById("share-preview-thumbs");
+      const difficultyEasy = document.getElementById("difficulty-easy");
+      const difficultyMedium = document.getElementById("difficulty-medium");
+      const difficultyHard = document.getElementById("difficulty-hard");
+      const quizModeLabel = document.getElementById("quiz-mode-label");
+      const leaderboardTitle = document.getElementById("leaderboard-title");
+      const leaderboardSubtitle = document.getElementById("leaderboard-subtitle");
+      const leaderboardLevelFilter = document.getElementById("leaderboard-level-filter");
+      const profileTitle = document.getElementById("profile-title");
+      const profileLabelPseudo = document.getElementById("profile-label-pseudo");
+      const profileLabelFirst = document.getElementById("profile-label-first");
+      const profileLabelSecond = document.getElementById("profile-label-second");
+      const profileLabelRank = document.getElementById("profile-label-rank");
+      const navHome = document.getElementById("nav-home");
+      const navFeed = document.getElementById("nav-feed");
+      const navShare = document.getElementById("nav-share");
+      const navLeaderboard = document.getElementById("nav-leaderboard");
+      const navProfile = document.getElementById("nav-profile");
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCpl6TGs-Mnu5HXapj0Y-9SIfGJLxLhaDQ",
+        authDomain: "avataronn-980dc.firebaseapp.com",
+        projectId: "avataronn-980dc",
+        storageBucket: "avataronn-980dc.firebasestorage.app",
+        messagingSenderId: "139550141094",
+        appId: "1:139550141094:web:b3e3151283727776342267",
+      };
+
+      const hasFirebaseConfig = !Object.values(firebaseConfig).some((v) =>
+        String(v).startsWith("REPLACE_")
+      );
+
+      let auth = null;
+      let db = null;
+      let storage = null;
+      let currentUser = null;
+      let currentPseudo = "";
+      let firstScoreEasy = null;
+      let secondScoreEasy = null;
+      let unlockMediumL1 = false;
+      let unlockHardL1 = false;
+      let cachedLeaderboard = [];
+      let leaderboardLevel = "1";
+      let currentLang = "fr";
+      let currentDifficulty = "easy";
+      let currentLevel = 1;
+      let unlockedLevel = 1;
+      let unlockedModesByLevel = {};
+      let completedModesByLevel = {};
+      let referenceScoresByLevel = {};
+      let recentQuestionHistory = {};
+      let authResolved = false;
+      let feedFilter = "all";
+      let visibleShareQuestions = 1;
+      let sharePreviewUrls = [];
+
+      const i18n = {
+        fr: {
+          loginSubtitle: "Connecte-toi pour reprendre ta progression et suivre ton classement.",
+          signupSubtitle:
+            "Ton compte sert a enregistrer le score et preparer un classement competitif entre utilisateurs.",
+          pseudo: "Pseudo",
+          email: "Email",
+          password: "Mot de passe",
+          confirmPassword: "Confirmation mot de passe",
+          createAccountTitle: "Créer ton compte avatarOnn",
+          loginTitle: "Connexion avatarOnn",
+          createAccountBtn: "Créer mon compte",
+          loginBtn: "Se connecter",
+          alreadyAccount: "J'ai déjà un compte",
+          noAccount: "Je veux créer un compte",
+          homeTitle: "Parcours Avatar",
+          homeSubtitle: "Monte en niveau sur la saga Avatar avec des quiz progressifs.",
+          levelsTitle: "Niveaux disponibles",
+          levelUnlocked: "Débloqué",
+          levelLocked: "Bloqué",
+          onlyLevelOne: "Seul le niveau 1 est ouvert pour le moment.",
+          startLevelOne: "Commencer le niveau 1",
+          fanTitle1: "Défi fan du jour",
+          fanText1: 'Fais 7/7 au niveau facile pour débloquer ton badge "Pandora Scout".',
+          fanTitle2: "Lore Capsule",
+          fanText2: "Pandora orbite autour de Polyphemus. Les Na'vi appellent leur monde Eywa.",
+          backToLevels: "Retour aux niveaux",
+          levelChoiceTitle: "Niveau 1 - Choix de la partie",
+          levelChoiceDesc:
+            "Sélectionne ton mode de jeu. Fais au moins 4/7 en Facile pour débloquer Moyen, puis 4/7 en Moyen pour débloquer Difficile.",
+          levelLabel: "Niveau",
+          levelUnlockedFull: "Débloqué",
+          levelLockedFull: "Bloqué",
+          nextLevelUnlocked: "Niveau suivant débloqué. Retourne à l'accueil pour continuer.",
+          goToNextLevel: "Passer au niveau suivant",
+          easy: "Facile",
+          medium: "Moyen",
+          hard: "Difficile",
+          modeDone: "Terminé",
+          modeUnlocked: "Débloqué",
+          easyMode: "Mode Facile",
+          mediumMode: "Mode Moyen",
+          hardMode: "Mode Difficile",
+          backToLevelOne: "Retour au niveau 1",
+          score: "Score",
+          nextQuestion: "Question suivante",
+          leaderboardTitle: "Classement des fans",
+          leaderboardSubtitleLevel: "Top joueurs du",
+          leaderboardSubtitleAll: "Top joueurs sur l’ensemble des niveaux.",
+          filterAll: "Tous niveaux",
+          loadingTitle: "Chargement...",
+          loadingSubtitle: "Connexion en cours.",
+          profileTitle: "Profil joueur",
+          firstScore: "Score 1 (référence)",
+          secondScore: "Score 2 (rejouable)",
+          currentRank: "Rang actuel",
+          badgeLabel: "Badge",
+          playAgain: "Rejouer maintenant",
+          navHome: "Accueil",
+          navFeed: "Feed",
+          navShare: "Partager",
+          navLeaderboard: "Classement",
+          navProfile: "Profil",
+          feedTitle: "Feed fan Avatar",
+          feedSubtitle: "Découvre les posts de la communauté, vote et participe aux mini-quiz.",
+          feedAll: "Tout",
+          feedVotes: "Votes",
+          feedQuiz: "Quiz",
+          shareTitle: "Publier un post",
+          shareSubtitle: "Ajoute des images, une description, des tags et un vote ou quiz.",
+          shareAddQuestion: "Ajouter une question",
+          shareAddHelp: "Ajouter une question (max 3)",
+          sharePublish: "Publier",
+          sharePublished: "Post publié.",
+          shareNeedImage: "Ajoute au moins une image.",
+          shareNeedQuestion: "Ajoute au moins une question valide.",
+          shareNeedOptions: "Chaque question doit avoir au moins 2 options.",
+          shareNeedAuth: "Connecte-toi pour publier.",
+          shareUploading: "Publication en cours...",
+          shareUploadTimeout:
+            "Publication trop longue. Vérifie Firebase Storage (règles + activation) puis réessaie.",
+          sharePostTimeout: "Échec de publication. Réessaie dans quelques secondes.",
+          shareDescPlaceholder: "Ex: Eywa vibes aujourd'hui #avatar @ami",
+          shareTagsPlaceholder: "tags (ex: avatar,pandora,fanart)",
+          shareMentionsPlaceholder: "mentions (ex: @leo @maria)",
+          questionPlaceholder: "Question...",
+          option1: "Option 1",
+          option2: "Option 2",
+          option3Optional: "Option 3 (optionnel)",
+          option4Optional: "Option 4 (optionnel)",
+          correctPrefix: "Bonne réponse : option",
+          likes: "likes",
+          views: "vues",
+          participants: "participants",
+          voteRanking: "Classement des votes",
+          yourVoteDone: "Vote enregistré.",
+          yourQuizDone: "Quiz terminé",
+          noPosts: "Aucun post pour le moment.",
+          postTypeVote: "Vote",
+          postTypeQuiz: "Quiz",
+          simpleVote: "Vote simple",
+          pollAnswerLabel: "Répondre",
+          nextInPostQuiz: "Suivant",
+          remove: "Retirer",
+          likeAction: "Like",
+          noScore: "Aucun score pour le moment.",
+          fanLabel: "Fan",
+          correctAnswer: "Bonne réponse",
+          right: "Bonne réponse !",
+          wrong: "Mauvaise réponse.",
+          quizFinished: "Quiz terminé",
+          finalResult: "Résultat final",
+          excellent: "Excellent niveau sur Avatar. Niveau 2 bientôt disponible.",
+          goodStart: "Bon début. Rejoue pour améliorer ton score.",
+          replayThisQuiz: "Rejouer ce quiz",
+          goToMedium: "Passer au mode Moyen",
+          goToHard: "Passer au mode Difficile",
+          lockedMode: "Ce mode est encore bloque.",
+          finishQuizFirst: "Termine le quiz en cours avant de quitter cette page.",
+          connectFirst: "Connecte-toi d'abord pour accéder aux niveaux.",
+          missingFirebase: "Configuration Firebase manquante. Colle tes clés pour activer les comptes.",
+          firebaseNotReady: "Firebase n'est pas configuré pour l'instant.",
+          badConfirm: "La confirmation du mot de passe est incorrecte.",
+          badPseudo: "Le pseudo doit contenir au moins 3 caractères.",
+          accountCreated: "Compte créé avec succès.",
+          loginOk: "Connexion réussie.",
+          errorPrefix: "Erreur",
+          confirmLogout: "Se déconnecter du compte ?",
+          questionPrefix: "Question",
+          badgeBeginner: "Débutant",
+          badgeSky: "Sky Rider",
+          badgeScout: "Pandora Scout",
+          badgeMaster: "Pandora Master",
+        },
+        en: {
+          loginSubtitle: "Sign in to resume your progress and track your ranking.",
+          signupSubtitle:
+            "Your account stores your score and prepares a competitive leaderboard between users.",
+          pseudo: "Username",
+          email: "Email",
+          password: "Password",
+          confirmPassword: "Confirm password",
+          createAccountTitle: "Create your avatarOnn account",
+          loginTitle: "avatarOnn login",
+          createAccountBtn: "Create my account",
+          loginBtn: "Sign in",
+          alreadyAccount: "I already have an account",
+          noAccount: "I want to create an account",
+          homeTitle: "Avatar Journey",
+          homeSubtitle: "Level up through the Avatar saga with progressive quizzes.",
+          levelsTitle: "Available levels",
+          levelUnlocked: "Unlocked",
+          levelLocked: "Locked",
+          onlyLevelOne: "Only level 1 is open for now.",
+          startLevelOne: "Start level 1",
+          fanTitle1: "Daily fan challenge",
+          fanText1: 'Score 7/7 in easy mode to unlock your "Pandora Scout" badge.',
+          fanTitle2: "Lore Capsule",
+          fanText2: "Pandora orbits Polyphemus. The Na'vi call their world Eywa.",
+          backToLevels: "Back to levels",
+          levelChoiceTitle: "Level 1 - Game mode",
+          levelChoiceDesc:
+            "Choose your mode. Score at least 4/7 in Easy to unlock Medium, then 4/7 in Medium to unlock Hard.",
+          levelLabel: "Level",
+          levelUnlockedFull: "Unlocked",
+          levelLockedFull: "Locked",
+          nextLevelUnlocked: "Next level unlocked. Go back home to continue.",
+          goToNextLevel: "Go to next level",
+          easy: "Easy",
+          medium: "Medium",
+          hard: "Hard",
+          modeDone: "Completed",
+          modeUnlocked: "Unlocked",
+          easyMode: "Easy mode",
+          mediumMode: "Medium mode",
+          hardMode: "Hard mode",
+          backToLevelOne: "Back to level 1",
+          score: "Score",
+          nextQuestion: "Next question",
+          leaderboardTitle: "Fans leaderboard",
+          leaderboardSubtitleLevel: "Top players in",
+          leaderboardSubtitleAll: "Top players across all levels.",
+          filterAll: "All levels",
+          loadingTitle: "Loading...",
+          loadingSubtitle: "Signing you in.",
+          profileTitle: "Player profile",
+          firstScore: "Score 1 (reference)",
+          secondScore: "Score 2 (retry)",
+          currentRank: "Current rank",
+          badgeLabel: "Badge",
+          playAgain: "Play again now",
+          navHome: "Home",
+          navFeed: "Feed",
+          navShare: "Share",
+          navLeaderboard: "Leaderboard",
+          navProfile: "Profile",
+          feedTitle: "Avatar fan feed",
+          feedSubtitle: "Discover community posts, vote, and join mini-quizzes.",
+          feedAll: "All",
+          feedVotes: "Votes",
+          feedQuiz: "Quiz",
+          shareTitle: "Create a post",
+          shareSubtitle: "Add images, description, tags, and a vote or quiz.",
+          shareAddQuestion: "Add a question",
+          shareAddHelp: "Add a question (max 3)",
+          sharePublish: "Publish",
+          sharePublished: "Post published.",
+          shareNeedImage: "Add at least one image.",
+          shareNeedQuestion: "Add at least one valid question.",
+          shareNeedOptions: "Each question must have at least 2 options.",
+          shareNeedAuth: "Sign in to publish.",
+          shareUploading: "Publishing...",
+          shareUploadTimeout:
+            "Publishing is taking too long. Check Firebase Storage (enabled + rules) and try again.",
+          sharePostTimeout: "Publishing failed. Please try again in a few seconds.",
+          shareDescPlaceholder: "Example: Eywa vibes today #avatar @friend",
+          shareTagsPlaceholder: "tags (example: avatar,pandora,fanart)",
+          shareMentionsPlaceholder: "mentions (example: @leo @maria)",
+          questionPlaceholder: "Question...",
+          option1: "Option 1",
+          option2: "Option 2",
+          option3Optional: "Option 3 (optional)",
+          option4Optional: "Option 4 (optional)",
+          correctPrefix: "Correct answer: option",
+          likes: "likes",
+          views: "views",
+          participants: "participants",
+          voteRanking: "Vote ranking",
+          yourVoteDone: "Vote saved.",
+          yourQuizDone: "Quiz completed",
+          noPosts: "No posts yet.",
+          postTypeVote: "Vote",
+          postTypeQuiz: "Quiz",
+          simpleVote: "Simple vote",
+          pollAnswerLabel: "Answer",
+          nextInPostQuiz: "Next",
+          remove: "Remove",
+          likeAction: "Like",
+          noScore: "No score yet.",
+          fanLabel: "Fan",
+          correctAnswer: "Correct answer",
+          right: "Correct!",
+          wrong: "Wrong answer.",
+          quizFinished: "Quiz completed",
+          finalResult: "Final result",
+          excellent: "Excellent Avatar knowledge. Level 2 is coming soon.",
+          goodStart: "Good start. Replay to improve your score.",
+          replayThisQuiz: "Replay this quiz",
+          goToMedium: "Go to Medium mode",
+          goToHard: "Go to Hard mode",
+          lockedMode: "This mode is still locked.",
+          finishQuizFirst: "Finish the current quiz before leaving this page.",
+          connectFirst: "Sign in first to access levels.",
+          missingFirebase: "Firebase config missing. Paste your keys to enable accounts.",
+          firebaseNotReady: "Firebase is not configured yet.",
+          badConfirm: "Password confirmation is incorrect.",
+          badPseudo: "Username must contain at least 3 characters.",
+          accountCreated: "Account created successfully.",
+          loginOk: "Login successful.",
+          errorPrefix: "Error",
+          confirmLogout: "Sign out from this account?",
+          questionPrefix: "Question",
+          badgeBeginner: "Beginner",
+          badgeSky: "Sky Rider",
+          badgeScout: "Pandora Scout",
+          badgeMaster: "Pandora Master",
+        },
+      };
+
+      const quizDataByLang = {
+        fr: {
+          easy: [
+            {
+              q: "Qui a realise le premier film Avatar (2009) ?",
+              options: ["Christopher Nolan", "James Cameron", "Peter Jackson", "Denis Villeneuve"],
+              answer: 1,
+            },
+            {
+              q: "Quelle est la date de sortie d'Avatar (2009) ?",
+              options: ["18 decembre 2009", "16 decembre 2022", "19 decembre 2025", "14 juillet 2010"],
+              answer: 0,
+            },
+            {
+              q: "En quelle annee se deroule l'histoire d'Avatar (2009) ?",
+              options: ["2054", "2101", "2154", "2200"],
+              answer: 2,
+            },
+            {
+              q: "Quel est le prenom du heros principal Sully ?",
+              options: ["Jack", "Jake", "John", "Jules"],
+              answer: 1,
+            },
+            {
+              q: "Qui interprete Jake Sully dans la saga Avatar ?",
+              options: ["Sam Worthington", "Stephen Lang", "Giovanni Ribisi", "Cliff Curtis"],
+              answer: 0,
+            },
+            {
+              q: "Quelle est la duree de Avatar: The Way of Water (2022) selon Avatar.com ?",
+              options: ["2h 41min", "2h 58min", "3h 12min", "3h 45min"],
+              answer: 2,
+            },
+            {
+              q: "Quelle est la date de sortie de Avatar: Fire and Ash ?",
+              options: ["19 decembre 2025", "16 decembre 2022", "18 decembre 2009", "1 janvier 2026"],
+              answer: 0,
+            },
+          ],
+          medium: [
+            {
+              q: "Quel peuple est relie biologiquement a Eywa sur Pandora ?",
+              options: ["Les Na'vi", "Les Tulkun", "Les RDA", "Les Metkayina humains"],
+              answer: 0,
+            },
+            {
+              q: "Dans Avatar: The Way of Water, a quel clan Jake demande d'abord refuge ?",
+              options: ["Omatikaya", "Metkayina", "Ash People", "Ta'unui"],
+              answer: 1,
+            },
+            {
+              q: "Comment s'appelle la fille de Jake et Neytiri ?",
+              options: ["Lo'ak", "Kiri", "Tuk", "Mo'at"],
+              answer: 1,
+            },
+            {
+              q: "Quel personnage humain revient en recombinant Na'vi dans le 2e film ?",
+              options: ["Norm Spellman", "Miles Quaritch", "Parker Selfridge", "Ian Garvin"],
+              answer: 1,
+            },
+            {
+              q: "Quel est le nom de la lune ou se deroule Avatar ?",
+              options: ["Pandora", "Polyphemus", "Acheron", "Tethys"],
+              answer: 0,
+            },
+            {
+              q: "Qui est credité comme createur de la saga Avatar ?",
+              options: ["James Cameron", "Jon Landau", "Rick Jaffa", "Steven Spielberg"],
+              answer: 0,
+            },
+            {
+              q: "Quelle date de sortie est annoncee pour Avatar: Fire and Ash ?",
+              options: ["19 decembre 2025", "18 decembre 2026", "16 decembre 2022", "1 janvier 2027"],
+              answer: 0,
+            },
+          ],
+          hard: [
+            {
+              q: "Dans la chronologie officielle, quel element est juste ?",
+              options: [
+                "Avatar (2009) sort apres The Way of Water",
+                "The Way of Water sort en 2022",
+                "Fire and Ash sort avant Avatar (2009)",
+                "Avatar (2009) est sorti en 2012",
+              ],
+              answer: 1,
+            },
+            {
+              q: "Quelle combinaison est exacte pour la famille de Jake et Neytiri ?",
+              options: [
+                "Neteyam, Lo'ak, Kiri, Tuk",
+                "Neteyam, Quaritch, Kiri, Tuk",
+                "Lo'ak, Spider, Kiri, Mo'at",
+                "Tuk, Grace, Lo'ak, Parker",
+              ],
+              answer: 0,
+            },
+            {
+              q: "Quel groupe humain est l'antagoniste principal de la saga ?",
+              options: ["RDA", "UNSC", "Jedi Order", "Na'vi Metkayina"],
+              answer: 0,
+            },
+            {
+              q: "Quel personnage est biologiquement lie au peuple Na'vi dans l'intrigue ?",
+              options: ["Jake via avatar/recombinant", "Selfridge", "General Ardmore", "Quaritch humain original"],
+              answer: 0,
+            },
+            {
+              q: "Quel couple est au centre de la narration familiale de la saga ?",
+              options: ["Jake Sully et Neytiri", "Quaritch et Ardmore", "Norm et Grace", "Spider et Kiri"],
+              answer: 0,
+            },
+            {
+              q: "Quel studio distribue les films Avatar ?",
+              options: ["20th Century Studios", "A24", "Warner Bros", "Paramount"],
+              answer: 0,
+            },
+            {
+              q: "Quelle date correspond a Avatar: Fire and Ash ?",
+              options: ["19 decembre 2025", "18 decembre 2009", "16 decembre 2022", "15 aout 2024"],
+              answer: 0,
+            },
+          ],
+        },
+        en: {
+          easy: [
+            {
+              q: "Who directed the first Avatar movie (2009)?",
+              options: ["Christopher Nolan", "James Cameron", "Peter Jackson", "Denis Villeneuve"],
+              answer: 1,
+            },
+            {
+              q: "What is the release date of Avatar (2009)?",
+              options: ["December 18, 2009", "December 16, 2022", "December 19, 2025", "July 14, 2010"],
+              answer: 0,
+            },
+            {
+              q: "In which year does Avatar (2009) take place?",
+              options: ["2054", "2101", "2154", "2200"],
+              answer: 2,
+            },
+            {
+              q: "What is Sully's first name?",
+              options: ["Jack", "Jake", "John", "Jules"],
+              answer: 1,
+            },
+            {
+              q: "Who plays Jake Sully in the Avatar saga?",
+              options: ["Sam Worthington", "Stephen Lang", "Giovanni Ribisi", "Cliff Curtis"],
+              answer: 0,
+            },
+            {
+              q: "What is the runtime of Avatar: The Way of Water (2022) on Avatar.com?",
+              options: ["2h 41m", "2h 58m", "3h 12m", "3h 45m"],
+              answer: 2,
+            },
+            {
+              q: "What is the release date of Avatar: Fire and Ash?",
+              options: ["December 19, 2025", "December 16, 2022", "December 18, 2009", "January 1, 2026"],
+              answer: 0,
+            },
+          ],
+          medium: [
+            {
+              q: "Which people are biologically connected to Eywa on Pandora?",
+              options: ["The Na'vi", "The Tulkun", "The RDA", "Human Metkayina"],
+              answer: 0,
+            },
+            {
+              q: "In Avatar: The Way of Water, which clan gives Jake's family refuge?",
+              options: ["Omatikaya", "Metkayina", "Ash People", "Ta'unui"],
+              answer: 1,
+            },
+            {
+              q: "What is the name of Jake and Neytiri's daughter?",
+              options: ["Lo'ak", "Kiri", "Tuk", "Mo'at"],
+              answer: 1,
+            },
+            {
+              q: "Which human character returns as a Na'vi recombinant in film 2?",
+              options: ["Norm Spellman", "Miles Quaritch", "Parker Selfridge", "Ian Garvin"],
+              answer: 1,
+            },
+            {
+              q: "What is the name of the moon where Avatar takes place?",
+              options: ["Pandora", "Polyphemus", "Acheron", "Tethys"],
+              answer: 0,
+            },
+            {
+              q: "Who is credited as creator of the Avatar saga?",
+              options: ["James Cameron", "Jon Landau", "Rick Jaffa", "Steven Spielberg"],
+              answer: 0,
+            },
+            {
+              q: "What is the announced release date for Avatar: Fire and Ash?",
+              options: ["December 19, 2025", "December 18, 2026", "December 16, 2022", "January 1, 2027"],
+              answer: 0,
+            },
+          ],
+          hard: [
+            {
+              q: "Which statement matches the official timeline?",
+              options: [
+                "Avatar (2009) released after The Way of Water",
+                "The Way of Water released in 2022",
+                "Fire and Ash released before Avatar (2009)",
+                "Avatar (2009) released in 2012",
+              ],
+              answer: 1,
+            },
+            {
+              q: "Which lineup correctly matches Jake and Neytiri's family?",
+              options: [
+                "Neteyam, Lo'ak, Kiri, Tuk",
+                "Neteyam, Quaritch, Kiri, Tuk",
+                "Lo'ak, Spider, Kiri, Mo'at",
+                "Tuk, Grace, Lo'ak, Parker",
+              ],
+              answer: 0,
+            },
+            {
+              q: "Which human group is the main antagonist in the saga?",
+              options: ["RDA", "UNSC", "Jedi Order", "Na'vi Metkayina"],
+              answer: 0,
+            },
+            {
+              q: "Which character is biologically linked to Na'vi through the plot?",
+              options: ["Jake via avatar/recombinant body", "Selfridge", "General Ardmore", "Original human Quaritch"],
+              answer: 0,
+            },
+            {
+              q: "Which couple is central to the saga's family storyline?",
+              options: ["Jake Sully and Neytiri", "Quaritch and Ardmore", "Norm and Grace", "Spider and Kiri"],
+              answer: 0,
+            },
+            {
+              q: "Which studio distributes the Avatar films?",
+              options: ["20th Century Studios", "A24", "Warner Bros", "Paramount"],
+              answer: 0,
+            },
+            {
+              q: "Which date matches Avatar: Fire and Ash?",
+              options: ["December 19, 2025", "December 18, 2009", "December 16, 2022", "August 15, 2024"],
+              answer: 0,
+            },
+          ],
+        },
+      };
+
+      const levelTitles = {
+        fr: [
+          "Fondations de Pandora",
+          "Clans Na'vi",
+          "Way of Water",
+          "Conflits & Strategie",
+          "Faune de Pandora",
+          "Flore & Ecosysteme",
+          "Famille Sully",
+          "RDA & Technologies",
+          "Chronologie Avatar",
+          "Grand Master",
+        ],
+        en: [
+          "Pandora Basics",
+          "Na'vi Clans",
+          "Way of Water",
+          "Conflict & Strategy",
+          "Pandora Wildlife",
+          "Flora & Ecosystem",
+          "Sully Family",
+          "RDA & Technology",
+          "Avatar Timeline",
+          "Grand Master",
+        ],
+      };
+
+      const animalsQuizByLang = {
+        fr: {
+          easy: [
+            { q: "Quel animal volant est souvent monte par les Na'vi ?", options: ["Ikran", "Thanator", "Tulkun", "Viperwolf"], answer: 0 },
+            { q: "Quel grand predateur terrestre est craint sur Pandora ?", options: ["Tulkun", "Thanator", "Pa'li", "Akun"], answer: 1 },
+            { q: "Quel animal marin intelligent apparait dans The Way of Water ?", options: ["Tulkun", "Ikran", "Viperwolf", "Banshee"], answer: 0 },
+            { q: "Le Pa'li est surtout utilise comme :", options: ["Monture terrestre", "Animal marin", "Predateur volant", "Arme biologique"], answer: 0 },
+            { q: "Comment appelle-t-on souvent l'Ikran en version francaise simplifiee ?", options: ["Banshee", "Dragon", "Aigle de feu", "Manta"], answer: 0 },
+            { q: "Quel animal est lie aux recifs dans le 2e film ?", options: ["Skimwing", "Thanator", "Pa'li", "Direhorse"], answer: 0 },
+            { q: "Le Viperwolf vit plutot :", options: ["En meute", "Seul dans l'ocean", "Dans le desert", "Dans les airs"], answer: 0 },
+          ],
+          medium: [
+            { q: "Quel lien rend la chasse aux Tulkun dramatique dans le film 2 ?", options: ["Leur intelligence elevee", "Leur role de machine", "Leur vitesse lente", "Leur fragilite au soleil"], answer: 0 },
+            { q: "Quel animal sert de monture de combat aerien chez les Na'vi ?", options: ["Ikran", "Tulkun", "Akun", "Skimwing"], answer: 0 },
+            { q: "Quel animal est associe aux eaux cotiere Metkayina ?", options: ["Skimwing", "Thanator", "Viperwolf", "Pa'li"], answer: 0 },
+            { q: "Quel comportement est souvent attribue aux Viperwolves ?", options: ["Coordination de groupe", "Vie totalement solitaire", "Migration marine", "Incapacite a chasser"], answer: 0 },
+            { q: "Le Thanator est surtout connu pour :", options: ["Sa puissance predatrice", "Sa docilite", "Sa nage rapide", "Son chant"], answer: 0 },
+            { q: "Dans l'univers Avatar, la connexion aux animaux passe par :", options: ["Le lien neural tsaheylu", "Un collier electronique", "Un dressage sonore", "Un implant RDA"], answer: 0 },
+            { q: "Quel duo est le plus coherent ?", options: ["Metkayina - Tulkun", "Omatikaya - Tulkun", "RDA - Ikran", "Na'vi - helico"], answer: 0 },
+          ],
+          hard: [
+            { q: "Quel theme est central dans la relation Na'vi/Tulkun ?", options: ["Alliance spirituelle et empathie", "Exploitation industrielle", "Domination militaire", "Commerce de masse"], answer: 0 },
+            { q: "L'Ikran dans la saga symbolise surtout :", options: ["Le rite de lien et la maitrise du ciel", "Une arme chimique", "Un animal domestique urbain", "Un simple decor"], answer: 0 },
+            { q: "Quel choix est le plus juste sur la faune de Pandora ?", options: ["Elle est connectee a l'ecosysteme global", "Elle est independante de tout", "Elle ne vit qu'en ocean", "Elle est totalement mecanique"], answer: 0 },
+            { q: "Le Skimwing est principalement :", options: ["Une monture marine rapide", "Un predateur terrestre", "Un oiseau de nuit", "Un animal invente par la RDA"], answer: 0 },
+            { q: "Le Thanator est le plus proche de quel role ?", options: ["Super-predateur terrestre", "Baleine pacifique", "Herbivore de recif", "Monture de transport"], answer: 0 },
+            { q: "Dans le film 2, la protection des Tulkun renforce :", options: ["Le conflit moral et culturel", "Le commerce RDA", "La paix immediate", "L'abandon des clans"], answer: 0 },
+            { q: "Quel resume est coherent pour la faune Avatar ?", options: ["Diversite, lien neural, enjeux de survie", "Un seul animal dominant", "Aucun lien avec les Na'vi", "Uniquement des creatures aquatiques"], answer: 0 },
+          ],
+        },
+        en: {
+          easy: [
+            { q: "Which flying creature is commonly bonded by the Na'vi?", options: ["Ikran", "Thanator", "Tulkun", "Viperwolf"], answer: 0 },
+            { q: "Which large land predator is feared on Pandora?", options: ["Tulkun", "Thanator", "Pa'li", "Akun"], answer: 1 },
+            { q: "Which intelligent sea creature appears in The Way of Water?", options: ["Tulkun", "Ikran", "Viperwolf", "Banshee"], answer: 0 },
+            { q: "Pa'li is mainly used as a:", options: ["Land mount", "Sea animal", "Flying predator", "Bioweapon"], answer: 0 },
+            { q: "What is a common alternate name for Ikran?", options: ["Banshee", "Dragon", "Fire eagle", "Manta"], answer: 0 },
+            { q: "Which creature is tied to reef riding in film 2?", options: ["Skimwing", "Thanator", "Pa'li", "Direhorse"], answer: 0 },
+            { q: "Viperwolves usually live:", options: ["In packs", "Alone in the ocean", "In deserts", "In the air"], answer: 0 },
+          ],
+          medium: [
+            { q: "What makes Tulkun hunting especially dramatic in film 2?", options: ["Their high intelligence", "Their machine role", "Their slow speed", "Sun weakness"], answer: 0 },
+            { q: "Which creature is used for Na'vi aerial combat riding?", options: ["Ikran", "Tulkun", "Akun", "Skimwing"], answer: 0 },
+            { q: "Which creature is linked to Metkayina coastal life?", options: ["Skimwing", "Thanator", "Viperwolf", "Pa'li"], answer: 0 },
+            { q: "What behavior fits Viperwolves best?", options: ["Group coordination", "Total solitude", "Ocean migration", "No hunting ability"], answer: 0 },
+            { q: "Thanator is most known for:", options: ["Predatory power", "Docility", "Fast swimming", "Singing"], answer: 0 },
+            { q: "In Avatar lore, animal bonding is done through:", options: ["Neural tsaheylu link", "Electronic collar", "Sound training", "RDA implant"], answer: 0 },
+            { q: "Which pairing is most coherent?", options: ["Metkayina - Tulkun", "Omatikaya - Tulkun", "RDA - Ikran", "Na'vi - helicopter"], answer: 0 },
+          ],
+          hard: [
+            { q: "Which theme is central in Na'vi/Tulkun relations?", options: ["Spiritual alliance and empathy", "Industrial exploitation", "Military domination", "Mass trade"], answer: 0 },
+            { q: "In the saga, Ikran mainly symbolizes:", options: ["Ritual bond and sky mastery", "Chemical weapon", "Urban domestic pet", "Background prop"], answer: 0 },
+            { q: "Which statement about Pandora wildlife is most accurate?", options: ["It is connected to a global ecosystem", "It is fully independent", "It lives only in oceans", "It is fully mechanical"], answer: 0 },
+            { q: "Skimwing is primarily:", options: ["A fast marine mount", "A land predator", "A night bird", "An RDA-created creature"], answer: 0 },
+            { q: "Thanator best fits which role?", options: ["Top land predator", "Peaceful whale", "Reef herbivore", "Transport mount"], answer: 0 },
+            { q: "In film 2, protecting Tulkun strengthens:", options: ["Moral and cultural conflict", "RDA trade", "Immediate peace", "Clan withdrawal"], answer: 0 },
+            { q: "Which summary of Avatar fauna is coherent?", options: ["Diversity, neural link, survival stakes", "One dominant creature only", "No bond with Na'vi", "Only aquatic creatures"], answer: 0 },
+          ],
+        },
+      };
+
+      const bonusQuestionsByLang = {
+        fr: {
+          easy: [
+            { q: "Quelle couleur de peau ont principalement les Na'vi ?", options: ["Bleue", "Verte", "Rouge", "Grise"], answer: 0 },
+            { q: "Qui est la compagne de Jake Sully ?", options: ["Neytiri", "Kiri", "Mo'at", "Ardmore"], answer: 0 },
+            { q: "Le 2e film Avatar se passe surtout dans :", options: ["Les zones marines", "Le desert", "L'espace", "La Terre"], answer: 0 },
+          ],
+          medium: [
+            { q: "Quel est le nom du fils aine de Jake et Neytiri ?", options: ["Neteyam", "Lo'ak", "Spider", "Tsu'tey"], answer: 0 },
+            { q: "Quel peuple oceaniques accueille la famille Sully ?", options: ["Metkayina", "Omatikaya", "Tlalim", "Ash People"], answer: 0 },
+            { q: "Le lien tsaheylu sert a :", options: ["Se connecter neuralement", "Se teleporter", "Piloter des drones", "Soigner instantanement"], answer: 0 },
+          ],
+          hard: [
+            { q: "Le conflit central de la saga oppose surtout :", options: ["Protection de Pandora vs exploitation", "Deux clans Na'vi rivaux", "Pandora vs Terre", "Ikran vs Tulkun"], answer: 0 },
+            { q: "Quel element est un enjeu critique pour les Na'vi ?", options: ["L'equilibre ecosystemique", "La conquete spatiale", "Le commerce intergalactique", "La robotique civile"], answer: 0 },
+            { q: "Dans la saga, la famille Sully symbolise :", options: ["Resilience et adaptation", "Pouvoir economique", "Neutralite politique", "Isolation"], answer: 0 },
+          ],
+        },
+        en: {
+          easy: [
+            { q: "What is the main skin color of the Na'vi?", options: ["Blue", "Green", "Red", "Gray"], answer: 0 },
+            { q: "Who is Jake Sully's partner?", options: ["Neytiri", "Kiri", "Mo'at", "Ardmore"], answer: 0 },
+            { q: "Avatar 2 mostly takes place in:", options: ["Marine regions", "The desert", "Outer space", "Earth"], answer: 0 },
+          ],
+          medium: [
+            { q: "What is the name of Jake and Neytiri's eldest son?", options: ["Neteyam", "Lo'ak", "Spider", "Tsu'tey"], answer: 0 },
+            { q: "Which ocean clan hosts the Sully family?", options: ["Metkayina", "Omatikaya", "Tlalim", "Ash People"], answer: 0 },
+            { q: "The tsaheylu bond is used to:", options: ["Connect neurally", "Teleport", "Control drones", "Instantly heal"], answer: 0 },
+          ],
+          hard: [
+            { q: "The central conflict in Avatar mainly opposes:", options: ["Pandora protection vs exploitation", "Two Na'vi clans", "Pandora vs Earth", "Ikran vs Tulkun"], answer: 0 },
+            { q: "Which issue is critical for the Na'vi?", options: ["Ecosystem balance", "Space conquest", "Intergalactic trade", "Civil robotics"], answer: 0 },
+            { q: "In the saga, the Sully family represents:", options: ["Resilience and adaptation", "Economic power", "Political neutrality", "Isolation"], answer: 0 },
+          ],
+        },
+      };
+
+      let quizData = [];
+
+      if (hasFirebaseConfig) {
+        const app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+        storage = getStorage(app);
+      } else {
+        authMsgLogin.textContent = t("missingFirebase");
+        authMsgSignup.textContent = t("missingFirebase");
+      }
+
+      // Sources utilisees pour les questions (internet):
+      // https://www.avatar.com/movies/avatar
+      // https://www.avatar.com/movies/avatar-the-way-of-water
+      // https://www.avatar.com/movies/avatar-fire-and-ash
+
+      let currentIndex = 0;
+      let score = 0;
+      let answered = false;
+      let lastChoice = null;
+      let quizInProgress = false;
+
+      function getProgressKey() {
+        return currentUser ? "avataronn_progress_" + currentUser.uid : null;
+      }
+
+      function getQuestionHistoryKey() {
+        return currentUser ? "avataronn_qhistory_" + currentUser.uid : "avataronn_qhistory_guest";
+      }
+
+      function loadQuestionHistory() {
+        const key = getQuestionHistoryKey();
+        try {
+          const raw = localStorage.getItem(key);
+          recentQuestionHistory = raw ? JSON.parse(raw) : {};
+        } catch (err) {
+          recentQuestionHistory = {};
+        }
+      }
+
+      function saveQuestionHistory() {
+        const key = getQuestionHistoryKey();
+        localStorage.setItem(key, JSON.stringify(recentQuestionHistory));
+      }
+
+      function getModeLabel(mode) {
+        if (mode === "medium") return t("mediumMode");
+        if (mode === "hard") return t("hardMode");
+        return t("easyMode");
+      }
+
+      function getLevelTitle(level) {
+        const titles = levelTitles[currentLang] || levelTitles.fr;
+        return titles[level - 1] || "";
+      }
+
+      function ensureLevelModeState(level) {
+        if (!unlockedModesByLevel[level]) {
+          unlockedModesByLevel[level] = { easy: level === 1, medium: false, hard: false };
+        }
+        if (!completedModesByLevel[level]) {
+          completedModesByLevel[level] = { easy: false, medium: false, hard: false };
+        }
+        if (!referenceScoresByLevel[level]) {
+          referenceScoresByLevel[level] = { easy: null, medium: null, hard: null };
+        }
+      }
+
+      function normalizeProgressState() {
+        if (!Number.isFinite(unlockedLevel) || unlockedLevel < 1) unlockedLevel = 1;
+        if (unlockedLevel > 10) unlockedLevel = 10;
+        for (let l = 1; l <= unlockedLevel; l += 1) ensureLevelModeState(l);
+        unlockedModesByLevel[1].easy = true;
+        for (let l = 1; l <= unlockedLevel; l += 1) {
+          ensureLevelModeState(l);
+          if (typeof referenceScoresByLevel[l].easy === "number") unlockedModesByLevel[l].easy = true;
+          if (typeof referenceScoresByLevel[l].medium === "number") unlockedModesByLevel[l].medium = true;
+          if (typeof referenceScoresByLevel[l].hard === "number") unlockedModesByLevel[l].hard = true;
+          completedModesByLevel[l].easy = typeof referenceScoresByLevel[l].easy === "number";
+          completedModesByLevel[l].medium = typeof referenceScoresByLevel[l].medium === "number";
+          completedModesByLevel[l].hard = typeof referenceScoresByLevel[l].hard === "number";
+        }
+      }
+
+      function buildQuizSet(level, mode, lang) {
+        const source =
+          level === 5
+            ? animalsQuizByLang[lang][mode]
+            : quizDataByLang[lang][mode];
+        const bonus = bonusQuestionsByLang[lang][mode] || [];
+        const pool = [...source, ...bonus];
+        const count = 7;
+        const bucketKey = String(level) + "_" + mode + "_" + lang;
+        const recent = recentQuestionHistory[bucketKey] || [];
+        const recentSet = new Set(recent);
+
+        const shuffle = (arr) => {
+          const copy = [...arr];
+          for (let i = copy.length - 1; i > 0; i -= 1) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const tmp = copy[i];
+            copy[i] = copy[j];
+            copy[j] = tmp;
+          }
+          return copy;
+        };
+
+        const fresh = shuffle(pool.filter((item) => !recentSet.has(item.q)));
+        const used = fresh.slice(0, count);
+        if (used.length < count) {
+          const remaining = shuffle(pool.filter((item) => !used.some((u) => u.q === item.q)));
+          used.push(...remaining.slice(0, count - used.length));
+        }
+
+        return used.map((item) => ({
+          q: item.q,
+          options: [...item.options],
+          answer: item.answer,
+        }));
+      }
+
+      function recordUsedQuestions() {
+        const bucketKey = String(currentLevel) + "_" + currentDifficulty + "_" + currentLang;
+        if (!recentQuestionHistory[bucketKey]) recentQuestionHistory[bucketKey] = [];
+        const existing = recentQuestionHistory[bucketKey];
+        const appended = [...existing, ...quizData.map((q) => q.q)];
+        const uniqueOrdered = [];
+        appended.forEach((q) => {
+          const idx = uniqueOrdered.indexOf(q);
+          if (idx !== -1) uniqueOrdered.splice(idx, 1);
+          uniqueOrdered.push(q);
+        });
+        recentQuestionHistory[bucketKey] = uniqueOrdered.slice(-18);
+        saveQuestionHistory();
+      }
+
+      function leaderboardSubtitleText() {
+        if (leaderboardLevel === "all") return t("leaderboardSubtitleAll");
+        return t("leaderboardSubtitleLevel") + " " + t("levelLabel") + " " + leaderboardLevel + ".";
+      }
+
+      function scoreByLevel(data, level) {
+        const firstByLevel = data.firstScoreByLevel || {};
+        if (level === "all") {
+          let best = null;
+          Object.values(firstByLevel).forEach((value) => {
+            if (typeof value === "number") {
+              if (best === null || value > best) best = value;
+            }
+          });
+          return best;
+        }
+        const levelKey = String(level);
+        if (typeof firstByLevel[levelKey] === "number") return firstByLevel[levelKey];
+        if (levelKey === "1") {
+          if (typeof data.firstScoreEasy === "number") return data.firstScoreEasy;
+          if (typeof data.bestScoreEasy === "number") return data.bestScoreEasy;
+        }
+        return null;
+      }
+
+      function syncQuizData() {
+        quizData = buildQuizSet(currentLevel, currentDifficulty, currentLang);
+        quizModeLabel.textContent = getModeLabel(currentDifficulty);
+      }
+
+      function updateDifficultyButtons() {
+        ensureLevelModeState(currentLevel);
+        const modes = [
+          { key: "easy", btn: startEasy, icon: easyIcon, unlocked: true },
+          { key: "medium", btn: startMedium, icon: mediumIcon, unlocked: Boolean(unlockedModesByLevel[currentLevel].medium) },
+          { key: "hard", btn: startHard, icon: hardIcon, unlocked: Boolean(unlockedModesByLevel[currentLevel].hard) },
+        ];
+
+        modes.forEach((mode) => {
+          const completed = Boolean(completedModesByLevel[currentLevel][mode.key]);
+          mode.btn.classList.remove("locked", "available", "done");
+          if (!mode.unlocked) {
+            mode.btn.classList.add("locked");
+            mode.btn.setAttribute("aria-disabled", "true");
+            mode.icon.textContent = "🔒";
+            return;
+          }
+          mode.btn.setAttribute("aria-disabled", "false");
+          if (completed) {
+            mode.btn.classList.add("done");
+            mode.icon.textContent = t("modeDone") + " ✅";
+          } else {
+            mode.btn.classList.add("available");
+            mode.icon.textContent = t("modeUnlocked") + " 🟠";
+          }
+        });
+      }
+
+      function saveQuizProgress() {
+        const key = getProgressKey();
+        if (!key) return;
+        const payload = {
+          currentIndex,
+          score,
+          answered,
+          lastChoice,
+          quizInProgress,
+          level: currentLevel,
+          difficulty: currentDifficulty,
+          lang: currentLang,
+          updatedAt: Date.now(),
+        };
+        localStorage.setItem(key, JSON.stringify(payload));
+      }
+
+      function clearQuizProgress() {
+        const key = getProgressKey();
+        if (!key) return;
+        localStorage.removeItem(key);
+      }
+
+      function applyStoredAnswerState() {
+        if (!answered || lastChoice === null) return;
+        const item = quizData[currentIndex];
+        const answerButtons = [...document.querySelectorAll(".answer")];
+        const correctIndex = item.answer;
+        answerButtons.forEach((btn) => (btn.disabled = true));
+
+        if (lastChoice === correctIndex) {
+          if (answerButtons[lastChoice]) answerButtons[lastChoice].classList.add("correct");
+          feedbackNode.className = "feedback show ok";
+          feedbackNode.innerHTML = "✅ " + t("right");
+        } else {
+          if (answerButtons[lastChoice]) answerButtons[lastChoice].classList.add("wrong");
+          if (answerButtons[correctIndex]) answerButtons[correctIndex].classList.add("good-answer");
+          feedbackNode.className = "feedback show ko";
+          feedbackNode.innerHTML =
+            "❌ " +
+            t("wrong") +
+            '<div class="correct-line">' +
+            t("correctAnswer") +
+            ": " +
+            item.options[correctIndex] +
+            "</div>";
+        }
+        nextBtn.className = "next-btn show";
+      }
+
+      function restoreQuizProgress() {
+        const key = getProgressKey();
+        if (!key) return false;
+        const raw = localStorage.getItem(key);
+        if (!raw) return false;
+        try {
+          const payload = JSON.parse(raw);
+          if (!payload || !payload.quizInProgress) return false;
+          if (Number(payload.currentIndex) >= quizData.length) return false;
+
+          if (payload.lang && i18n[payload.lang]) {
+            currentLang = payload.lang;
+            applyTranslations();
+          }
+          if (Number(payload.level) >= 1 && Number(payload.level) <= 10) {
+            currentLevel = Number(payload.level);
+          }
+          if (payload.difficulty && quizDataByLang[currentLang][payload.difficulty]) {
+            currentDifficulty = payload.difficulty;
+            syncQuizData();
+          }
+
+          currentIndex = Math.max(0, Number(payload.currentIndex) || 0);
+          score = Math.max(0, Number(payload.score) || 0);
+          answered = Boolean(payload.answered);
+          lastChoice = payload.lastChoice === null ? null : Number(payload.lastChoice);
+          quizInProgress = true;
+
+          showScreen("quiz");
+          renderQuestion();
+          applyStoredAnswerState();
+          return true;
+        } catch (err) {
+          console.error(err);
+          return false;
+        }
+      }
+
+      function t(key) {
+        return i18n[currentLang][key] || key;
+      }
+
+      function refreshLangButton() {
+        if (currentLang === "fr") {
+          langBtn.textContent = "🇬🇧 EN";
+          langBtn.setAttribute("aria-label", "Switch to English");
+        } else {
+          langBtn.textContent = "🇫🇷 FR";
+          langBtn.setAttribute("aria-label", "Basculer en francais");
+        }
+      }
+
+      function renderLevelPills() {
+        levelPills.forEach((pill, index) => {
+          const levelNumber = index + 1;
+          const isUnlocked = levelNumber <= unlockedLevel;
+          const status = isUnlocked ? t("levelUnlockedFull") : t("levelLockedFull");
+          const levelText = t("levelLabel") + " " + levelNumber;
+          pill.textContent = levelText + " - " + getLevelTitle(levelNumber) + " - " + status;
+
+          const btn = levelButtons[index];
+          if (!btn) return;
+          btn.dataset.level = String(levelNumber);
+          btn.classList.toggle("unlocked", isUnlocked);
+          btn.classList.toggle("locked", !isUnlocked);
+          btn.setAttribute("aria-label", levelText);
+          btn.disabled = !isUnlocked;
+          btn.textContent = isUnlocked ? String(levelNumber) : "🔒";
+        });
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      function formatSocialText(value) {
+        return escapeHtml(value)
+          .replace(/(^|\s)(#[\p{L}\p{N}_-]+)/gu, '$1<span class="tag">$2</span>')
+          .replace(/(^|\s)(@[\p{L}\p{N}._-]+)/gu, '$1<span class="mention">$2</span>');
+      }
+
+      function normalizeTagList(value) {
+        return String(value || "")
+          .split(/[,\s]+/)
+          .map((entry) => entry.trim().replace(/^#/, "").toLowerCase())
+          .filter((entry) => entry.length > 1)
+          .slice(0, 8);
+      }
+
+      function normalizeMentionList(value) {
+        return String(value || "")
+          .split(/\s+/)
+          .map((entry) => entry.trim())
+          .filter((entry) => entry.startsWith("@") && entry.length > 2)
+          .map((entry) => entry.replace(/^@/, "").toLowerCase())
+          .slice(0, 8);
+      }
+
+      function setShareMessage(msg, isError = false) {
+        shareMsg.textContent = msg;
+        shareMsg.style.color = isError ? "#b83b4d" : "#1f63c5";
+      }
+
+      function withTimeout(promise, ms) {
+        return Promise.race([
+          promise,
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error("timeout")), ms);
+          }),
+        ]);
+      }
+
+      function updateFeedFilterButtons() {
+        feedFilterAll.classList.toggle("active", feedFilter === "all");
+        feedFilterVote.classList.toggle("active", feedFilter === "vote");
+        feedFilterQuiz.classList.toggle("active", feedFilter === "quiz");
+      }
+
+      function buildQuestionBlock(index) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "question-block";
+        wrapper.dataset.qindex = String(index);
+        wrapper.innerHTML =
+          '<div class="q-head"><h4>' +
+          t("questionPrefix") +
+          " " +
+          (index + 1) +
+          '</h4>' +
+          (index > 0
+            ? '<button class="mini-danger share-remove-question" type="button">' + t("remove") + "</button>"
+            : "<span></span>") +
+          '</div><input class="share-q" type="text" maxlength="120" />' +
+          '<input class="share-opt" type="text" maxlength="70" />' +
+          '<input class="share-opt" type="text" maxlength="70" />' +
+          '<input class="share-opt" type="text" maxlength="70" />' +
+          '<input class="share-opt" type="text" maxlength="70" />' +
+          '<select class="share-correct"></select>';
+        localizeQuestionBlock(wrapper, index);
+        return wrapper;
+      }
+
+      function localizeQuestionBlock(block, index) {
+        const title = block.querySelector("h4");
+        if (title) title.textContent = t("questionPrefix") + " " + (index + 1);
+        const removeBtn = block.querySelector(".share-remove-question");
+        if (removeBtn) removeBtn.textContent = t("remove");
+        const qInput = block.querySelector(".share-q");
+        if (qInput) qInput.placeholder = t("questionPlaceholder");
+        const options = [...block.querySelectorAll(".share-opt")];
+        if (options[0]) options[0].placeholder = t("option1");
+        if (options[1]) options[1].placeholder = t("option2");
+        if (options[2]) options[2].placeholder = t("option3Optional");
+        if (options[3]) options[3].placeholder = t("option4Optional");
+        const correctSelect = block.querySelector(".share-correct");
+        if (correctSelect) {
+          const existing = correctSelect.value || "0";
+          correctSelect.innerHTML =
+            '<option value="0">' + t("correctPrefix") + " 1</option>" +
+            '<option value="1">' + t("correctPrefix") + " 2</option>" +
+            '<option value="2">' + t("correctPrefix") + " 3</option>" +
+            '<option value="3">' + t("correctPrefix") + " 4</option>";
+          correctSelect.value = existing;
+        }
+      }
+
+      function refreshShareQuestionVisibility() {
+        visibleShareQuestions = Math.max(1, Math.min(3, visibleShareQuestions));
+        const blocks = [...shareQuestions.querySelectorAll(".question-block")];
+        if (blocks.length > visibleShareQuestions) {
+          blocks.slice(visibleShareQuestions).forEach((node) => node.remove());
+        }
+        while (shareQuestions.querySelectorAll(".question-block").length < visibleShareQuestions) {
+          const idx = shareQuestions.querySelectorAll(".question-block").length;
+          shareQuestions.appendChild(buildQuestionBlock(idx));
+        }
+        const finalBlocks = [...shareQuestions.querySelectorAll(".question-block")];
+        finalBlocks.forEach((block, index) => {
+          block.dataset.qindex = String(index);
+          localizeQuestionBlock(block, index);
+          const removeBtn = block.querySelector(".share-remove-question");
+          if (removeBtn) {
+            removeBtn.onclick = () => {
+              visibleShareQuestions = Math.max(1, visibleShareQuestions - 1);
+              refreshShareQuestionVisibility();
+            };
+          }
+        });
+        const canAdd = visibleShareQuestions < 3 && shareType.value === "quiz";
+        shareAddQuestion.classList.toggle("hidden", !canAdd);
+        shareAddHelp.classList.toggle("hidden", !canAdd);
+      }
+
+      function collectQuestionsFromComposer() {
+        const blocks = [...shareQuestions.querySelectorAll(".question-block")];
+        const questions = [];
+        for (let i = 0; i < blocks.length; i += 1) {
+          const block = blocks[i];
+          const qInput = block.querySelector(".share-q");
+          const optionInputs = [...block.querySelectorAll(".share-opt")];
+          const correctSelect = block.querySelector(".share-correct");
+          const qText = qInput.value.trim();
+          const options = optionInputs.map((entry) => entry.value.trim()).filter(Boolean);
+          if (!qText && options.length === 0) continue;
+          if (!qText || options.length < 2) return { ok: false, reason: "invalidOptions" };
+          let correctIndex = Number(correctSelect.value);
+          if (!Number.isFinite(correctIndex) || correctIndex < 0 || correctIndex >= options.length) {
+            correctIndex = 0;
+          }
+          questions.push({
+            text: qText.slice(0, 120),
+            options: options.slice(0, 4),
+            correctIndex,
+          });
+        }
+        if (!questions.length) return { ok: false, reason: "noQuestion" };
+        return { ok: true, questions };
+      }
+
+      function clearSharePreviewUrls() {
+        sharePreviewUrls.forEach((url) => URL.revokeObjectURL(url));
+        sharePreviewUrls = [];
+      }
+
+      function renderSharePreview(index = 0) {
+        if (!sharePreviewUrls.length) {
+          sharePreview.classList.add("hidden");
+          sharePreviewMain.removeAttribute("src");
+          sharePreviewThumbs.innerHTML = "";
+          return;
+        }
+        sharePreview.classList.remove("hidden");
+        const activeIndex = Math.max(0, Math.min(index, sharePreviewUrls.length - 1));
+        sharePreviewMain.src = sharePreviewUrls[activeIndex];
+        sharePreviewThumbs.innerHTML = "";
+        sharePreviewUrls.forEach((url, thumbIndex) => {
+          const thumb = document.createElement("img");
+          thumb.src = url;
+          thumb.className = "preview-thumb" + (thumbIndex === activeIndex ? " active" : "");
+          thumb.alt = "Miniature " + (thumbIndex + 1);
+          thumb.addEventListener("click", () => renderSharePreview(thumbIndex));
+          sharePreviewThumbs.appendChild(thumb);
+        });
+      }
+
+      async function uploadPostImages(uid, files) {
+        const uploads = [];
+        for (let i = 0; i < files.length; i += 1) {
+          const file = files[i];
+          const safeName = String(file.name || "img").replace(/[^\w.-]/g, "_");
+          const path = "posts/" + uid + "/" + Date.now() + "_" + i + "_" + safeName;
+          const refNode = storageRef(storage, path);
+          await uploadBytes(refNode, file);
+          const url = await getDownloadURL(refNode);
+          uploads.push(url);
+        }
+        return uploads;
+      }
+
+      async function getUserPostInteraction(postId) {
+        if (!currentUser || !db) return null;
+        const refNode = doc(db, "users", currentUser.uid, "postInteractions", postId);
+        const snap = await getDoc(refNode);
+        if (!snap.exists()) return null;
+        return snap.data();
+      }
+
+      function formatPostDate(raw) {
+        if (!raw || typeof raw.toDate !== "function") return "";
+        try {
+          return new Intl.DateTimeFormat(currentLang === "fr" ? "fr-FR" : "en-US", {
+            day: "2-digit",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit",
+          }).format(raw.toDate());
+        } catch (_) {
+          return "";
+        }
+      }
+
+      async function registerPostView(postId, interaction) {
+        if (!currentUser || !db || !interaction || interaction.viewed) return;
+        await runTransaction(db, async (tx) => {
+          const postRef = doc(db, "posts", postId);
+          tx.update(postRef, { viewsCount: increment(1) });
+          tx.set(
+            doc(db, "users", currentUser.uid, "postInteractions", postId),
+            { viewed: true, viewedAt: serverTimestamp() },
+            { merge: true }
+          );
+        });
+      }
+
+      async function submitVote(postId, optionIndex, optionsCount) {
+        if (!currentUser || !db) return;
+        await runTransaction(db, async (tx) => {
+          const interRef = doc(db, "users", currentUser.uid, "postInteractions", postId);
+          const interSnap = await tx.get(interRef);
+          const interData = interSnap.exists() ? interSnap.data() : {};
+          if (interData.participated) return;
+          const postRef = doc(db, "posts", postId);
+          const postSnap = await tx.get(postRef);
+          if (!postSnap.exists()) return;
+          const postData = postSnap.data();
+          const voteStats = Array.isArray(postData.voteStats) ? [...postData.voteStats] : [];
+          while (voteStats.length < optionsCount) voteStats.push(0);
+          voteStats[optionIndex] = Number(voteStats[optionIndex] || 0) + 1;
+          tx.update(postRef, {
+            participantsCount: increment(1),
+            voteStats,
+          });
+          tx.set(
+            interRef,
+            {
+              participated: true,
+              votedIndex: optionIndex,
+              type: "vote",
+              answeredAt: serverTimestamp(),
+            },
+            { merge: true }
+          );
+        });
+      }
+
+      async function submitQuiz(postId, answers, scoreValue) {
+        if (!currentUser || !db) return;
+        await runTransaction(db, async (tx) => {
+          const interRef = doc(db, "users", currentUser.uid, "postInteractions", postId);
+          const interSnap = await tx.get(interRef);
+          const interData = interSnap.exists() ? interSnap.data() : {};
+          if (interData.participated) return;
+          tx.update(doc(db, "posts", postId), {
+            participantsCount: increment(1),
+          });
+          tx.set(
+            interRef,
+            {
+              participated: true,
+              answers,
+              score: scoreValue,
+              type: "quiz",
+              answeredAt: serverTimestamp(),
+            },
+            { merge: true }
+          );
+        });
+      }
+
+      async function toggleLike(postId, alreadyLiked) {
+        if (!currentUser || !db || alreadyLiked) return;
+        await runTransaction(db, async (tx) => {
+          const interRef = doc(db, "users", currentUser.uid, "postInteractions", postId);
+          const interSnap = await tx.get(interRef);
+          const interData = interSnap.exists() ? interSnap.data() : {};
+          if (interData.liked) return;
+          tx.update(doc(db, "posts", postId), { likesCount: increment(1) });
+          tx.set(interRef, { liked: true, likedAt: serverTimestamp() }, { merge: true });
+        });
+      }
+
+      function voteRankingHtml(options, voteStats) {
+        const total = voteStats.reduce((acc, value) => acc + Number(value || 0), 0);
+        const rows = options
+          .map((option, index) => {
+            const count = Number(voteStats[index] || 0);
+            const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+            return { option, count, pct };
+          })
+          .sort((a, b) => b.count - a.count);
+        return rows
+          .map(
+            (row, rank) =>
+              '<div class="poll-rank-line">#' +
+              (rank + 1) +
+              " - " +
+              escapeHtml(row.option) +
+              " (" +
+              row.pct +
+              "%)</div>"
+          )
+          .join("");
+      }
+
+      async function renderFeedPost(docSnap) {
+        const data = docSnap.data();
+        if (feedFilter !== "all" && data.postType !== feedFilter) return null;
+        const interaction = (await getUserPostInteraction(docSnap.id)) || {};
+        await registerPostView(docSnap.id, interaction);
+        const card = document.createElement("article");
+        card.className = "post-card";
+        const images = Array.isArray(data.imageUrls) ? data.imageUrls : [];
+        const firstQuestion = Array.isArray(data.questions) && data.questions[0] ? data.questions[0] : null;
+        const voteStats = Array.isArray(data.voteStats) ? data.voteStats : [];
+        card.innerHTML =
+          '<div class="post-head"><div class="post-author">@' +
+          escapeHtml(data.ownerPseudo || "fan") +
+          '</div><div class="post-time">' +
+          formatPostDate(data.createdAt) +
+          '</div></div><div class="post-media">' +
+          images
+            .map(
+              (url) =>
+                '<img loading="lazy" src="' +
+                escapeHtml(url) +
+                '" alt="post image" />'
+            )
+            .join("") +
+          '</div><div class="post-body"><p class="post-desc">' +
+          formatSocialText(data.description || "") +
+          '</p><div class="post-stats"><span>❤️ ' +
+          Number(data.likesCount || 0) +
+          " " +
+          t("likes") +
+          "</span><span>👁️ " +
+          Number(data.viewsCount || 0) +
+          " " +
+          t("views") +
+          "</span><span>🎯 " +
+          Number(data.participantsCount || 0) +
+          " " +
+          t("participants") +
+          "</span></div></div>";
+
+        const body = card.querySelector(".post-body");
+        const likeBtn = document.createElement("button");
+        likeBtn.type = "button";
+        likeBtn.className = "like-btn" + (interaction.liked ? " done" : "");
+        likeBtn.textContent = interaction.liked ? "❤️ " + t("yourVoteDone") : "🤍 " + t("likeAction");
+        likeBtn.addEventListener("click", async () => {
+          await toggleLike(docSnap.id, Boolean(interaction.liked));
+          await loadFeed();
+        });
+        body.appendChild(likeBtn);
+
+        if (firstQuestion) {
+          const pollNode = document.createElement("div");
+          pollNode.className = "post-poll";
+          const header = document.createElement("div");
+          header.className = "poll-question";
+          header.textContent = (data.postType === "vote" ? t("postTypeVote") : t("postTypeQuiz")) + " - " + firstQuestion.text;
+          pollNode.appendChild(header);
+
+          if (interaction.participated) {
+            const doneNode = document.createElement("div");
+            doneNode.className = "small";
+            doneNode.textContent =
+              data.postType === "vote"
+                ? t("yourVoteDone")
+                : t("yourQuizDone") + (typeof interaction.score === "number" ? " (" + interaction.score + "/" + data.questions.length + ")" : "");
+            pollNode.appendChild(doneNode);
+            if (data.postType === "vote") {
+              const rankNode = document.createElement("div");
+              rankNode.innerHTML =
+                '<div class="small" style="font-weight:800;">' +
+                t("voteRanking") +
+                "</div>" +
+                voteRankingHtml(firstQuestion.options || [], voteStats);
+              pollNode.appendChild(rankNode);
+            }
+          } else if (data.postType === "vote") {
+            (firstQuestion.options || []).forEach((option, optionIndex) => {
+              const optionBtn = document.createElement("button");
+              optionBtn.type = "button";
+              optionBtn.className = "poll-option";
+              optionBtn.textContent = option;
+              optionBtn.addEventListener("click", async () => {
+                await submitVote(docSnap.id, optionIndex, (firstQuestion.options || []).length);
+                await loadFeed();
+              });
+              pollNode.appendChild(optionBtn);
+            });
+          } else {
+            let quizStep = 0;
+            let quizScore = 0;
+            const questions = Array.isArray(data.questions) ? data.questions : [];
+            const renderQuizStep = () => {
+              const item = questions[quizStep];
+              if (!item) return;
+              pollNode.innerHTML = "";
+              const qTitle = document.createElement("div");
+              qTitle.className = "poll-question";
+              qTitle.textContent = "Q" + (quizStep + 1) + "/" + questions.length + " - " + item.text;
+              pollNode.appendChild(qTitle);
+              (item.options || []).forEach((option, optionIndex) => {
+                const optionBtn = document.createElement("button");
+                optionBtn.type = "button";
+                optionBtn.className = "poll-option";
+                optionBtn.textContent = option;
+                optionBtn.addEventListener("click", async () => {
+                  if (Number(item.correctIndex) === optionIndex) quizScore += 1;
+                  quizStep += 1;
+                  if (quizStep >= questions.length) {
+                    await submitQuiz(docSnap.id, [], quizScore);
+                    await loadFeed();
+                  } else {
+                    renderQuizStep();
+                  }
+                });
+                pollNode.appendChild(optionBtn);
+              });
+            };
+            renderQuizStep();
+          }
+          body.appendChild(pollNode);
+        }
+
+        return card;
+      }
+
+      async function loadFeed() {
+        if (!db || !currentUser) return;
+        feedList.innerHTML = '<div class="panel small">' + t("loadingTitle") + "</div>";
+        const snap = await getDocs(query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(30)));
+        feedList.innerHTML = "";
+        for (const row of snap.docs) {
+          const node = await renderFeedPost(row);
+          if (node) feedList.appendChild(node);
+        }
+        if (!feedList.children.length) {
+          feedList.innerHTML = '<div class="panel small">' + t("noPosts") + "</div>";
+        }
+      }
+
+      function applyTranslations() {
+        loginTitle.textContent = t("loginTitle");
+        loginSubtitle.textContent = t("loginSubtitle");
+        labelLoginEmail.textContent = t("email");
+        labelLoginPassword.textContent = t("password");
+        loginSubmit.textContent = t("loginBtn");
+        gotoSignup.textContent = t("noAccount");
+        signupTitle.textContent = t("createAccountTitle");
+        signupSubtitle.textContent = t("signupSubtitle");
+        labelSignupPseudo.textContent = t("pseudo");
+        labelSignupEmail.textContent = t("email");
+        labelSignupPassword.textContent = t("password");
+        labelSignupConfirm.textContent = t("confirmPassword");
+        signupSubmit.textContent = t("createAccountBtn");
+        gotoLogin.textContent = t("alreadyAccount");
+        homeTitle.textContent = t("homeTitle");
+        homeSubtitle.textContent = t("homeSubtitle");
+        pathTitle.textContent = t("levelsTitle");
+        homeNote.textContent = t("onlyLevelOne");
+        startPathBtn.textContent = t("startLevelOne");
+        fanTitle1.textContent = t("fanTitle1");
+        fanText1.textContent = t("fanText1");
+        fanTitle2.textContent = t("fanTitle2");
+        fanText2.textContent = t("fanText2");
+        backHome.textContent = "← " + t("backToLevels");
+        levelTitle.textContent =
+          t("levelLabel") + " " + currentLevel + " - " + getLevelTitle(currentLevel);
+        levelDesc.textContent = t("levelChoiceDesc");
+        feedTitle.textContent = t("feedTitle");
+        feedSubtitle.textContent = t("feedSubtitle");
+        feedFilterAll.textContent = t("feedAll");
+        feedFilterVote.textContent = t("feedVotes");
+        feedFilterQuiz.textContent = t("feedQuiz");
+        shareTitle.textContent = t("shareTitle");
+        shareSubtitle.textContent = t("shareSubtitle");
+        shareAddQuestion.textContent = t("shareAddQuestion");
+        shareAddQuestion.setAttribute("aria-label", t("shareAddQuestion"));
+        shareAddHelp.textContent = t("shareAddHelp");
+        shareSubmitBtn.textContent = t("sharePublish");
+        shareTypeVote.textContent = t("simpleVote");
+        shareTypeQuiz.textContent = t("postTypeQuiz");
+        shareDescription.placeholder = t("shareDescPlaceholder");
+        shareTags.placeholder = t("shareTagsPlaceholder");
+        shareMentions.placeholder = t("shareMentionsPlaceholder");
+        refreshShareQuestionVisibility();
+        difficultyEasy.textContent = t("easy");
+        difficultyMedium.textContent = t("medium");
+        difficultyHard.textContent = t("hard");
+        backLevel.textContent = "← " + t("backToLevelOne");
+        quizModeLabel.textContent = t("easyMode");
+        nextBtn.textContent = t("nextQuestion");
+        leaderboardTitle.textContent = t("leaderboardTitle");
+        leaderboardSubtitle.textContent = leaderboardSubtitleText();
+        if (leaderboardLevelFilter) {
+          leaderboardLevelFilter.value = leaderboardLevel;
+          for (let i = 0; i < 10; i += 1) {
+            leaderboardLevelFilter.options[i].text = t("levelLabel") + " " + String(i + 1);
+          }
+          leaderboardLevelFilter.options[10].text = t("filterAll");
+        }
+        profileTitle.textContent = t("profileTitle");
+        profileLabelPseudo.textContent = t("pseudo");
+        profileLabelFirst.textContent = t("firstScore");
+        profileLabelSecond.textContent = t("secondScore");
+        profileLabelRank.textContent = t("currentRank");
+        profilePlayBtn.textContent = t("playAgain");
+        navHome.textContent = t("navHome");
+        navFeed.textContent = t("navFeed");
+        navShare.textContent = t("navShare");
+        navLeaderboard.textContent = t("navLeaderboard");
+        navProfile.textContent = t("navProfile");
+        scoreView.textContent = t("score") + ": " + score;
+        syncQuizData();
+        backLevel.textContent = "← " + t("levelLabel") + " " + currentLevel;
+        renderLevelPills();
+        refreshLangButton();
+        updateDifficultyButtons();
+        updateAccountUi();
+        if (!hasFirebaseConfig) {
+          setAuthMessage(t("missingFirebase"), true);
+        }
+        loadingTitle.textContent = t("loadingTitle");
+        loadingSubtitle.textContent = t("loadingSubtitle");
+      }
+
+      function showScreen(name) {
+        if (!authResolved && name !== "loading") {
+          name = "loading";
+        }
+        if (!currentUser && name !== "authLogin" && name !== "authSignup" && name !== "loading") {
+          name = "authLogin";
+        }
+        Object.entries(screens).forEach(([key, node]) => {
+          node.classList.toggle("active", key === name);
+        });
+        navButtons.forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.target === name);
+        });
+      }
+
+      function setAuthMessage(msg, isError = false) {
+        authMsgLogin.textContent = msg;
+        authMsgSignup.textContent = msg;
+        authMsgLogin.style.color = isError ? "#b83b4d" : "#1f63c5";
+        authMsgSignup.style.color = isError ? "#b83b4d" : "#1f63c5";
+      }
+
+      function updateAccountUi() {
+        if (!currentUser) {
+          accountBtn.textContent = "👤";
+          bottomNav.classList.add("locked");
+          profilePseudo.textContent = "-";
+          profileFirst.textContent = "-";
+          profileSecond.textContent = "-";
+          profileRank.textContent = "#-";
+          profileBadge.textContent = t("badgeLabel") + ": " + t("badgeBeginner");
+          renderLevelPills();
+          updateDifficultyButtons();
+          return;
+        }
+        const initial = (currentPseudo || currentUser.email || "U").trim().charAt(0).toUpperCase();
+        accountBtn.textContent = initial;
+        bottomNav.classList.remove("locked");
+        profilePseudo.textContent = currentPseudo || currentUser.email;
+        profileFirst.textContent = firstScoreEasy === null ? "-" : String(firstScoreEasy) + "/7";
+        profileSecond.textContent = secondScoreEasy === null ? "-" : String(secondScoreEasy) + "/7";
+        profileBadge.textContent = t("badgeLabel") + ": " + getBadge(firstScoreEasy === null ? 0 : firstScoreEasy);
+        renderLevelPills();
+        updateDifficultyButtons();
+      }
+
+      function getBadge(best) {
+        if (best >= 7) return t("badgeMaster");
+        if (best >= 6) return t("badgeScout");
+        if (best >= 4) return t("badgeSky");
+        return t("badgeBeginner");
+      }
+
+      async function loadLeaderboard() {
+        if (!db) return;
+        const q = query(collection(db, "users"), limit(300));
+        const snap = await getDocs(q);
+        cachedLeaderboard = snap.docs
+          .map((d) => {
+            const data = d.data();
+            const selectedScore = scoreByLevel(data, leaderboardLevel);
+            return {
+              uid: d.id,
+              pseudo: data.pseudo || data.email || t("fanLabel"),
+              selectedScore,
+            };
+          })
+          .filter((row) => row.selectedScore !== null)
+          .sort((a, b) => Number(b.selectedScore) - Number(a.selectedScore))
+          .slice(0, 20);
+
+        const top3 = cachedLeaderboard.slice(0, 3);
+        podium.innerHTML = "";
+        [
+          { slot: top3[1], cls: "second", rank: "2" },
+          { slot: top3[0], cls: "first", rank: "1" },
+          { slot: top3[2], cls: "third", rank: "3" },
+        ].forEach((entry) => {
+          const div = document.createElement("div");
+          div.className = "podium-item " + entry.cls;
+          if (!entry.slot) {
+            div.innerHTML = '<div class="rank">#' + entry.rank + "</div><strong>-</strong><div class=\"small\">0/7</div>";
+          } else {
+            div.innerHTML =
+              '<div class="rank">#' +
+              entry.rank +
+              "</div><strong>" +
+              String(entry.slot.pseudo || t("fanLabel")).slice(0, 12) +
+              "</strong><div class=\"small\">" +
+              entry.slot.selectedScore +
+              "/7</div>";
+          }
+          podium.appendChild(div);
+        });
+
+        leaderList.innerHTML = "";
+        if (cachedLeaderboard.length === 0) {
+          leaderList.innerHTML = '<div class="leader-row"><span>' + t("noScore") + "</span></div>";
+        } else {
+          cachedLeaderboard.forEach((row, index) => {
+            const el = document.createElement("div");
+            el.className = "leader-row";
+            el.innerHTML =
+              '<div class="left"><span class="rank-badge">#' +
+              (index + 1) +
+              "</span><span>" +
+              String(row.pseudo || t("fanLabel")).slice(0, 18) +
+              '</span></div><span class="leader-score">' +
+              row.selectedScore +
+              "/7</span>";
+            leaderList.appendChild(el);
+          });
+        }
+        leaderboardSubtitle.textContent = leaderboardSubtitleText();
+      }
+
+      async function refreshProfileStats() {
+        if (!db || !currentUser) return;
+        const userRef = doc(db, "users", currentUser.uid);
+        const snap = await getDoc(userRef);
+        let shouldPatchUnlock = false;
+        let shouldPatchReference = false;
+        if (snap.exists()) {
+          const data = snap.data();
+          firstScoreEasy =
+            typeof data.firstScoreEasy === "number"
+              ? data.firstScoreEasy
+              : typeof data.bestScoreEasy === "number"
+                ? data.bestScoreEasy
+                : null;
+          secondScoreEasy = typeof data.secondScoreEasy === "number" ? data.secondScoreEasy : null;
+          const derivedUnlockMediumL1 =
+            (firstScoreEasy !== null && firstScoreEasy >= 4) ||
+            (secondScoreEasy !== null && secondScoreEasy >= 4);
+          const derivedUnlockHardL1 = Number(data.lastMediumScore || 0) >= 4;
+          unlockMediumL1 = Boolean(data.unlockMediumL1) || derivedUnlockMediumL1;
+          unlockHardL1 = Boolean(data.unlockHardL1) || derivedUnlockHardL1;
+          unlockedLevel = Number(data.unlockedLevel || 1);
+          unlockedModesByLevel = typeof data.unlockedModesByLevel === "object" && data.unlockedModesByLevel
+            ? data.unlockedModesByLevel
+            : {};
+          referenceScoresByLevel = typeof data.referenceScoresByLevel === "object" && data.referenceScoresByLevel
+            ? data.referenceScoresByLevel
+            : {};
+          completedModesByLevel = typeof data.completedModesByLevel === "object" && data.completedModesByLevel
+            ? data.completedModesByLevel
+            : {};
+          ensureLevelModeState(1);
+          if (referenceScoresByLevel[1].easy === null && firstScoreEasy !== null) {
+            referenceScoresByLevel[1].easy = firstScoreEasy;
+            shouldPatchReference = true;
+          }
+          if (referenceScoresByLevel[1].medium === null && Number(data.lastMediumScore || 0) > 0) {
+            referenceScoresByLevel[1].medium = Number(data.lastMediumScore);
+            shouldPatchReference = true;
+          }
+          if (referenceScoresByLevel[1].hard === null && Number(data.lastHardScore || 0) > 0) {
+            referenceScoresByLevel[1].hard = Number(data.lastHardScore);
+            shouldPatchReference = true;
+          }
+          normalizeProgressState();
+          if (unlockMediumL1) unlockedModesByLevel[1].medium = true;
+          if (unlockHardL1) unlockedModesByLevel[1].hard = true;
+          shouldPatchUnlock =
+            (unlockMediumL1 && !Boolean(data.unlockMediumL1)) ||
+            (unlockHardL1 && !Boolean(data.unlockHardL1));
+          currentPseudo = String(data.pseudo || currentPseudo || "");
+        } else {
+          firstScoreEasy = null;
+          secondScoreEasy = null;
+          unlockMediumL1 = false;
+          unlockHardL1 = false;
+          unlockedLevel = 1;
+          unlockedModesByLevel = { 1: { easy: true, medium: false, hard: false } };
+          completedModesByLevel = { 1: { easy: false, medium: false, hard: false } };
+          referenceScoresByLevel = { 1: { easy: null, medium: null, hard: null } };
+        }
+
+        if (shouldPatchUnlock || shouldPatchReference) {
+          await setDoc(
+            userRef,
+            {
+              unlockMediumL1,
+              unlockHardL1,
+              unlockedLevel,
+              unlockedModesByLevel,
+              completedModesByLevel,
+              referenceScoresByLevel,
+              migratedUnlockAt: serverTimestamp(),
+            },
+            { merge: true }
+          );
+        }
+
+        const rank =
+          cachedLeaderboard.findIndex((row) => row.uid === currentUser.uid) + 1;
+        profileRank.textContent = rank > 0 ? "#" + rank : "#-";
+        updateAccountUi();
+      }
+
+      function playTone(type) {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        const ctx = new Ctx();
+        const o1 = ctx.createOscillator();
+        const g1 = ctx.createGain();
+        o1.type = "sine";
+        o1.connect(g1);
+        g1.connect(ctx.destination);
+
+        if (type === "ok") {
+          o1.frequency.value = 740;
+          g1.gain.setValueAtTime(0.0001, ctx.currentTime);
+          g1.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.02);
+          g1.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
+          o1.start();
+          o1.stop(ctx.currentTime + 0.25);
+        } else {
+          o1.frequency.value = 220;
+          g1.gain.setValueAtTime(0.0001, ctx.currentTime);
+          g1.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + 0.02);
+          g1.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.32);
+          o1.start();
+          o1.stop(ctx.currentTime + 0.32);
+        }
+      }
+
+      function updateProgress() {
+        const pct = (currentIndex / quizData.length) * 100;
+        progressBar.style.width = pct + "%";
+        scoreView.textContent = t("score") + ": " + score;
+      }
+
+      function renderQuestion() {
+        const item = quizData[currentIndex];
+        if (!answered) lastChoice = null;
+        feedbackNode.className = "feedback";
+        feedbackNode.innerHTML = "";
+        nextBtn.className = "next-btn";
+        answersNode.innerHTML = "";
+        questionText.textContent =
+          t("questionPrefix") + " " + (currentIndex + 1) + "/" + quizData.length + " - " + item.q;
+
+        item.options.forEach((text, index) => {
+          const btn = document.createElement("button");
+          btn.className = "answer";
+          btn.type = "button";
+          btn.textContent = text;
+          btn.addEventListener("click", () => handleAnswer(index));
+          answersNode.appendChild(btn);
+        });
+
+        updateProgress();
+      }
+
+      function handleAnswer(choice) {
+        if (answered) return;
+        answered = true;
+        lastChoice = choice;
+        const item = quizData[currentIndex];
+        const answerButtons = [...document.querySelectorAll(".answer")];
+
+        answerButtons.forEach((btn) => (btn.disabled = true));
+        const correctIndex = item.answer;
+
+        if (choice === correctIndex) {
+          score += 1;
+          answerButtons[choice].classList.add("correct");
+          feedbackNode.className = "feedback show ok";
+          feedbackNode.innerHTML = "✅ " + t("right");
+          playTone("ok");
+        } else {
+          answerButtons[choice].classList.add("wrong");
+          answerButtons[correctIndex].classList.add("good-answer");
+          feedbackNode.className = "feedback show ko";
+          feedbackNode.innerHTML =
+            "❌ " + t("wrong") +
+            '<div class="correct-line">' + t("correctAnswer") + ": " +
+            item.options[correctIndex] +
+            "</div>";
+          playTone("ko");
+        }
+
+        scoreView.textContent = t("score") + ": " + score;
+        nextBtn.className = "next-btn show";
+        saveQuizProgress();
+      }
+
+      async function saveScore() {
+        if (!db || !currentUser) return;
+        normalizeProgressState();
+        ensureLevelModeState(currentLevel);
+        const userRef = doc(db, "users", currentUser.uid);
+        const snap = await getDoc(userRef);
+        const data = snap.exists() ? snap.data() : {};
+        const attempts = Number(data.totalAttemptsEasy || 0);
+        const firstScoreByLevel =
+          typeof data.firstScoreByLevel === "object" && data.firstScoreByLevel
+            ? data.firstScoreByLevel
+            : {};
+        const existingFirst =
+          typeof data.firstScoreEasy === "number"
+            ? data.firstScoreEasy
+            : typeof data.bestScoreEasy === "number"
+              ? data.bestScoreEasy
+              : null;
+        const updates = {
+          pseudo: currentPseudo || currentUser.email,
+          email: currentUser.email || "",
+          lastPlayedAt: serverTimestamp(),
+        };
+        const modeKey = currentDifficulty;
+        if (typeof referenceScoresByLevel[currentLevel][modeKey] !== "number") {
+          referenceScoresByLevel[currentLevel][modeKey] = score;
+        }
+
+        if (currentDifficulty === "easy") {
+          updates.totalAttemptsEasy = attempts + 1;
+          const levelKey = String(currentLevel);
+          if (typeof firstScoreByLevel[levelKey] !== "number") {
+            firstScoreByLevel[levelKey] = score;
+          }
+          updates.firstScoreByLevel = firstScoreByLevel;
+          if (attempts === 0 && existingFirst === null) {
+            updates.firstScoreEasy = score;
+            firstScoreEasy = score;
+          } else {
+            if (existingFirst !== null) firstScoreEasy = existingFirst;
+            updates.secondScoreEasy = score;
+            secondScoreEasy = score;
+          }
+          if (score >= 4) {
+            updates.unlockMediumL1 = true;
+            unlockMediumL1 = true;
+            unlockedModesByLevel[currentLevel].medium = true;
+          }
+        }
+
+        if (currentDifficulty === "medium") {
+          updates.lastMediumScore = score;
+          if (score >= 4) {
+            updates.unlockHardL1 = true;
+            unlockHardL1 = true;
+            unlockedModesByLevel[currentLevel].hard = true;
+          }
+        }
+
+        if (currentDifficulty === "hard") {
+          updates.lastHardScore = score;
+          if (currentLevel < 10 && unlockedLevel <= currentLevel) {
+            unlockedLevel = currentLevel + 1;
+            ensureLevelModeState(unlockedLevel);
+            unlockedModesByLevel[unlockedLevel].easy = true;
+          }
+        }
+
+        updates.unlockedLevel = unlockedLevel;
+        updates.unlockedModesByLevel = unlockedModesByLevel;
+        updates.referenceScoresByLevel = referenceScoresByLevel;
+        completedModesByLevel[currentLevel].easy = typeof referenceScoresByLevel[currentLevel].easy === "number";
+        completedModesByLevel[currentLevel].medium = typeof referenceScoresByLevel[currentLevel].medium === "number";
+        completedModesByLevel[currentLevel].hard = typeof referenceScoresByLevel[currentLevel].hard === "number";
+        updates.completedModesByLevel = completedModesByLevel;
+
+        await setDoc(userRef, updates, { merge: true });
+      }
+
+      function renderResultContent() {
+        let nextModeButton = "";
+        ensureLevelModeState(currentLevel);
+        if (currentDifficulty === "easy" && unlockedModesByLevel[currentLevel].medium) {
+          nextModeButton =
+            '<button class="cta-home" id="result-next-mode-btn" type="button" style="margin-top:10px;">' +
+            t("goToMedium") +
+            "</button>";
+        } else if (currentDifficulty === "medium" && unlockedModesByLevel[currentLevel].hard) {
+          nextModeButton =
+            '<button class="cta-home" id="result-next-mode-btn" type="button" style="margin-top:10px;">' +
+            t("goToHard") +
+            "</button>";
+        }
+        let nextLevelBlock = "";
+        if (currentDifficulty === "hard" && currentLevel < 10 && unlockedLevel >= currentLevel + 1) {
+          nextLevelBlock =
+            '<p class="small" style="margin-top:10px;">' +
+            t("nextLevelUnlocked") +
+            '</p><button class="cta-home" id="result-next-level-btn" type="button" style="margin-top:10px;">' +
+            t("goToNextLevel") +
+            "</button>";
+        }
+
+        resultBox.innerHTML =
+          "<strong>" +
+          t("finalResult") +
+          ": " +
+          score +
+          "/7</strong><br />" +
+          (score >= 6 ? t("excellent") : t("goodStart")) +
+          '<br /><button class="cta-home" id="result-replay-btn" type="button" style="margin-top:10px;">' +
+          t("replayThisQuiz") +
+          "</button>" +
+          nextModeButton +
+          nextLevelBlock;
+        const replayBtn = document.getElementById("result-replay-btn");
+        if (replayBtn) replayBtn.addEventListener("click", () => startQuiz());
+        const nextModeBtn = document.getElementById("result-next-mode-btn");
+        if (nextModeBtn) {
+          nextModeBtn.addEventListener("click", () => {
+            if (currentDifficulty === "easy") startQuiz("medium");
+            else if (currentDifficulty === "medium") startQuiz("hard");
+          });
+        }
+        const nextLevelBtn = document.getElementById("result-next-level-btn");
+        if (nextLevelBtn) {
+          nextLevelBtn.addEventListener("click", () => {
+            currentLevel = Math.min(10, currentLevel + 1);
+            currentDifficulty = "easy";
+            showScreen("home");
+            applyTranslations();
+          });
+        }
+      }
+
+      async function showResult() {
+        feedbackNode.className = "feedback";
+        nextBtn.className = "next-btn";
+        answersNode.innerHTML = "";
+        questionText.textContent = t("quizFinished");
+        progressBar.style.width = "100%";
+        resultBox.className = "result-box show";
+        quizInProgress = false;
+        clearQuizProgress();
+        recordUsedQuestions();
+        try {
+          await saveScore();
+          await loadLeaderboard();
+          await refreshProfileStats();
+        } catch (err) {
+          console.error(err);
+        }
+        renderResultContent();
+      }
+
+      function startQuiz(mode = currentDifficulty) {
+        normalizeProgressState();
+        ensureLevelModeState(currentLevel);
+        if (mode === "medium" && !unlockedModesByLevel[currentLevel].medium) {
+          window.alert(t("lockedMode"));
+          return;
+        }
+        if (mode === "hard" && !unlockedModesByLevel[currentLevel].hard) {
+          window.alert(t("lockedMode"));
+          return;
+        }
+
+        if (quizInProgress && mode === currentDifficulty && currentIndex < quizData.length) {
+          showScreen("quiz");
+          renderQuestion();
+          applyStoredAnswerState();
+          return;
+        }
+        currentDifficulty = mode;
+        syncQuizData();
+        if (!quizData.length) {
+          window.alert(t("lockedMode"));
+          return;
+        }
+        currentIndex = 0;
+        score = 0;
+        answered = false;
+        lastChoice = null;
+        quizInProgress = true;
+        resultBox.className = "result-box";
+        resultBox.innerHTML = "";
+        showScreen("quiz");
+        renderQuestion();
+        saveQuizProgress();
+      }
+
+      levelButtons.forEach((btn, index) => {
+        btn.addEventListener("click", () => {
+          const level = index + 1;
+          if (level > unlockedLevel) {
+            window.alert(t("lockedMode"));
+            return;
+          }
+          currentLevel = level;
+          currentDifficulty = "easy";
+          showScreen("level");
+          applyTranslations();
+        });
+      });
+      startPathBtn.addEventListener("click", () => {
+        currentLevel = 1;
+        currentDifficulty = "easy";
+        showScreen("level");
+        applyTranslations();
+      });
+      backHome.addEventListener("click", () => showScreen("home"));
+      startEasy.addEventListener("click", () => startQuiz("easy"));
+      startMedium.addEventListener("click", () => startQuiz("medium"));
+      startHard.addEventListener("click", () => startQuiz("hard"));
+      backLevel.addEventListener("click", () => showScreen("level"));
+      profilePlayBtn.addEventListener("click", () => showScreen("level"));
+
+      shareAddQuestion.addEventListener("click", () => {
+        if (shareType.value === "vote") return;
+        visibleShareQuestions = Math.min(3, visibleShareQuestions + 1);
+        refreshShareQuestionVisibility();
+      });
+
+      shareType.addEventListener("change", () => {
+        if (shareType.value === "vote") {
+          visibleShareQuestions = 1;
+        } else {
+          visibleShareQuestions = Math.max(1, visibleShareQuestions);
+        }
+        refreshShareQuestionVisibility();
+      });
+
+      shareImages.addEventListener("change", () => {
+        clearSharePreviewUrls();
+        const files = [...(shareImages.files || [])].slice(0, 4);
+        sharePreviewUrls = files.map((file) => URL.createObjectURL(file));
+        renderSharePreview(0);
+      });
+
+      feedFilterAll.addEventListener("click", () => {
+        feedFilter = "all";
+        updateFeedFilterButtons();
+        loadFeed().catch(console.error);
+      });
+      feedFilterVote.addEventListener("click", () => {
+        feedFilter = "vote";
+        updateFeedFilterButtons();
+        loadFeed().catch(console.error);
+      });
+      feedFilterQuiz.addEventListener("click", () => {
+        feedFilter = "quiz";
+        updateFeedFilterButtons();
+        loadFeed().catch(console.error);
+      });
+
+      shareForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!currentUser || !db || !storage) {
+          setShareMessage(t("shareNeedAuth"), true);
+          return;
+        }
+        const files = [...(shareImages.files || [])].slice(0, 4);
+        if (!files.length) {
+          setShareMessage(t("shareNeedImage"), true);
+          return;
+        }
+        const questionsPayload = collectQuestionsFromComposer();
+        if (!questionsPayload.ok) {
+          setShareMessage(
+            questionsPayload.reason === "invalidOptions" ? t("shareNeedOptions") : t("shareNeedQuestion"),
+            true
+          );
+          return;
+        }
+        const postType = shareType.value === "quiz" ? "quiz" : "vote";
+        const questions = postType === "vote" ? [questionsPayload.questions[0]] : questionsPayload.questions;
+        setShareMessage(t("shareUploading"));
+        shareSubmitBtn.disabled = true;
+        shareSubmitBtn.style.opacity = "0.7";
+        try {
+          const imageUrls = await withTimeout(uploadPostImages(currentUser.uid, files), 45000);
+          const tags = normalizeTagList(shareTags.value);
+          const mentions = normalizeMentionList(shareMentions.value);
+          const voteStats = new Array((questions[0]?.options || []).length).fill(0);
+          await withTimeout(
+            addDoc(collection(db, "posts"), {
+              ownerUid: currentUser.uid,
+              ownerPseudo: currentPseudo || (currentUser.email || "fan").split("@")[0],
+              ownerEmail: currentUser.email || "",
+              description: shareDescription.value.trim().slice(0, 260),
+              tags,
+              mentions,
+              imageUrls,
+              postType,
+              questions,
+              voteStats: postType === "vote" ? voteStats : [],
+              likesCount: 0,
+              viewsCount: 0,
+              participantsCount: 0,
+              createdAt: serverTimestamp(),
+            }),
+            20000
+          );
+          shareForm.reset();
+          visibleShareQuestions = 1;
+          refreshShareQuestionVisibility();
+          clearSharePreviewUrls();
+          renderSharePreview(0);
+          setShareMessage(t("sharePublished"));
+          showScreen("feed");
+          await loadFeed();
+        } catch (err) {
+          console.error(err);
+          if (String(err && err.message) === "timeout") {
+            setShareMessage(t("shareUploadTimeout"), true);
+          } else {
+            setShareMessage(t("errorPrefix") + ": " + (err.message || t("sharePostTimeout")), true);
+          }
+        } finally {
+          shareSubmitBtn.disabled = false;
+          shareSubmitBtn.style.opacity = "1";
+        }
+      });
+
+      nextBtn.addEventListener("click", () => {
+        currentIndex += 1;
+        if (currentIndex < quizData.length) {
+          answered = false;
+          lastChoice = null;
+          renderQuestion();
+          saveQuizProgress();
+        } else {
+          showResult();
+        }
+      });
+
+      navButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (!currentUser) {
+            showScreen("authLogin");
+            setAuthMessage(t("connectFirst"));
+            return;
+          }
+          const target = btn.dataset.target;
+          showScreen(target);
+          if (target === "feed") {
+            loadFeed().catch(console.error);
+          }
+          if (target === "leaderboard") {
+            loadLeaderboard().then(refreshProfileStats).catch(console.error);
+          }
+        });
+      });
+
+      leaderboardLevelFilter.addEventListener("change", () => {
+        leaderboardLevel = leaderboardLevelFilter.value;
+        loadLeaderboard().then(refreshProfileStats).catch(console.error);
+      });
+
+      gotoSignup.addEventListener("click", () => {
+        setAuthMessage("");
+        showScreen("authSignup");
+      });
+
+      gotoLogin.addEventListener("click", () => {
+        setAuthMessage("");
+        showScreen("authLogin");
+      });
+
+      langBtn.addEventListener("click", () => {
+        currentLang = currentLang === "fr" ? "en" : "fr";
+        applyTranslations();
+        if (questionText.textContent.trim() && !resultBox.classList.contains("show")) {
+          renderQuestion();
+          applyStoredAnswerState();
+        }
+        if (resultBox.classList.contains("show")) {
+          questionText.textContent = t("quizFinished");
+          renderResultContent();
+        }
+        if (quizInProgress) saveQuizProgress();
+        if (currentUser) {
+          loadLeaderboard().then(refreshProfileStats).catch(console.error);
+          if (screens.feed.classList.contains("active")) loadFeed().catch(console.error);
+        }
+      });
+
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!auth || !db) {
+          setAuthMessage(t("firebaseNotReady"), true);
+          return;
+        }
+
+        const email = loginEmail.value.trim();
+        const password = loginPassword.value;
+
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          setAuthMessage(t("loginOk"));
+          loginForm.reset();
+        } catch (err) {
+          console.error(err);
+          setAuthMessage(t("errorPrefix") + ": " + (err.message || "operation impossible"), true);
+        }
+      });
+
+      signupForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!auth || !db) {
+          setAuthMessage(t("firebaseNotReady"), true);
+          return;
+        }
+
+        const pseudo = signupPseudo.value.trim();
+        const email = signupEmail.value.trim();
+        const password = signupPassword.value;
+        const confirm = signupConfirm.value;
+
+        try {
+          if (password !== confirm) {
+            setAuthMessage(t("badConfirm"), true);
+            return;
+          }
+          if (pseudo.length < 3) {
+            setAuthMessage(t("badPseudo"), true);
+            return;
+          }
+          const cred = await createUserWithEmailAndPassword(auth, email, password);
+          await setDoc(
+            doc(db, "users", cred.user.uid),
+            {
+              pseudo,
+              email,
+              createdAt: serverTimestamp(),
+              firstScoreEasy: null,
+              secondScoreEasy: null,
+              totalAttemptsEasy: 0,
+              firstScoreByLevel: {},
+              unlockedLevel: 1,
+              unlockedModesByLevel: { 1: { easy: true, medium: false, hard: false } },
+              completedModesByLevel: { 1: { easy: false, medium: false, hard: false } },
+              unlockMediumL1: false,
+              unlockHardL1: false,
+            },
+            { merge: true }
+          );
+          setAuthMessage(t("accountCreated"));
+          signupForm.reset();
+        } catch (err) {
+          console.error(err);
+          setAuthMessage(t("errorPrefix") + ": " + (err.message || "operation impossible"), true);
+        }
+      });
+
+      accountBtn.addEventListener("click", async () => {
+        if (!currentUser) {
+          showScreen("authLogin");
+          return;
+        }
+        if (window.confirm(t("confirmLogout"))) {
+          clearQuizProgress();
+          await signOut(auth);
+        }
+      });
+
+      if (auth) {
+        onAuthStateChanged(auth, async (user) => {
+          authResolved = true;
+          currentUser = user;
+          loadQuestionHistory();
+          if (!user) {
+            currentPseudo = "";
+            updateAccountUi();
+            showScreen("authLogin");
+            return;
+          }
+
+          try {
+            const snap = await getDoc(doc(db, "users", user.uid));
+            currentPseudo = snap.exists() ? String(snap.data().pseudo || "") : "";
+          } catch (err) {
+            console.error(err);
+            currentPseudo = "";
+          }
+
+          try {
+            await loadLeaderboard();
+          } catch (err) {
+            console.error(err);
+          }
+          try {
+            await loadFeed();
+          } catch (err) {
+            console.error(err);
+          }
+          await refreshProfileStats();
+          updateAccountUi();
+          showScreen("home");
+        });
+      }
+
+      refreshShareQuestionVisibility();
+      updateFeedFilterButtons();
+      applyTranslations();
+      if (!auth) {
+        authResolved = true;
+        showScreen("authLogin");
+      } else {
+        showScreen("loading");
+      }
+    </script>
+  </body>
+</html>
