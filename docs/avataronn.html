@@ -688,6 +688,9 @@
 
       .post-author {
         font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
       }
 
       .post-time {
@@ -1102,6 +1105,32 @@
         background: #f1f8f4;
       }
 
+      .cert-badge {
+        display: inline-flex;
+        vertical-align: middle;
+        margin-left: 0;
+        color: #2196f3;
+      }
+
+      .pseudo-edit-row {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .pseudo-edit-row input {
+        flex: 1;
+        min-width: 170px;
+      }
+
+      .pseudo-msg {
+        margin-top: 6px;
+        min-height: 1.1em;
+        font-size: 0.86rem;
+        color: #2a7d4f;
+      }
+
       .avatar-select-btn {
         border: 1px solid #cfe7db;
         background: #f8fcfa;
@@ -1507,6 +1536,11 @@
           <div class="stat-block">
             <div class="small" id="profile-label-pseudo">Pseudo</div>
             <div class="stat-value" id="profile-pseudo">-</div>
+            <div class="pseudo-edit-row">
+              <input id="profile-pseudo-input" type="text" minlength="3" maxlength="24" placeholder="Nouveau pseudo" />
+              <button class="auth-toggle" id="profile-pseudo-save" type="button">Enregistrer</button>
+            </div>
+            <div class="pseudo-msg" id="profile-pseudo-msg"></div>
           </div>
           <div class="stat-block">
             <div class="small" id="profile-label-first">Score 1 (référence)</div>
@@ -1714,6 +1748,9 @@
       const podium = document.getElementById("podium");
       const leaderList = document.getElementById("leader-list");
       const profilePseudo = document.getElementById("profile-pseudo");
+      const profilePseudoInput = document.getElementById("profile-pseudo-input");
+      const profilePseudoSave = document.getElementById("profile-pseudo-save");
+      const profilePseudoMsg = document.getElementById("profile-pseudo-msg");
       const profileAvatar = document.getElementById("profile-avatar");
       const profileChangeAvatar = document.getElementById("profile-change-avatar");
       const profileFirst = document.getElementById("profile-first");
@@ -1849,6 +1886,7 @@
       let currentUser = null;
       let currentPseudo = "";
       let currentUserAvatar = "";
+      let currentUserCertified = false;
       let firstScoreEasy = null;
       let secondScoreEasy = null;
       let unlockMediumL1 = false;
@@ -1875,6 +1913,7 @@
       let selectedAvatarAssetId = "";
       let creatorMonthKey = "";
       const userAvatarCache = new Map();
+      const userCertCache = new Map();
       let publicProfileFollowInFlight = false;
       const publicProfileState = {
         uid: "",
@@ -1945,6 +1984,9 @@
           loadingSubtitle: "Connexion en cours.",
           profileTitle: "Profil joueur",
           changeAvatar: "Changer la photo",
+          pseudoEditPlaceholder: "Nouveau pseudo",
+          save: "Enregistrer",
+          pseudoUpdated: "Pseudo mis à jour.",
           backToFeed: "Retour au feed",
           follow: "S'abonner",
           following: "Abonné",
@@ -2061,6 +2103,8 @@
           firebaseNotReady: "Firebase n'est pas configuré pour l'instant.",
           badConfirm: "La confirmation du mot de passe est incorrecte.",
           badPseudo: "Le pseudo doit contenir au moins 3 caractères.",
+          pseudoExists: "Ce pseudo existe déjà. Choisis-en un autre.",
+          pseudoUpdateError: "Impossible de modifier le pseudo pour l'instant.",
           accountCreated: "Compte créé avec succès.",
           loginOk: "Connexion réussie.",
           errorPrefix: "Erreur",
@@ -2124,6 +2168,9 @@
           loadingSubtitle: "Signing you in.",
           profileTitle: "Player profile",
           changeAvatar: "Change photo",
+          pseudoEditPlaceholder: "New username",
+          save: "Save",
+          pseudoUpdated: "Username updated.",
           backToFeed: "Back to feed",
           follow: "Follow",
           following: "Following",
@@ -2240,6 +2287,8 @@
           firebaseNotReady: "Firebase is not configured yet.",
           badConfirm: "Password confirmation is incorrect.",
           badPseudo: "Username must contain at least 3 characters.",
+          pseudoExists: "This username already exists. Pick another one.",
+          pseudoUpdateError: "Unable to update username right now.",
           accountCreated: "Account created successfully.",
           loginOk: "Login successful.",
           errorPrefix: "Error",
@@ -2971,6 +3020,36 @@
           .slice(0, 8);
       }
 
+      function normalizePseudoValue(value) {
+        return String(value || "").trim().toLowerCase();
+      }
+
+      async function isPseudoAlreadyUsed(pseudo, ignoreUid = "") {
+        if (!db) return false;
+        const normalized = normalizePseudoValue(pseudo);
+        if (!normalized) return false;
+        try {
+          const snap = await getDocs(
+            query(collection(db, "users"), where("pseudoLower", "==", normalized), limit(3))
+          );
+          const hit = snap.docs.some((row) => row.id !== ignoreUid);
+          if (hit) return true;
+        } catch (err) {
+          console.error(err);
+        }
+        try {
+          const legacy = await getDocs(query(collection(db, "users"), limit(1000)));
+          return legacy.docs.some((row) => {
+            if (row.id === ignoreUid) return false;
+            const data = row.data() || {};
+            return normalizePseudoValue(data.pseudo || "") === normalized;
+          });
+        } catch (err) {
+          console.error(err);
+          return false;
+        }
+      }
+
       function setShareMessage(msg, isError = false) {
         shareMsg.textContent = msg;
         shareMsg.style.color = isError ? "#b83b4d" : "#1f63c5";
@@ -3008,6 +3087,7 @@
         try {
           const snap = await getDoc(doc(db, "users", uid));
           const avatar = snap.exists() ? String(snap.data().avatarUrl || "") : "";
+          if (snap.exists()) userCertCache.set(uid, Boolean(snap.data().isCertified));
           const finalUrl = avatarUrlForName(pseudo, avatar || fallback || "");
           userAvatarCache.set(uid, finalUrl);
           return finalUrl;
@@ -3387,6 +3467,10 @@
         return '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1"/><path d="M12 12l6-6"/></svg>';
       }
 
+      function getCertifiedBadgeHtml() {
+        return '<span class="cert-badge" title="Certifié" aria-label="Certifié"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.2 2.2 3.1-.5 1.3 2.9 2.9 1.3-.5 3.1L22 12l-2.2 2.2.5 3.1-2.9 1.3-1.3 2.9-3.1-.5L12 22l-2.2-2.2-3.1.5-1.3-2.9-2.9-1.3.5-3.1L2 12l2.2-2.2-.5-3.1 2.9-1.3 1.3-2.9 3.1.5z"/><path d="m9.7 12.9 1.7 1.7 3.4-3.4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+      }
+
       function questionResultHtml(question, interaction, index) {
         const options = Array.isArray(question.options) ? question.options : [];
         const correctIndex = Number(question.correctIndex);
@@ -3424,6 +3508,10 @@
           data.ownerPseudo || "Fan",
           data.ownerAvatarUrl || ""
         );
+        const ownerCertified =
+          typeof data.ownerCertified === "boolean"
+            ? data.ownerCertified
+            : Boolean(userCertCache.get(String(data.ownerUid || "")));
         const firstQuestion = Array.isArray(data.questions) && data.questions[0] ? data.questions[0] : null;
         const voteStats = Array.isArray(data.voteStats) ? data.voteStats : [];
         card.innerHTML =
@@ -3433,6 +3521,7 @@
           escapeHtml(ownerAvatar) +
           '" alt="avatar" /><div class="post-author">@' +
           escapeHtml(data.ownerPseudo || "fan") +
+          (ownerCertified ? getCertifiedBadgeHtml() : "") +
           "</div></button><div class=\"post-time\">" +
           formatPostDate(data.createdAt) +
           '</div></div><div class="post-media">' +
@@ -3641,6 +3730,53 @@
         setFeedFirstPostPromptVisibility();
       }
 
+      function toMillisSafe(value) {
+        try {
+          if (!value) return 0;
+          if (typeof value.toMillis === "function") return value.toMillis();
+          const dt = new Date(value);
+          return Number.isNaN(dt.getTime()) ? 0 : dt.getTime();
+        } catch (_) {
+          return 0;
+        }
+      }
+
+      function buildPostSignature(docSnap) {
+        const data = docSnap.data() || {};
+        const imageKey = Array.isArray(data.imageUrls) ? data.imageUrls.join("|") : "";
+        const qKey =
+          Array.isArray(data.questions) && data.questions[0]
+            ? String(data.questions[0].q || "")
+            : "";
+        return [
+          String(data.ownerUid || ""),
+          String(data.postType || ""),
+          String(data.description || ""),
+          imageKey,
+          qKey,
+        ]
+          .join("::")
+          .toLowerCase()
+          .trim();
+      }
+
+      function dedupePostDocs(docs) {
+        const byId = new Set();
+        const bySignature = new Map();
+        const deduped = [];
+        docs.forEach((docSnap) => {
+          if (byId.has(docSnap.id)) return;
+          byId.add(docSnap.id);
+          const sig = buildPostSignature(docSnap);
+          const ts = toMillisSafe((docSnap.data() || {}).createdAt);
+          const prevTs = bySignature.get(sig);
+          if (sig && prevTs && Math.abs(prevTs - ts) <= 120000) return;
+          if (sig) bySignature.set(sig, ts || Date.now());
+          deduped.push(docSnap);
+        });
+        return deduped;
+      }
+
       async function isFollowingUser(targetUid) {
         if (!currentUser || !db || !targetUid || targetUid === currentUser.uid) return false;
         const snap = await getDoc(doc(db, "users", currentUser.uid, "following", targetUid));
@@ -3687,7 +3823,7 @@
         const userSnap = await getDoc(doc(db, "users", targetUid));
         const userData = userSnap.exists() ? userSnap.data() : {};
         const pseudo = String(userData.pseudo || userData.email || "fan");
-        publicName.textContent = "@" + pseudo;
+        publicName.innerHTML = "@" + escapeHtml(pseudo) + (Boolean(userData.isCertified) ? getCertifiedBadgeHtml() : "");
         publicAvatar.src = avatarUrlForName(pseudo, String(userData.avatarUrl || ""));
         const postsSnap = await getDocs(
           query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(60))
@@ -3964,7 +4100,7 @@
         feedUnsubscribe = onSnapshot(
           qPosts,
           (snap) => {
-            feedCacheDocs = snap.docs;
+            feedCacheDocs = dedupePostDocs(snap.docs);
             renderFeedFromCache(false).catch(console.error);
             setFeedFirstPostPromptVisibility();
           },
@@ -4101,6 +4237,8 @@
         profileChangeAvatar.textContent = t("changeAvatar");
         profileCreatorBtn.textContent = t("creatorDashboard");
         profileLabelPseudo.textContent = t("pseudo");
+        profilePseudoInput.placeholder = t("pseudoEditPlaceholder");
+        profilePseudoSave.textContent = t("save");
         profileLabelFirst.textContent = t("firstScore");
         profileLabelSecond.textContent = t("secondScore");
         profileLabelRank.textContent = t("currentRank");
@@ -4165,11 +4303,18 @@
         authMsgSignup.style.color = isError ? "#b83b4d" : "#1f63c5";
       }
 
+      function setProfilePseudoMessage(msg, isError = false) {
+        profilePseudoMsg.textContent = msg;
+        profilePseudoMsg.style.color = isError ? "#b83b4d" : "#2a7d4f";
+      }
+
       function updateAccountUi() {
         if (!currentUser) {
           accountBtn.textContent = "👤";
           bottomNav.classList.add("locked");
           profilePseudo.textContent = "-";
+          profilePseudoInput.value = "";
+          setProfilePseudoMessage("");
           profileAvatar.src = fallbackAvatarUrl();
           profileFirst.textContent = "-";
           profileSecond.textContent = "-";
@@ -4183,7 +4328,10 @@
         const avatar = currentUserAvatar || fallbackAvatarUrl();
         accountBtn.innerHTML = '<img src="' + escapeHtml(avatar) + '" alt="' + escapeHtml(initial) + '" />';
         bottomNav.classList.remove("locked");
-        profilePseudo.textContent = currentPseudo || currentUser.email;
+        profilePseudo.innerHTML =
+          escapeHtml(currentPseudo || currentUser.email || "-") +
+          (currentUserCertified ? getCertifiedBadgeHtml() : "");
+        profilePseudoInput.value = currentPseudo || "";
         profileAvatar.src = currentUserAvatar || fallbackAvatarUrl();
         profileFirst.textContent = firstScoreEasy === null ? "-" : String(firstScoreEasy) + "/7";
         profileSecond.textContent = secondScoreEasy === null ? "-" : String(secondScoreEasy) + "/7";
@@ -4314,6 +4462,8 @@
             (unlockHardL1 && !Boolean(data.unlockHardL1));
           currentPseudo = String(data.pseudo || currentPseudo || "");
           currentUserAvatar = String(data.avatarUrl || "");
+          currentUserCertified = Boolean(data.isCertified);
+          userCertCache.set(currentUser.uid, currentUserCertified);
         } else {
           firstScoreEasy = null;
           secondScoreEasy = null;
@@ -4324,6 +4474,8 @@
           completedModesByLevel = { 1: { easy: false, medium: false, hard: false } };
           referenceScoresByLevel = { 1: { easy: null, medium: null, hard: null } };
           currentUserAvatar = "";
+          currentUserCertified = false;
+          userCertCache.set(currentUser.uid, false);
         }
 
         if (shouldPatchUnlock || shouldPatchReference) {
@@ -4346,6 +4498,51 @@
           cachedLeaderboard.findIndex((row) => row.uid === currentUser.uid) + 1;
         profileRank.textContent = rank > 0 ? "#" + rank : "#-";
         updateAccountUi();
+      }
+
+      async function savePseudoFromProfile() {
+        if (!currentUser || !db) return;
+        const nextPseudo = String(profilePseudoInput.value || "").trim();
+        if (nextPseudo.length < 3) {
+          setProfilePseudoMessage(t("badPseudo"), true);
+          return;
+        }
+        if (await isPseudoAlreadyUsed(nextPseudo, currentUser.uid)) {
+          setProfilePseudoMessage(t("pseudoExists"), true);
+          return;
+        }
+        if (nextPseudo === currentPseudo) {
+          setProfilePseudoMessage(t("pseudoUpdated"));
+          return;
+        }
+        profilePseudoSave.disabled = true;
+        setProfilePseudoMessage("");
+        try {
+          await setDoc(
+            doc(db, "users", currentUser.uid),
+            { pseudo: nextPseudo, pseudoLower: normalizePseudoValue(nextPseudo), updatedAt: serverTimestamp() },
+            { merge: true }
+          );
+          const postsSnap = await getDocs(
+            query(collection(db, "posts"), where("ownerUid", "==", currentUser.uid), limit(500))
+          );
+          await Promise.all(
+            postsSnap.docs.map((postDoc) =>
+              setDoc(doc(db, "posts", postDoc.id), { ownerPseudo: nextPseudo }, { merge: true })
+            )
+          );
+          currentPseudo = nextPseudo;
+          updateAccountUi();
+          await loadLeaderboard();
+          await loadFeed();
+          await refreshProfileStats();
+          setProfilePseudoMessage(t("pseudoUpdated"));
+        } catch (err) {
+          console.error(err);
+          setProfilePseudoMessage(t("pseudoUpdateError"), true);
+        } finally {
+          profilePseudoSave.disabled = false;
+        }
       }
 
       function playTone(type) {
@@ -4699,6 +4896,15 @@
       shareOpenAssets.addEventListener("click", () => {
         openAssetPicker("post");
       });
+      profilePseudoSave.addEventListener("click", () => {
+        savePseudoFromProfile().catch(console.error);
+      });
+      profilePseudoInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          savePseudoFromProfile().catch(console.error);
+        }
+      });
       profileChangeAvatar.addEventListener("click", () => openAssetPicker("avatar"));
       assetClose.addEventListener("click", () => {
         assetModal.classList.remove("open");
@@ -4711,6 +4917,7 @@
           currentUserAvatar = selected.url;
           profileAvatar.src = currentUserAvatar;
           userAvatarCache.set(currentUser.uid, currentUserAvatar);
+          userCertCache.set(currentUser.uid, Boolean(currentUserCertified));
           updateAccountUi();
           await setDoc(
             doc(db, "users", currentUser.uid),
@@ -4843,6 +5050,7 @@
               ownerPseudo: currentPseudo || (currentUser.email || "fan").split("@")[0],
               ownerEmail: currentUser.email || "",
               ownerAvatarUrl: currentUserAvatar || "",
+              ownerCertified: Boolean(currentUserCertified),
               description: shareDescription.value.trim().slice(0, 260),
               tags,
               mentions,
@@ -4992,13 +5200,19 @@
             setAuthMessage(t("badPseudo"), true);
             return;
           }
+          if (await isPseudoAlreadyUsed(pseudo)) {
+            setAuthMessage(t("pseudoExists"), true);
+            return;
+          }
           const cred = await createUserWithEmailAndPassword(auth, email, password);
           await setDoc(
             doc(db, "users", cred.user.uid),
             {
               pseudo,
+              pseudoLower: normalizePseudoValue(pseudo),
               email,
               avatarUrl: "",
+              isCertified: false,
               followersCount: 0,
               followingCount: 0,
               totalLikesReceived: 0,
@@ -5043,6 +5257,8 @@
             stopFeedRealtime();
             currentPseudo = "";
             currentUserAvatar = "";
+            currentUserCertified = false;
+            userCertCache.clear();
             feedFirstPostBox.classList.add("hidden");
             updateAccountUi();
             showScreen("authLogin");
@@ -5054,10 +5270,14 @@
             const snap = await getDoc(doc(db, "users", user.uid));
             currentPseudo = snap.exists() ? String(snap.data().pseudo || "") : "";
             currentUserAvatar = snap.exists() ? String(snap.data().avatarUrl || "") : "";
+            currentUserCertified = snap.exists() ? Boolean(snap.data().isCertified) : false;
+            userCertCache.set(user.uid, currentUserCertified);
           } catch (err) {
             console.error(err);
             currentPseudo = "";
             currentUserAvatar = "";
+            currentUserCertified = false;
+            userCertCache.set(user.uid, false);
           }
 
           try {
