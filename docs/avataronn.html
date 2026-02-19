@@ -90,8 +90,11 @@
       }
 
       .account {
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
+        flex: 0 0 44px;
+        aspect-ratio: 1 / 1;
+        padding: 0;
         border-radius: 50%;
         border: 2px solid #cce8d8;
         background: #ffffff;
@@ -101,6 +104,15 @@
         justify-content: center;
         font-size: 1.3rem;
         text-decoration: none;
+        overflow: hidden;
+      }
+
+      .account img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        border-radius: 50%;
       }
 
       .screen {
@@ -464,6 +476,11 @@
         cursor: pointer;
       }
 
+      .auth-submit:disabled {
+        opacity: 0.7;
+        cursor: wait;
+      }
+
       .auth-toggle {
         border: 2px solid #d2e8dc;
         border-radius: 12px;
@@ -641,6 +658,19 @@
         gap: 12px;
       }
 
+      .feed-welcome {
+        border: 1px dashed #a7dcbc;
+        border-radius: 14px;
+        padding: 10px;
+        background: #f5fff9;
+        display: grid;
+        gap: 8px;
+      }
+
+      .feed-welcome.hidden {
+        display: none;
+      }
+
       .post-card {
         border: 1px solid var(--line);
         border-radius: 18px;
@@ -711,20 +741,54 @@
         font-size: 0.84rem;
       }
 
-      .like-btn {
-        border: 1px solid #d6ebe0;
-        background: #f8fcfa;
-        border-radius: 12px;
-        padding: 8px 11px;
-        font-weight: 800;
-        color: #2b5648;
+      .post-stat-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .post-stat-like-btn {
+        border: none;
+        background: transparent;
+        padding: 0;
+        margin: 0;
+        font: inherit;
+        color: var(--muted);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         cursor: pointer;
       }
 
-      .like-btn.done {
-        color: #b31f40;
-        border-color: #f3c6d2;
-        background: #fff2f6;
+      .post-stat-like-btn.done {
+        color: #d12249;
+      }
+
+      .post-stat-like-btn.done .icon-svg {
+        color: #d12249;
+      }
+
+      .post-stat-like-btn.pop {
+        animation: likePop 320ms ease;
+      }
+
+      .icon-svg {
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        color: #6f877f;
+      }
+
+      @keyframes likePop {
+        0% {
+          transform: scale(1);
+        }
+        45% {
+          transform: scale(1.08);
+        }
+        100% {
+          transform: scale(1);
+        }
       }
 
       .post-poll {
@@ -758,6 +822,15 @@
       .poll-rank-line {
         color: #2a5e49;
         font-size: 0.85rem;
+      }
+
+      .answer-box {
+        margin-top: 6px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid #cde4d8;
+        background: #f7fcf9;
+        font-size: 0.84rem;
       }
 
       .composer-grid {
@@ -881,6 +954,107 @@
         border-color: #2ebf68;
       }
 
+      .asset-open-btn {
+        border: 2px dashed #9fd7b8;
+        background: #f6fff9;
+        border-radius: 14px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-weight: 800;
+        color: #1d7a46;
+        cursor: pointer;
+      }
+
+      .asset-plus {
+        width: 20px;
+        height: 20px;
+      }
+
+      .asset-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(10, 25, 20, 0.55);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        padding: 12px;
+      }
+
+      .asset-modal.open {
+        display: flex;
+      }
+
+      .asset-dialog {
+        width: min(460px, 100%);
+        max-height: 86vh;
+        overflow: auto;
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #d7ece1;
+        padding: 12px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .lang-choice {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .asset-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .asset-close {
+        border: 1px solid #d5e8dd;
+        background: #f7fcf9;
+        border-radius: 10px;
+        padding: 7px 10px;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .asset-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .asset-card {
+        border: 2px solid #d7ece1;
+        border-radius: 12px;
+        padding: 6px;
+        background: #ffffff;
+        cursor: pointer;
+      }
+
+      .asset-card.active {
+        border-color: #2ebf68;
+        background: #f2fff7;
+      }
+
+      .asset-card img {
+        width: 100%;
+        aspect-ratio: 4/3;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #dfeee6;
+      }
+
+      .asset-name {
+        margin-top: 6px;
+        font-size: 0.84rem;
+        font-weight: 800;
+      }
+
       .stat-block {
         border: 1px solid var(--line);
         border-radius: 16px;
@@ -902,6 +1076,156 @@
         font-weight: 800;
         background: #ebf8ef;
         color: #1e7f48;
+      }
+
+      .profile-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .avatar-lg {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        border: 2px solid #cfe9dc;
+        object-fit: cover;
+        background: #f1f8f4;
+      }
+
+      .avatar-sm {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1px solid #d6ebe0;
+        object-fit: cover;
+        background: #f1f8f4;
+      }
+
+      .avatar-select-btn {
+        border: 1px solid #cfe7db;
+        background: #f8fcfa;
+        border-radius: 10px;
+        padding: 7px 10px;
+        font-weight: 800;
+        color: #2a5e49;
+        cursor: pointer;
+      }
+
+      .author-btn {
+        border: none;
+        background: transparent;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0;
+        cursor: pointer;
+        color: inherit;
+        font: inherit;
+      }
+
+      .user-public-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .user-mini-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .user-mini-card {
+        border: 1px solid #d8ebe1;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #ffffff;
+        cursor: pointer;
+      }
+
+      .user-mini-card img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+      }
+
+      .creator-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .creator-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .creator-card {
+        border: 1px solid #d8ebe1;
+        border-radius: 12px;
+        padding: 10px;
+        background: #ffffff;
+      }
+
+      .creator-card.clickable {
+        cursor: pointer;
+      }
+
+      .creator-card.clickable.active {
+        border-color: #9ed9b8;
+        background: #f3fff8;
+      }
+
+      .trend {
+        font-weight: 800;
+        font-size: 0.85rem;
+      }
+
+      .trend.up {
+        color: #1f8d49;
+      }
+
+      .trend.down {
+        color: #b83b4d;
+      }
+
+      .engagement-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .engagement-row {
+        border: 1px solid #d8ebe1;
+        border-radius: 10px;
+        padding: 8px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        background: #ffffff;
+      }
+
+      .engagement-user-btn {
+        border: none;
+        background: transparent;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .engagement-left {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .engagement-tags {
+        font-size: 0.78rem;
+        color: #567970;
       }
     </style>
   </head>
@@ -1023,6 +1347,12 @@
               <button class="chip-btn" id="feed-filter-quiz" type="button">Quiz</button>
             </div>
           </div>
+          <div class="feed-welcome hidden" id="feed-first-post-box">
+            <strong id="feed-first-post-title">Ton premier post t'attend.</strong>
+            <p class="small" id="feed-first-post-text">Partage une image, ajoute une question, et démarre ta communauté.</p>
+            <p class="small" id="feed-first-post-money">Dès 1 000 vues, ton post peut devenir éligible à la monétisation.</p>
+            <button class="auth-submit" id="feed-first-post-btn" type="button">Créer mon premier post</button>
+          </div>
           <div class="feed-list" id="feed-list"></div>
         </div>
       </section>
@@ -1036,7 +1366,13 @@
             </p>
           </div>
           <form id="share-form" class="composer-grid">
-            <input id="share-images" type="file" accept="image/*" multiple required />
+            <button id="share-open-assets" type="button" class="asset-open-btn">
+              <svg class="asset-plus" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" />
+              </svg>
+              <span id="share-open-assets-label">Choisir des images depuis la galerie Avatar</span>
+            </button>
+            <p class="small" id="share-selected-count">0 image sélectionnée.</p>
             <div class="preview-wrap hidden" id="share-preview">
               <img id="share-preview-main" class="preview-main" alt="Prévisualisation principale" />
               <div id="share-preview-thumbs" class="preview-thumbs"></div>
@@ -1063,6 +1399,36 @@
           </form>
         </div>
       </section>
+
+      <div class="asset-modal" id="asset-modal">
+        <div class="asset-dialog">
+          <div class="asset-head">
+            <h3 id="asset-title">Galerie Avatar</h3>
+            <button class="asset-close" id="asset-close" type="button">Fermer</button>
+          </div>
+          <input id="asset-search" type="text" placeholder="Rechercher une image..." />
+          <div class="small" id="asset-hint">Clique pour sélectionner plusieurs images.</div>
+          <div class="asset-grid" id="asset-grid"></div>
+          <button class="auth-submit" id="asset-apply" type="button">Valider la sélection</button>
+        </div>
+      </div>
+
+      <div class="asset-modal" id="lang-modal">
+        <div class="asset-dialog">
+          <div class="asset-head">
+            <h3 id="lang-modal-title">Choisis ta langue</h3>
+            <button class="asset-close" id="lang-modal-close" type="button">Plus tard</button>
+          </div>
+          <p class="small" id="lang-modal-subtitle">Tu peux la changer ensuite avec le bouton en haut.</p>
+          <p class="small" id="lang-modal-monetization">
+            Monétisation créateur: dès 1 000 vues, ton post peut devenir éligible au paiement.
+          </p>
+          <div class="lang-choice">
+            <button class="auth-submit" id="lang-modal-fr" type="button">🇫🇷 Français</button>
+            <button class="auth-toggle" id="lang-modal-en" type="button">🇬🇧 English</button>
+          </div>
+        </div>
+      </div>
 
       <section id="screen-level" class="screen">
         <button class="back-btn" id="back-home">← Retour aux niveaux</button>
@@ -1130,7 +1496,14 @@
 
       <section id="screen-profile" class="screen">
         <div class="panel profile-grid">
-          <h2 id="profile-title">Profil joueur</h2>
+          <div class="profile-head">
+            <img id="profile-avatar" class="avatar-lg" alt="Avatar profil" />
+            <div>
+              <h2 id="profile-title">Profil joueur</h2>
+              <button class="avatar-select-btn" id="profile-change-avatar" type="button">Changer la photo</button>
+            </div>
+          </div>
+          <button class="auth-toggle" id="profile-creator-btn" type="button">Dashboard créateur</button>
           <div class="stat-block">
             <div class="small" id="profile-label-pseudo">Pseudo</div>
             <div class="stat-value" id="profile-pseudo">-</div>
@@ -1152,25 +1525,97 @@
         </div>
       </section>
 
+      <section id="screen-creator-dashboard" class="screen">
+        <button class="back-btn" id="back-from-creator">← Retour profil</button>
+        <div class="panel creator-grid">
+          <h2 id="creator-title">Dashboard créateur</h2>
+          <div class="creator-card">
+            <div class="small" id="creator-monetization-title">Monétisation créateur</div>
+            <div class="small" id="creator-monetization-line1">
+              À partir de 1 000 vues, une rémunération plateforme peut être activée selon l’éligibilité.
+            </div>
+            <div class="small" id="creator-monetization-line2">
+              Les collaborations de marque peuvent rapporter en moyenne ~20 € par post sponsorisé.
+            </div>
+            <div class="small" id="creator-monetization-line3">
+              Les montants varient selon le pays, l’engagement et les conditions partenaires.
+            </div>
+          </div>
+          <select id="creator-month-filter" class="auth-toggle"></select>
+          <div class="creator-stats">
+            <button class="creator-card clickable" id="creator-card-followers" data-metric="followers" type="button">
+              <div class="small" id="creator-followers-label">Nouveaux abonnés</div>
+              <div class="stat-value" id="creator-followers-value">0</div>
+              <div class="trend" id="creator-followers-trend">+0%</div>
+            </button>
+            <button class="creator-card clickable" id="creator-card-unfollows" data-metric="unfollows" type="button">
+              <div class="small" id="creator-unfollows-label">Désabonnements</div>
+              <div class="stat-value" id="creator-unfollows-value">0</div>
+              <div class="trend" id="creator-unfollows-trend">+0%</div>
+            </button>
+            <button class="creator-card clickable" id="creator-card-views" data-metric="views" type="button">
+              <div class="small" id="creator-views-label">Vues totales</div>
+              <div class="stat-value" id="creator-views-value">0</div>
+            </button>
+            <button class="creator-card clickable" id="creator-card-likes" data-metric="likes" type="button">
+              <div class="small" id="creator-likes-label">Likes totaux</div>
+              <div class="stat-value" id="creator-likes-value">0</div>
+            </button>
+            <button class="creator-card clickable" id="creator-card-participants" data-metric="participants" type="button">
+              <div class="small" id="creator-participants-label">Participants totaux</div>
+              <div class="stat-value" id="creator-participants-value">0</div>
+            </button>
+          </div>
+          <input id="creator-search" type="text" placeholder="Rechercher un utilisateur..." />
+          <div class="small" id="creator-detail-title">Profils</div>
+          <div class="engagement-list" id="creator-engagement-list"></div>
+        </div>
+      </section>
+
+      <section id="screen-user-profile" class="screen">
+        <button class="back-btn" id="back-from-user-profile">← Retour au feed</button>
+        <div class="panel user-public-grid">
+          <div class="profile-head">
+            <img id="public-avatar" class="avatar-lg" alt="Avatar public" />
+            <div>
+              <h2 id="public-name">Profil</h2>
+              <div class="small" id="public-meta">0 abonnés · 0 likes cumulés</div>
+            </div>
+          </div>
+          <button class="auth-submit" id="public-follow-btn" type="button">S'abonner</button>
+          <div class="user-mini-grid" id="public-post-grid"></div>
+        </div>
+      </section>
+
       <nav class="bottom-nav locked" id="bottom-nav">
         <button class="nav-btn active" data-target="home">
-          <span class="ico">🏠</span>
+          <span class="ico" aria-hidden="true">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V20h14v-9.5"/></svg>
+          </span>
           <span class="small" id="nav-home">Accueil</span>
         </button>
         <button class="nav-btn" data-target="feed">
-          <span class="ico">📰</span>
+          <span class="ico" aria-hidden="true">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m16.5 7.5-3.3 8.2-8.2 3.3 3.3-8.2z"/></svg>
+          </span>
           <span class="small" id="nav-feed">Feed</span>
         </button>
         <button class="nav-btn" data-target="share">
-          <span class="ico">➕</span>
+          <span class="ico" aria-hidden="true">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          </span>
           <span class="small" id="nav-share">Partager</span>
         </button>
         <button class="nav-btn" data-target="leaderboard">
-          <span class="ico">🏆</span>
+          <span class="ico" aria-hidden="true">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 4h8v3a4 4 0 0 1-8 0z"/><path d="M6 7H4a3 3 0 0 0 3 3"/><path d="M18 7h2a3 3 0 0 1-3 3"/><path d="M12 11v5"/><path d="M9 20h6"/></svg>
+          </span>
           <span class="small" id="nav-leaderboard">Classement</span>
         </button>
         <button class="nav-btn" data-target="profile">
-          <span class="ico">🪪</span>
+          <span class="ico" aria-hidden="true">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
+          </span>
           <span class="small" id="nav-profile">Profil</span>
         </button>
       </nav>
@@ -1196,16 +1641,13 @@
         orderBy,
         limit,
         getDocs,
+        onSnapshot,
+        where,
+        collectionGroup,
         addDoc,
         increment,
         runTransaction,
       } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-      import {
-        getStorage,
-        ref as storageRef,
-        uploadBytes,
-        getDownloadURL,
-      } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
 
       const screens = {
         loading: document.getElementById("screen-loading"),
@@ -1218,6 +1660,8 @@
         quiz: document.getElementById("screen-quiz"),
         leaderboard: document.getElementById("screen-leaderboard"),
         profile: document.getElementById("screen-profile"),
+        userProfile: document.getElementById("screen-user-profile"),
+        creatorDashboard: document.getElementById("screen-creator-dashboard"),
       };
 
       const bottomNav = document.getElementById("bottom-nav");
@@ -1270,11 +1714,14 @@
       const podium = document.getElementById("podium");
       const leaderList = document.getElementById("leader-list");
       const profilePseudo = document.getElementById("profile-pseudo");
+      const profileAvatar = document.getElementById("profile-avatar");
+      const profileChangeAvatar = document.getElementById("profile-change-avatar");
       const profileFirst = document.getElementById("profile-first");
       const profileSecond = document.getElementById("profile-second");
       const profileRank = document.getElementById("profile-rank");
       const profileBadge = document.getElementById("profile-badge");
       const profilePlayBtn = document.getElementById("profile-play-btn");
+      const profileCreatorBtn = document.getElementById("profile-creator-btn");
       const levelRows = [...document.querySelectorAll(".level-row")];
       const levelButtons = levelRows.map((row) => row.querySelector(".level-btn"));
       const levelPills = [...document.querySelectorAll(".level-pill")];
@@ -1290,6 +1737,11 @@
       const levelDesc = document.getElementById("level-desc");
       const feedTitle = document.getElementById("feed-title");
       const feedSubtitle = document.getElementById("feed-subtitle");
+      const feedFirstPostBox = document.getElementById("feed-first-post-box");
+      const feedFirstPostTitle = document.getElementById("feed-first-post-title");
+      const feedFirstPostText = document.getElementById("feed-first-post-text");
+      const feedFirstPostMoney = document.getElementById("feed-first-post-money");
+      const feedFirstPostBtn = document.getElementById("feed-first-post-btn");
       const feedList = document.getElementById("feed-list");
       const feedFilterAll = document.getElementById("feed-filter-all");
       const feedFilterVote = document.getElementById("feed-filter-vote");
@@ -1297,7 +1749,9 @@
       const shareTitle = document.getElementById("share-title");
       const shareSubtitle = document.getElementById("share-subtitle");
       const shareForm = document.getElementById("share-form");
-      const shareImages = document.getElementById("share-images");
+      const shareOpenAssets = document.getElementById("share-open-assets");
+      const shareOpenAssetsLabel = document.getElementById("share-open-assets-label");
+      const shareSelectedCount = document.getElementById("share-selected-count");
       const shareDescription = document.getElementById("share-description");
       const shareTags = document.getElementById("share-tags");
       const shareMentions = document.getElementById("share-mentions");
@@ -1312,6 +1766,20 @@
       const sharePreview = document.getElementById("share-preview");
       const sharePreviewMain = document.getElementById("share-preview-main");
       const sharePreviewThumbs = document.getElementById("share-preview-thumbs");
+      const assetModal = document.getElementById("asset-modal");
+      const assetTitle = document.getElementById("asset-title");
+      const assetClose = document.getElementById("asset-close");
+      const assetSearch = document.getElementById("asset-search");
+      const assetHint = document.getElementById("asset-hint");
+      const assetGrid = document.getElementById("asset-grid");
+      const assetApply = document.getElementById("asset-apply");
+      const langModal = document.getElementById("lang-modal");
+      const langModalTitle = document.getElementById("lang-modal-title");
+      const langModalSubtitle = document.getElementById("lang-modal-subtitle");
+      const langModalMonetization = document.getElementById("lang-modal-monetization");
+      const langModalClose = document.getElementById("lang-modal-close");
+      const langModalFr = document.getElementById("lang-modal-fr");
+      const langModalEn = document.getElementById("lang-modal-en");
       const difficultyEasy = document.getElementById("difficulty-easy");
       const difficultyMedium = document.getElementById("difficulty-medium");
       const difficultyHard = document.getElementById("difficulty-hard");
@@ -1329,6 +1797,39 @@
       const navShare = document.getElementById("nav-share");
       const navLeaderboard = document.getElementById("nav-leaderboard");
       const navProfile = document.getElementById("nav-profile");
+      const publicAvatar = document.getElementById("public-avatar");
+      const publicName = document.getElementById("public-name");
+      const publicMeta = document.getElementById("public-meta");
+      const publicFollowBtn = document.getElementById("public-follow-btn");
+      const publicPostGrid = document.getElementById("public-post-grid");
+      const backFromUserProfile = document.getElementById("back-from-user-profile");
+      const backFromCreator = document.getElementById("back-from-creator");
+      const creatorTitle = document.getElementById("creator-title");
+      const creatorMonetizationTitle = document.getElementById("creator-monetization-title");
+      const creatorMonetizationLine1 = document.getElementById("creator-monetization-line1");
+      const creatorMonetizationLine2 = document.getElementById("creator-monetization-line2");
+      const creatorMonetizationLine3 = document.getElementById("creator-monetization-line3");
+      const creatorMonthFilter = document.getElementById("creator-month-filter");
+      const creatorCardFollowers = document.getElementById("creator-card-followers");
+      const creatorCardUnfollows = document.getElementById("creator-card-unfollows");
+      const creatorCardViews = document.getElementById("creator-card-views");
+      const creatorCardLikes = document.getElementById("creator-card-likes");
+      const creatorCardParticipants = document.getElementById("creator-card-participants");
+      const creatorFollowersLabel = document.getElementById("creator-followers-label");
+      const creatorFollowersValue = document.getElementById("creator-followers-value");
+      const creatorFollowersTrend = document.getElementById("creator-followers-trend");
+      const creatorUnfollowsLabel = document.getElementById("creator-unfollows-label");
+      const creatorUnfollowsValue = document.getElementById("creator-unfollows-value");
+      const creatorUnfollowsTrend = document.getElementById("creator-unfollows-trend");
+      const creatorViewsLabel = document.getElementById("creator-views-label");
+      const creatorViewsValue = document.getElementById("creator-views-value");
+      const creatorLikesLabel = document.getElementById("creator-likes-label");
+      const creatorLikesValue = document.getElementById("creator-likes-value");
+      const creatorParticipantsLabel = document.getElementById("creator-participants-label");
+      const creatorParticipantsValue = document.getElementById("creator-participants-value");
+      const creatorSearch = document.getElementById("creator-search");
+      const creatorDetailTitle = document.getElementById("creator-detail-title");
+      const creatorEngagementList = document.getElementById("creator-engagement-list");
 
       const firebaseConfig = {
         apiKey: "AIzaSyCpl6TGs-Mnu5HXapj0Y-9SIfGJLxLhaDQ",
@@ -1345,16 +1846,16 @@
 
       let auth = null;
       let db = null;
-      let storage = null;
       let currentUser = null;
       let currentPseudo = "";
+      let currentUserAvatar = "";
       let firstScoreEasy = null;
       let secondScoreEasy = null;
       let unlockMediumL1 = false;
       let unlockHardL1 = false;
       let cachedLeaderboard = [];
       let leaderboardLevel = "1";
-      let currentLang = "fr";
+      let currentLang = localStorage.getItem("avataronn_lang") || "fr";
       let currentDifficulty = "easy";
       let currentLevel = 1;
       let unlockedLevel = 1;
@@ -1366,6 +1867,29 @@
       let feedFilter = "all";
       let visibleShareQuestions = 1;
       let sharePreviewUrls = [];
+      let selectedAssetIds = [];
+      let feedUnsubscribe = null;
+      let feedCacheDocs = [];
+      let assetPickerMode = "post";
+      let currentPublicProfileUid = "";
+      let selectedAvatarAssetId = "";
+      let creatorMonthKey = "";
+      const userAvatarCache = new Map();
+      let publicProfileFollowInFlight = false;
+      const publicProfileState = {
+        uid: "",
+        followersCount: 0,
+        likesTotal: 0,
+        following: false,
+      };
+      let creatorMetricSelected = "views";
+      const creatorRowsCache = {
+        followers: [],
+        unfollows: [],
+        views: [],
+        likes: [],
+        participants: [],
+      };
 
       const i18n = {
         fr: {
@@ -1420,6 +1944,32 @@
           loadingTitle: "Chargement...",
           loadingSubtitle: "Connexion en cours.",
           profileTitle: "Profil joueur",
+          changeAvatar: "Changer la photo",
+          backToFeed: "Retour au feed",
+          follow: "S'abonner",
+          following: "Abonné",
+          followers: "abonnés",
+          totalLikesLabel: "likes cumulés",
+          creatorDashboard: "Dashboard créateur",
+          creatorMonetizationTitle: "Monétisation créateur",
+          creatorMonetizationLine1:
+            "À partir de 1 000 vues, une rémunération plateforme peut être activée selon l’éligibilité.",
+          creatorMonetizationLine2:
+            "Les collaborations de marque peuvent rapporter en moyenne ~20 € par post sponsorisé.",
+          creatorMonetizationLine3:
+            "Les montants varient selon le pays, l’engagement et les conditions partenaires.",
+          newFollowers: "Nouveaux abonnés",
+          unfollows: "Désabonnements",
+          totalViewsLabel: "Vues totales",
+          totalParticipantsLabel: "Participants totaux",
+          totalLikesCount: "Likes totaux",
+          searchUserPlaceholder: "Rechercher un utilisateur...",
+          profilesLabel: "Profils",
+          backProfile: "Retour profil",
+          viewedTag: "vu",
+          likedTag: "liké",
+          participatedTag: "participé",
+          noData: "Aucune donnée.",
           firstScore: "Score 1 (référence)",
           secondScore: "Score 2 (rejouable)",
           currentRank: "Rang actuel",
@@ -1432,11 +1982,29 @@
           navProfile: "Profil",
           feedTitle: "Feed fan Avatar",
           feedSubtitle: "Découvre les posts de la communauté, vote et participe aux mini-quiz.",
+          feedFirstPostTitle: "Ton premier post t'attend.",
+          feedFirstPostText: "Partage une image, ajoute une question, et démarre ta communauté.",
+          feedFirstPostMoney: "Dès 1 000 vues, ton post peut devenir éligible à la monétisation.",
+          feedFirstPostBtn: "Créer mon premier post",
+          languageChoiceTitle: "Choisis ta langue",
+          languageChoiceSubtitle: "Tu peux la changer ensuite avec le bouton en haut.",
+          languageChoiceMonetization:
+            "Monétisation créateur: dès 1 000 vues, ton post peut devenir éligible au paiement.",
+          later: "Plus tard",
           feedAll: "Tout",
           feedVotes: "Votes",
           feedQuiz: "Quiz",
           shareTitle: "Publier un post",
           shareSubtitle: "Ajoute des images, une description, des tags et un vote ou quiz.",
+          shareOpenAssetsLabel: "Choisir des images depuis la galerie Avatar",
+          shareSelectedCountZero: "0 image sélectionnée.",
+          shareSelectedCountOne: "1 image sélectionnée.",
+          shareSelectedCountMany: "images sélectionnées.",
+          assetTitle: "Galerie Avatar",
+          assetClose: "Fermer",
+          assetSearchPlaceholder: "Rechercher une image...",
+          assetHint: "Clique pour sélectionner plusieurs images.",
+          assetApply: "Valider la sélection",
           shareAddQuestion: "Ajouter une question",
           shareAddHelp: "Ajouter une question (max 3)",
           sharePublish: "Publier",
@@ -1464,6 +2032,8 @@
           voteRanking: "Classement des votes",
           yourVoteDone: "Vote enregistré.",
           yourQuizDone: "Quiz terminé",
+          liked: "Aimé",
+          yourAnswer: "Ta réponse",
           noPosts: "Aucun post pour le moment.",
           postTypeVote: "Vote",
           postTypeQuiz: "Quiz",
@@ -1553,6 +2123,32 @@
           loadingTitle: "Loading...",
           loadingSubtitle: "Signing you in.",
           profileTitle: "Player profile",
+          changeAvatar: "Change photo",
+          backToFeed: "Back to feed",
+          follow: "Follow",
+          following: "Following",
+          followers: "followers",
+          totalLikesLabel: "total likes",
+          creatorDashboard: "Creator dashboard",
+          creatorMonetizationTitle: "Creator monetization",
+          creatorMonetizationLine1:
+            "From 1,000 views, platform payouts may be enabled depending on account eligibility.",
+          creatorMonetizationLine2:
+            "Brand collaborations can average around €20 per sponsored post.",
+          creatorMonetizationLine3:
+            "Actual amounts vary by country, engagement, and partner conditions.",
+          newFollowers: "New followers",
+          unfollows: "Unfollows",
+          totalViewsLabel: "Total views",
+          totalParticipantsLabel: "Total participants",
+          totalLikesCount: "Total likes",
+          searchUserPlaceholder: "Search a user...",
+          profilesLabel: "Profiles",
+          backProfile: "Back profile",
+          viewedTag: "viewed",
+          likedTag: "liked",
+          participatedTag: "participated",
+          noData: "No data.",
           firstScore: "Score 1 (reference)",
           secondScore: "Score 2 (retry)",
           currentRank: "Current rank",
@@ -1565,11 +2161,29 @@
           navProfile: "Profile",
           feedTitle: "Avatar fan feed",
           feedSubtitle: "Discover community posts, vote, and join mini-quizzes.",
+          feedFirstPostTitle: "Your first post is waiting.",
+          feedFirstPostText: "Share an image, add a question, and start your community.",
+          feedFirstPostMoney: "From 1,000 views, your post can become monetization eligible.",
+          feedFirstPostBtn: "Create my first post",
+          languageChoiceTitle: "Choose your language",
+          languageChoiceSubtitle: "You can still switch it later with the top button.",
+          languageChoiceMonetization:
+            "Creator monetization: from 1,000 views, your post can become payout-eligible.",
+          later: "Later",
           feedAll: "All",
           feedVotes: "Votes",
           feedQuiz: "Quiz",
           shareTitle: "Create a post",
           shareSubtitle: "Add images, description, tags, and a vote or quiz.",
+          shareOpenAssetsLabel: "Choose images from Avatar gallery",
+          shareSelectedCountZero: "0 image selected.",
+          shareSelectedCountOne: "1 image selected.",
+          shareSelectedCountMany: "images selected.",
+          assetTitle: "Avatar gallery",
+          assetClose: "Close",
+          assetSearchPlaceholder: "Search an image...",
+          assetHint: "Click to select multiple images.",
+          assetApply: "Apply selection",
           shareAddQuestion: "Add a question",
           shareAddHelp: "Add a question (max 3)",
           sharePublish: "Publish",
@@ -1597,6 +2211,8 @@
           voteRanking: "Vote ranking",
           yourVoteDone: "Vote saved.",
           yourQuizDone: "Quiz completed",
+          liked: "Liked",
+          yourAnswer: "Your answer",
           noPosts: "No posts yet.",
           postTypeVote: "Vote",
           postTypeQuiz: "Quiz",
@@ -2016,7 +2632,6 @@
         const app = initializeApp(firebaseConfig);
         auth = getAuth(app);
         db = getFirestore(app);
-        storage = getStorage(app);
       } else {
         authMsgLogin.textContent = t("missingFirebase");
         authMsgSignup.textContent = t("missingFirebase");
@@ -2370,6 +2985,37 @@
         ]);
       }
 
+      // Galerie locale interne (ajoute tes fichiers dans /assets/gallery puis mets les noms ici)
+      const assetLibrary = [
+        { id: "toruk_01", name: "Toruk makto sky", tags: ["toruk", "vol", "pandora"], url: "assets/gallery/toruk_01.jpg" },
+        { id: "ikran_reef", name: "Ikran ridge", tags: ["ikran", "banshee", "na'vi"], url: "assets/gallery/ikran_reef.jpg" },
+        { id: "pandora_forest", name: "Pandora forest", tags: ["foret", "eywa", "nuit"], url: "assets/gallery/pandora_forest.jpg" },
+      ];
+
+      function fallbackAvatarUrl() {
+        return "https://ui-avatars.com/api/?background=E8F5EE&color=1B6C43&bold=true&name=" + encodeURIComponent(currentPseudo || "Fan");
+      }
+
+      function avatarUrlForName(name, customUrl) {
+        if (customUrl) return customUrl;
+        return "https://ui-avatars.com/api/?background=E8F5EE&color=1B6C43&bold=true&name=" + encodeURIComponent(name || "Fan");
+      }
+
+      async function resolveUserAvatar(uid, pseudo, fallback) {
+        if (!uid) return avatarUrlForName(pseudo, fallback || "");
+        if (uid === (currentUser && currentUser.uid)) return currentUserAvatar || avatarUrlForName(pseudo, fallback || "");
+        if (userAvatarCache.has(uid)) return userAvatarCache.get(uid);
+        try {
+          const snap = await getDoc(doc(db, "users", uid));
+          const avatar = snap.exists() ? String(snap.data().avatarUrl || "") : "";
+          const finalUrl = avatarUrlForName(pseudo, avatar || fallback || "");
+          userAvatarCache.set(uid, finalUrl);
+          return finalUrl;
+        } catch (_) {
+          return avatarUrlForName(pseudo, fallback || "");
+        }
+      }
+
       function updateFeedFilterButtons() {
         feedFilterAll.classList.toggle("active", feedFilter === "all");
         feedFilterVote.classList.toggle("active", feedFilter === "vote");
@@ -2477,7 +3123,6 @@
       }
 
       function clearSharePreviewUrls() {
-        sharePreviewUrls.forEach((url) => URL.revokeObjectURL(url));
         sharePreviewUrls = [];
       }
 
@@ -2502,18 +3147,51 @@
         });
       }
 
-      async function uploadPostImages(uid, files) {
-        const uploads = [];
-        for (let i = 0; i < files.length; i += 1) {
-          const file = files[i];
-          const safeName = String(file.name || "img").replace(/[^\w.-]/g, "_");
-          const path = "posts/" + uid + "/" + Date.now() + "_" + i + "_" + safeName;
-          const refNode = storageRef(storage, path);
-          await uploadBytes(refNode, file);
-          const url = await getDownloadURL(refNode);
-          uploads.push(url);
-        }
-        return uploads;
+      function selectedCountText() {
+        if (selectedAssetIds.length === 0) return t("shareSelectedCountZero");
+        if (selectedAssetIds.length === 1) return t("shareSelectedCountOne");
+        return String(selectedAssetIds.length) + " " + t("shareSelectedCountMany");
+      }
+
+      function syncSelectedAssetsPreview() {
+        const selected = assetLibrary.filter((item) => selectedAssetIds.includes(item.id));
+        sharePreviewUrls = selected.map((item) => item.url);
+        renderSharePreview(0);
+        shareSelectedCount.textContent = selectedCountText();
+      }
+
+      function renderAssetGrid() {
+        const searchTerm = assetSearch.value.trim().toLowerCase();
+        const list = assetLibrary.filter((item) => {
+          if (!searchTerm) return true;
+          const haystack = [item.name, ...(item.tags || []), item.id].join(" ").toLowerCase();
+          return haystack.includes(searchTerm);
+        });
+        assetGrid.innerHTML = "";
+        list.forEach((item) => {
+          const card = document.createElement("button");
+          card.type = "button";
+          const active = assetPickerMode === "avatar"
+            ? selectedAvatarAssetId === item.id
+            : selectedAssetIds.includes(item.id);
+          card.className = "asset-card" + (active ? " active" : "");
+          card.innerHTML =
+            '<img src="' + escapeHtml(item.url) + '" alt="' + escapeHtml(item.name) + '" />' +
+            '<div class="asset-name">' + escapeHtml(item.name) + "</div>";
+          card.addEventListener("click", () => {
+            if (assetPickerMode === "avatar") {
+              selectedAvatarAssetId = item.id;
+            } else {
+              if (selectedAssetIds.includes(item.id)) {
+                selectedAssetIds = selectedAssetIds.filter((id) => id !== item.id);
+              } else {
+                selectedAssetIds = [...selectedAssetIds, item.id].slice(0, 8);
+              }
+            }
+            renderAssetGrid();
+          });
+          assetGrid.appendChild(card);
+        });
       }
 
       async function getUserPostInteraction(postId) {
@@ -2538,14 +3216,21 @@
         }
       }
 
-      async function registerPostView(postId, interaction) {
-        if (!currentUser || !db || !interaction || interaction.viewed) return;
+      async function registerPostView(postId, postOwnerUid, interaction) {
+        if (!currentUser || !db || (interaction && interaction.viewed)) return;
         await runTransaction(db, async (tx) => {
           const postRef = doc(db, "posts", postId);
           tx.update(postRef, { viewsCount: increment(1) });
           tx.set(
             doc(db, "users", currentUser.uid, "postInteractions", postId),
-            { viewed: true, viewedAt: serverTimestamp() },
+            {
+              viewed: true,
+              viewedAt: serverTimestamp(),
+              postId,
+              postOwnerUid: String(postOwnerUid || ""),
+              viewerUid: currentUser.uid,
+              viewerPseudo: currentPseudo || currentUser.email || "fan",
+            },
             { merge: true }
           );
         });
@@ -2576,6 +3261,10 @@
               votedIndex: optionIndex,
               type: "vote",
               answeredAt: serverTimestamp(),
+              postId,
+              postOwnerUid: String(postData.ownerUid || ""),
+              viewerUid: currentUser.uid,
+              viewerPseudo: currentPseudo || currentUser.email || "fan",
             },
             { merge: true }
           );
@@ -2585,11 +3274,15 @@
       async function submitQuiz(postId, answers, scoreValue) {
         if (!currentUser || !db) return;
         await runTransaction(db, async (tx) => {
+          const postRef = doc(db, "posts", postId);
           const interRef = doc(db, "users", currentUser.uid, "postInteractions", postId);
           const interSnap = await tx.get(interRef);
           const interData = interSnap.exists() ? interSnap.data() : {};
           if (interData.participated) return;
-          tx.update(doc(db, "posts", postId), {
+          const postSnap = await tx.get(postRef);
+          if (!postSnap.exists()) return;
+          const postData = postSnap.data();
+          tx.update(postRef, {
             participantsCount: increment(1),
           });
           tx.set(
@@ -2600,6 +3293,10 @@
               score: scoreValue,
               type: "quiz",
               answeredAt: serverTimestamp(),
+              postId,
+              postOwnerUid: String(postData.ownerUid || ""),
+              viewerUid: currentUser.uid,
+              viewerPseudo: currentPseudo || currentUser.email || "fan",
             },
             { merge: true }
           );
@@ -2607,14 +3304,48 @@
       }
 
       async function toggleLike(postId, alreadyLiked) {
-        if (!currentUser || !db || alreadyLiked) return;
+        if (!currentUser || !db) return;
         await runTransaction(db, async (tx) => {
+          const postRef = doc(db, "posts", postId);
           const interRef = doc(db, "users", currentUser.uid, "postInteractions", postId);
+          const postSnap = await tx.get(postRef);
+          if (!postSnap.exists()) return;
+          const postData = postSnap.data();
+          const ownerUid = String(postData.ownerUid || "");
+          const ownerRef = ownerUid ? doc(db, "users", ownerUid) : null;
+          const ownerSnap = ownerRef ? await tx.get(ownerRef) : null;
+          const ownerData = ownerSnap && ownerSnap.exists() ? ownerSnap.data() : {};
           const interSnap = await tx.get(interRef);
           const interData = interSnap.exists() ? interSnap.data() : {};
-          if (interData.liked) return;
-          tx.update(doc(db, "posts", postId), { likesCount: increment(1) });
-          tx.set(interRef, { liked: true, likedAt: serverTimestamp() }, { merge: true });
+          const isLiked = Boolean(interData.liked);
+          if (isLiked || alreadyLiked) {
+            const current = Number(postData.likesCount || 0);
+            tx.update(postRef, { likesCount: Math.max(0, current - 1) });
+            if (ownerRef) {
+              const ownerLikes = Number(ownerData.totalLikesReceived || 0);
+              tx.set(ownerRef, { totalLikesReceived: Math.max(0, ownerLikes - 1) }, { merge: true });
+            }
+          tx.set(interRef, {
+            liked: false,
+            postId,
+            postOwnerUid: String(postData.ownerUid || ""),
+            viewerUid: currentUser.uid,
+            viewerPseudo: currentPseudo || currentUser.email || "fan",
+          }, { merge: true });
+          return;
+        }
+        tx.update(postRef, { likesCount: increment(1) });
+          if (ownerRef) {
+            tx.set(ownerRef, { totalLikesReceived: increment(1) }, { merge: true });
+          }
+          tx.set(interRef, {
+            liked: true,
+            likedAt: serverTimestamp(),
+            postId,
+            postOwnerUid: String(postData.ownerUid || ""),
+            viewerUid: currentUser.uid,
+            viewerPseudo: currentPseudo || currentUser.email || "fan",
+          }, { merge: true });
         });
       }
 
@@ -2641,20 +3372,68 @@
           .join("");
       }
 
+      function getUiIcon(name, active = false) {
+        const color = active ? "currentColor" : "none";
+        if (name === "heart") {
+          return (
+            '<svg class="icon-svg" viewBox="0 0 24 24" fill="' +
+            color +
+            '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>'
+          );
+        }
+        if (name === "eye") {
+          return '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+        }
+        return '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1"/><path d="M12 12l6-6"/></svg>';
+      }
+
+      function questionResultHtml(question, interaction, index) {
+        const options = Array.isArray(question.options) ? question.options : [];
+        const correctIndex = Number(question.correctIndex);
+        const correctText = options[correctIndex] || "-";
+        let userLine = "";
+        if (Array.isArray(interaction.answers) && typeof interaction.answers[index] === "number") {
+          const userAnswer = options[interaction.answers[index]] || "-";
+          userLine = '<div>' + t("yourAnswer") + ": " + escapeHtml(userAnswer) + "</div>";
+        } else if (typeof interaction.votedIndex === "number") {
+          const userAnswer = options[interaction.votedIndex] || "-";
+          userLine = '<div>' + t("yourAnswer") + ": " + escapeHtml(userAnswer) + "</div>";
+        }
+        return (
+          '<div class="answer-box"><div><strong>' +
+          t("correctAnswer") +
+          ":</strong> " +
+          escapeHtml(correctText) +
+          "</div>" +
+          userLine +
+          "</div>"
+        );
+      }
+
       async function renderFeedPost(docSnap) {
         const data = docSnap.data();
         if (feedFilter !== "all" && data.postType !== feedFilter) return null;
         const interaction = (await getUserPostInteraction(docSnap.id)) || {};
-        await registerPostView(docSnap.id, interaction);
+        await registerPostView(docSnap.id, data.ownerUid, interaction);
         const card = document.createElement("article");
         card.className = "post-card";
+        card.dataset.postId = docSnap.id;
         const images = Array.isArray(data.imageUrls) ? data.imageUrls : [];
+        const ownerAvatar = await resolveUserAvatar(
+          String(data.ownerUid || ""),
+          data.ownerPseudo || "Fan",
+          data.ownerAvatarUrl || ""
+        );
         const firstQuestion = Array.isArray(data.questions) && data.questions[0] ? data.questions[0] : null;
         const voteStats = Array.isArray(data.voteStats) ? data.voteStats : [];
         card.innerHTML =
-          '<div class="post-head"><div class="post-author">@' +
+          '<div class="post-head"><button type="button" class="author-btn" data-open-user="' +
+          escapeHtml(data.ownerUid || "") +
+          '"><img class="avatar-sm" src="' +
+          escapeHtml(ownerAvatar) +
+          '" alt="avatar" /><div class="post-author">@' +
           escapeHtml(data.ownerPseudo || "fan") +
-          '</div><div class="post-time">' +
+          "</div></button><div class=\"post-time\">" +
           formatPostDate(data.createdAt) +
           '</div></div><div class="post-media">' +
           images
@@ -2667,30 +3446,84 @@
             .join("") +
           '</div><div class="post-body"><p class="post-desc">' +
           formatSocialText(data.description || "") +
-          '</p><div class="post-stats"><span>❤️ ' +
-          Number(data.likesCount || 0) +
+          '</p><div class="post-stats"><button type="button" class="post-stat-like-btn' +
+          (interaction.liked ? " done" : "") +
+          '" data-like-btn="1" aria-label="' +
+          escapeHtml(interaction.liked ? t("liked") : t("likeAction")) +
+          '" title="' +
+          escapeHtml(interaction.liked ? t("liked") : t("likeAction")) +
+          '">' +
+          getUiIcon("heart", Boolean(interaction.liked)) +
+          '<span data-count-likes="1">' + Number(data.likesCount || 0) + "</span>" +
           " " +
           t("likes") +
-          "</span><span>👁️ " +
-          Number(data.viewsCount || 0) +
+          '</button><span class="post-stat-item">' +
+          getUiIcon("eye") +
+          '<span data-count-views="1">' + Number(data.viewsCount || 0) + "</span>" +
           " " +
           t("views") +
-          "</span><span>🎯 " +
-          Number(data.participantsCount || 0) +
+          '</span><span class="post-stat-item">' +
+          getUiIcon("target") +
+          '<span data-count-participants="1">' + Number(data.participantsCount || 0) + "</span>" +
           " " +
           t("participants") +
           "</span></div></div>";
 
         const body = card.querySelector(".post-body");
-        const likeBtn = document.createElement("button");
-        likeBtn.type = "button";
-        likeBtn.className = "like-btn" + (interaction.liked ? " done" : "");
-        likeBtn.textContent = interaction.liked ? "❤️ " + t("yourVoteDone") : "🤍 " + t("likeAction");
-        likeBtn.addEventListener("click", async () => {
-          await toggleLike(docSnap.id, Boolean(interaction.liked));
-          await loadFeed();
+        const authorBtn = card.querySelector("[data-open-user]");
+        if (authorBtn) {
+          authorBtn.addEventListener("click", async () => {
+            const targetUid = authorBtn.getAttribute("data-open-user");
+            if (!targetUid) return;
+            await openPublicProfile(targetUid);
+          });
+        }
+        const likeStatBtn = card.querySelector('[data-like-btn="1"]');
+        let likedState = Boolean(interaction.liked);
+        let likesCount = Number(data.likesCount || 0);
+
+        function paintLikeState() {
+          likeStatBtn.classList.toggle("done", likedState);
+          likeStatBtn.innerHTML = getUiIcon("heart", likedState) + '<span data-count-likes="1">' + likesCount + "</span> " + t("likes");
+          const newCountNode = likeStatBtn.querySelector('[data-count-likes="1"]');
+          if (newCountNode) newCountNode.textContent = String(likesCount);
+          likeStatBtn.setAttribute("aria-label", likedState ? t("liked") : t("likeAction"));
+          likeStatBtn.title = likedState ? t("liked") : t("likeAction");
+        }
+
+        const runLikeAction = async (fromImage = false) => {
+          const likedNow = likedState;
+          if (fromImage && likedNow) return;
+          likeStatBtn.classList.add("pop");
+          setTimeout(() => likeStatBtn.classList.remove("pop"), 320);
+          likedState = !likedNow;
+          likesCount = Math.max(0, likesCount + (likedState ? 1 : -1));
+          paintLikeState();
+          await toggleLike(docSnap.id, likedNow);
+        };
+        likeStatBtn.addEventListener("click", async () => {
+          await runLikeAction(false);
         });
-        body.appendChild(likeBtn);
+
+        const mediaImages = [...card.querySelectorAll(".post-media img")];
+        mediaImages.forEach((img) => {
+          img.addEventListener("dblclick", async () => {
+            await runLikeAction(true);
+          });
+          let lastTouch = 0;
+          img.addEventListener(
+            "touchend",
+            async (event) => {
+              const now = Date.now();
+              if (now - lastTouch < 280) {
+                event.preventDefault();
+                await runLikeAction(true);
+              }
+              lastTouch = now;
+            },
+            { passive: false }
+          );
+        });
 
         if (firstQuestion) {
           const pollNode = document.createElement("div");
@@ -2708,6 +3541,14 @@
                 ? t("yourVoteDone")
                 : t("yourQuizDone") + (typeof interaction.score === "number" ? " (" + interaction.score + "/" + data.questions.length + ")" : "");
             pollNode.appendChild(doneNode);
+            const questions = Array.isArray(data.questions) ? data.questions : [];
+            if (questions.length) {
+              questions.forEach((question, index) => {
+                const line = document.createElement("div");
+                line.innerHTML = questionResultHtml(question, interaction, index);
+                pollNode.appendChild(line);
+              });
+            }
             if (data.postType === "vote") {
               const rankNode = document.createElement("div");
               rankNode.innerHTML =
@@ -2725,13 +3566,14 @@
               optionBtn.textContent = option;
               optionBtn.addEventListener("click", async () => {
                 await submitVote(docSnap.id, optionIndex, (firstQuestion.options || []).length);
-                await loadFeed();
+                await renderFeedFromCache(true);
               });
               pollNode.appendChild(optionBtn);
             });
           } else {
             let quizStep = 0;
             let quizScore = 0;
+            const userAnswers = [];
             const questions = Array.isArray(data.questions) ? data.questions : [];
             const renderQuizStep = () => {
               const item = questions[quizStep];
@@ -2747,11 +3589,12 @@
                 optionBtn.className = "poll-option";
                 optionBtn.textContent = option;
                 optionBtn.addEventListener("click", async () => {
+                  userAnswers.push(optionIndex);
                   if (Number(item.correctIndex) === optionIndex) quizScore += 1;
                   quizStep += 1;
                   if (quizStep >= questions.length) {
-                    await submitQuiz(docSnap.id, [], quizScore);
-                    await loadFeed();
+                    await submitQuiz(docSnap.id, userAnswers, quizScore);
+                    await renderFeedFromCache(true);
                   } else {
                     renderQuizStep();
                   }
@@ -2767,18 +3610,415 @@
         return card;
       }
 
-      async function loadFeed() {
-        if (!db || !currentUser) return;
-        feedList.innerHTML = '<div class="panel small">' + t("loadingTitle") + "</div>";
-        const snap = await getDocs(query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(30)));
+      function updateFeedCardCounters(docSnap) {
+        const card = feedList.querySelector('[data-post-id="' + docSnap.id + '"]');
+        if (!card) return;
+        const data = docSnap.data();
+        const likesNode = card.querySelector('[data-count-likes="1"]');
+        const viewsNode = card.querySelector('[data-count-views="1"]');
+        const partsNode = card.querySelector('[data-count-participants="1"]');
+        if (likesNode) likesNode.textContent = String(Number(data.likesCount || 0));
+        if (viewsNode) viewsNode.textContent = String(Number(data.viewsCount || 0));
+        if (partsNode) partsNode.textContent = String(Number(data.participantsCount || 0));
+      }
+
+      async function renderFeedFromCache(forceRebuild = false) {
+        if (!currentUser) return;
+        const hasCards = feedList.querySelector(".post-card");
+        if (!forceRebuild && hasCards) {
+          feedCacheDocs.forEach((row) => updateFeedCardCounters(row));
+          setFeedFirstPostPromptVisibility();
+          return;
+        }
         feedList.innerHTML = "";
-        for (const row of snap.docs) {
+        for (const row of feedCacheDocs) {
           const node = await renderFeedPost(row);
           if (node) feedList.appendChild(node);
         }
         if (!feedList.children.length) {
           feedList.innerHTML = '<div class="panel small">' + t("noPosts") + "</div>";
         }
+        setFeedFirstPostPromptVisibility();
+      }
+
+      async function isFollowingUser(targetUid) {
+        if (!currentUser || !db || !targetUid || targetUid === currentUser.uid) return false;
+        const snap = await getDoc(doc(db, "users", currentUser.uid, "following", targetUid));
+        return snap.exists();
+      }
+
+      async function toggleFollowUser(targetUid) {
+        if (!currentUser || !db || !targetUid || targetUid === currentUser.uid) return;
+        await runTransaction(db, async (tx) => {
+          const meRef = doc(db, "users", currentUser.uid);
+          const targetRef = doc(db, "users", targetUid);
+          const followRef = doc(db, "users", currentUser.uid, "following", targetUid);
+          const followerRef = doc(db, "users", targetUid, "followers", currentUser.uid);
+          const unfollowRef = doc(
+            db,
+            "users",
+            targetUid,
+            "unfollowEvents",
+            currentUser.uid + "_" + String(Date.now())
+          );
+          const followSnap = await tx.get(followRef);
+          const meSnap = await tx.get(meRef);
+          const targetSnap = await tx.get(targetRef);
+          const meData = meSnap.exists() ? meSnap.data() : {};
+          const targetData = targetSnap.exists() ? targetSnap.data() : {};
+          if (followSnap.exists()) {
+            tx.delete(followRef);
+            tx.delete(followerRef);
+            tx.set(unfollowRef, { uid: currentUser.uid, createdAt: serverTimestamp() }, { merge: true });
+            tx.set(meRef, { followingCount: Math.max(0, Number(meData.followingCount || 0) - 1) }, { merge: true });
+            tx.set(targetRef, { followersCount: Math.max(0, Number(targetData.followersCount || 0) - 1) }, { merge: true });
+          } else {
+            tx.set(followRef, { uid: targetUid, createdAt: serverTimestamp() }, { merge: true });
+            tx.set(followerRef, { uid: currentUser.uid, createdAt: serverTimestamp() }, { merge: true });
+            tx.set(meRef, { followingCount: increment(1) }, { merge: true });
+            tx.set(targetRef, { followersCount: increment(1) }, { merge: true });
+          }
+        });
+      }
+
+      async function openPublicProfile(targetUid) {
+        if (!db || !currentUser || !targetUid) return;
+        currentPublicProfileUid = targetUid;
+        const userSnap = await getDoc(doc(db, "users", targetUid));
+        const userData = userSnap.exists() ? userSnap.data() : {};
+        const pseudo = String(userData.pseudo || userData.email || "fan");
+        publicName.textContent = "@" + pseudo;
+        publicAvatar.src = avatarUrlForName(pseudo, String(userData.avatarUrl || ""));
+        const postsSnap = await getDocs(
+          query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(60))
+        );
+        const myPosts = postsSnap.docs.filter((row) => String(row.data().ownerUid || "") === targetUid);
+        const computedLikes = myPosts.reduce(
+          (acc, row) => acc + Number((row.data() && row.data().likesCount) || 0),
+          0
+        );
+        const likesTotal = Math.max(Number(userData.totalLikesReceived || 0), computedLikes);
+        publicProfileState.uid = targetUid;
+        publicProfileState.followersCount = Number(userData.followersCount || 0);
+        publicProfileState.likesTotal = likesTotal;
+        if (likesTotal !== Number(userData.totalLikesReceived || 0)) {
+          setDoc(doc(db, "users", targetUid), { totalLikesReceived: likesTotal }, { merge: true }).catch(
+            console.error
+          );
+        }
+
+        if (targetUid === currentUser.uid) {
+          publicProfileState.following = false;
+          publicFollowBtn.style.display = "none";
+        } else {
+          publicFollowBtn.style.display = "block";
+          const following = await isFollowingUser(targetUid);
+          publicProfileState.following = following;
+        }
+        publicMeta.textContent =
+          String(publicProfileState.followersCount) +
+          " " +
+          t("followers") +
+          " · " +
+          String(publicProfileState.likesTotal) +
+          " " +
+          t("totalLikesLabel");
+        publicFollowBtn.dataset.following = publicProfileState.following ? "1" : "0";
+        publicFollowBtn.textContent = publicProfileState.following ? t("following") : t("follow");
+
+        publicPostGrid.innerHTML = "";
+        myPosts.forEach((row) => {
+          const item = row.data();
+          const postId = row.id;
+          const firstImage = Array.isArray(item.imageUrls) && item.imageUrls[0] ? item.imageUrls[0] : "";
+          const card = document.createElement("button");
+          card.type = "button";
+          card.className = "user-mini-card";
+          card.innerHTML = '<img src="' + escapeHtml(firstImage) + '" alt="post" />';
+          card.addEventListener("click", async () => {
+            showScreen("feed");
+            await loadFeed();
+            setTimeout(() => {
+              const target = feedList.querySelector('[data-post-id="' + postId + '"]');
+              if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 80);
+          });
+          publicPostGrid.appendChild(card);
+        });
+        showScreen("userProfile");
+      }
+
+      function monthKeyFromDate(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        return y + "-" + m;
+      }
+
+      function monthStartEnd(monthKey) {
+        const [y, m] = monthKey.split("-").map(Number);
+        const start = new Date(y, m - 1, 1, 0, 0, 0, 0);
+        const end = new Date(y, m, 1, 0, 0, 0, 0);
+        return { start, end };
+      }
+
+      function previousMonthKey(monthKey) {
+        const [y, m] = monthKey.split("-").map(Number);
+        const date = new Date(y, m - 2, 1);
+        return monthKeyFromDate(date);
+      }
+
+      function fillCreatorMonthFilter() {
+        creatorMonthFilter.innerHTML = "";
+        const now = new Date();
+        for (let i = 0; i < 8; i += 1) {
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          const key = monthKeyFromDate(d);
+          const option = document.createElement("option");
+          option.value = key;
+          option.textContent = d.toLocaleDateString(currentLang === "fr" ? "fr-FR" : "en-US", {
+            month: "long",
+            year: "numeric",
+          });
+          creatorMonthFilter.appendChild(option);
+        }
+        if (!creatorMonthKey) creatorMonthKey = monthKeyFromDate(now);
+        creatorMonthFilter.value = creatorMonthKey;
+      }
+
+      function trendText(current, previous, inverse = false) {
+        if (previous <= 0) {
+          if (current <= 0) return { cls: "", text: "+0%" };
+          return { cls: inverse ? "down" : "up", text: "+100%" };
+        }
+        const pct = ((current - previous) / previous) * 100;
+        const rounded = (pct > 0 ? "+" : "") + Math.round(pct) + "%";
+        const isUp = inverse ? pct <= 0 : pct >= 0;
+        return { cls: isUp ? "up" : "down", text: rounded };
+      }
+
+      async function fetchUserRowsFromUids(uids) {
+        const uniq = [...new Set(uids.filter(Boolean))];
+        const rows = [];
+        for (const uid of uniq) {
+          let pseudo = uid.slice(0, 8);
+          let avatarUrl = "";
+          try {
+            const snap = await getDoc(doc(db, "users", uid));
+            if (snap.exists()) {
+              const data = snap.data();
+              pseudo = String(data.pseudo || data.email || pseudo);
+              avatarUrl = String(data.avatarUrl || "");
+            }
+          } catch (_) {}
+          rows.push({ uid, pseudo, avatarUrl: avatarUrlForName(pseudo, avatarUrl) });
+        }
+        return rows;
+      }
+
+      function setActiveCreatorMetric(metric) {
+        [
+          creatorCardFollowers,
+          creatorCardUnfollows,
+          creatorCardViews,
+          creatorCardLikes,
+          creatorCardParticipants,
+        ].forEach((node) => node.classList.toggle("active", node.dataset.metric === metric));
+      }
+
+      function renderCreatorRows(metric) {
+        creatorMetricSelected = metric;
+        setActiveCreatorMetric(metric);
+        creatorDetailTitle.textContent = t("profilesLabel");
+        const term = creatorSearch.value.trim().toLowerCase();
+        const sourceRows = creatorRowsCache[metric] || [];
+        const rows = sourceRows.filter((row) => !term || String(row.pseudo || "").toLowerCase().includes(term));
+        creatorEngagementList.innerHTML = "";
+        if (!rows.length) {
+          creatorEngagementList.innerHTML = '<div class="engagement-row">' + t("noData") + "</div>";
+          return;
+        }
+        rows.forEach((row) => {
+          const node = document.createElement("div");
+          node.className = "engagement-row";
+          const badgeText = [
+            row.viewed ? t("viewedTag") : null,
+            row.liked ? t("likedTag") : null,
+            row.participated ? t("participatedTag") : null,
+          ]
+            .filter(Boolean)
+            .join(" · ");
+          node.innerHTML =
+            '<button type="button" class="engagement-user-btn"><span class="engagement-left"><img class="avatar-sm" src="' +
+            escapeHtml(row.avatarUrl || avatarUrlForName(row.pseudo || "fan", "")) +
+            '" alt="avatar" /><strong>@' +
+            escapeHtml(row.pseudo || "fan") +
+            '</strong></span><span class="engagement-tags">' +
+            escapeHtml(badgeText || "-") +
+            "</span></button>";
+          const btn = node.querySelector(".engagement-user-btn");
+          btn.addEventListener("click", async () => {
+            if (!row.uid) return;
+            await openPublicProfile(row.uid);
+          });
+          creatorEngagementList.appendChild(node);
+        });
+      }
+
+      async function loadCreatorDashboard() {
+        if (!db || !currentUser) return;
+        fillCreatorMonthFilter();
+        const month = creatorMonthFilter.value || creatorMonthKey;
+        creatorMonthKey = month;
+        const prevMonth = previousMonthKey(month);
+        const range = monthStartEnd(month);
+        const prevRange = monthStartEnd(prevMonth);
+
+        const followersSnap = await getDocs(
+          query(
+            collection(db, "users", currentUser.uid, "followers"),
+            where("createdAt", ">=", range.start),
+            where("createdAt", "<", range.end)
+          )
+        );
+        const prevFollowersSnap = await getDocs(
+          query(
+            collection(db, "users", currentUser.uid, "followers"),
+            where("createdAt", ">=", prevRange.start),
+            where("createdAt", "<", prevRange.end)
+          )
+        );
+        const unfollowsSnap = await getDocs(
+          query(
+            collection(db, "users", currentUser.uid, "unfollowEvents"),
+            where("createdAt", ">=", range.start),
+            where("createdAt", "<", range.end)
+          )
+        );
+        const prevUnfollowsSnap = await getDocs(
+          query(
+            collection(db, "users", currentUser.uid, "unfollowEvents"),
+            where("createdAt", ">=", prevRange.start),
+            where("createdAt", "<", prevRange.end)
+          )
+        );
+        const postsSnap = await getDocs(query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(120)));
+        const myPosts = postsSnap.docs.filter((row) => String(row.data().ownerUid || "") === currentUser.uid);
+        const viewsTotal = myPosts.reduce((acc, row) => acc + Number((row.data().viewsCount || 0)), 0);
+        const likesTotal = myPosts.reduce((acc, row) => acc + Number((row.data().likesCount || 0)), 0);
+        const participantsTotal = myPosts.reduce((acc, row) => acc + Number((row.data().participantsCount || 0)), 0);
+
+        creatorFollowersValue.textContent = String(followersSnap.size);
+        const fTrend = trendText(followersSnap.size, prevFollowersSnap.size, false);
+        creatorFollowersTrend.className = "trend " + fTrend.cls;
+        creatorFollowersTrend.textContent = fTrend.text;
+        creatorUnfollowsValue.textContent = String(unfollowsSnap.size);
+        const uTrend = trendText(unfollowsSnap.size, prevUnfollowsSnap.size, true);
+        creatorUnfollowsTrend.className = "trend " + uTrend.cls;
+        creatorUnfollowsTrend.textContent = uTrend.text;
+        creatorViewsValue.textContent = String(viewsTotal);
+        creatorLikesValue.textContent = String(likesTotal);
+        creatorParticipantsValue.textContent = String(participantsTotal);
+
+        const followersRows = await fetchUserRowsFromUids(
+          followersSnap.docs.map((row) => String((row.data() && row.data().uid) || row.id))
+        );
+        const unfollowsRows = await fetchUserRowsFromUids(
+          unfollowsSnap.docs.map((row) => String((row.data() && row.data().uid) || row.id))
+        );
+        const interactionsSnap = await getDocs(
+          query(collectionGroup(db, "postInteractions"), where("postOwnerUid", "==", currentUser.uid), limit(500))
+        );
+        const viewerMap = new Map();
+        interactionsSnap.docs.forEach((row) => {
+          const data = row.data();
+          const key = String(data.viewerUid || row.id);
+          const item =
+            viewerMap.get(key) || {
+              uid: String(data.viewerUid || ""),
+              pseudo: String(data.viewerPseudo || data.viewerUid || "fan"),
+              viewed: false,
+              liked: false,
+              participated: false,
+              avatarUrl: "",
+            };
+          item.viewed = item.viewed || Boolean(data.viewed);
+          item.liked = item.liked || Boolean(data.liked);
+          item.participated = item.participated || Boolean(data.participated);
+          viewerMap.set(key, item);
+        });
+        const viewersRows = [...viewerMap.values()].filter((x) => x.viewed);
+        const likersRows = [...viewerMap.values()].filter((x) => x.liked);
+        const participantsRows = [...viewerMap.values()].filter((x) => x.participated);
+        creatorRowsCache.followers = followersRows;
+        creatorRowsCache.unfollows = unfollowsRows;
+        creatorRowsCache.views = viewersRows;
+        creatorRowsCache.likes = likersRows;
+        creatorRowsCache.participants = participantsRows;
+        renderCreatorRows(creatorMetricSelected || "views");
+      }
+
+      function startFeedRealtime() {
+        if (!db || !currentUser) return;
+        if (feedUnsubscribe) return;
+        const qPosts = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(30));
+        feedUnsubscribe = onSnapshot(
+          qPosts,
+          (snap) => {
+            feedCacheDocs = snap.docs;
+            renderFeedFromCache(false).catch(console.error);
+            setFeedFirstPostPromptVisibility();
+          },
+          (err) => {
+            console.error(err);
+          }
+        );
+      }
+
+      function stopFeedRealtime() {
+        if (feedUnsubscribe) {
+          feedUnsubscribe();
+          feedUnsubscribe = null;
+        }
+        feedCacheDocs = [];
+      }
+
+      function setFeedFirstPostPromptVisibility() {
+        if (!currentUser) {
+          feedFirstPostBox.classList.add("hidden");
+          return;
+        }
+        const hasPosted = feedCacheDocs.some(
+          (row) => String((row.data() && row.data().ownerUid) || "") === currentUser.uid
+        );
+        feedFirstPostBox.classList.toggle("hidden", hasPosted);
+      }
+
+      function langPromptKey() {
+        if (!currentUser) return "avataronn_lang_prompt_guest_seen";
+        return "avataronn_lang_prompt_seen_" + currentUser.uid;
+      }
+
+      function openLanguageModalIfNeeded() {
+        const key = langPromptKey();
+        const seen = localStorage.getItem(key) === "1";
+        if (seen) return;
+        langModal.classList.add("open");
+      }
+
+      function closeLanguageModal(markSeen = true) {
+        langModal.classList.remove("open");
+        if (markSeen) localStorage.setItem(langPromptKey(), "1");
+      }
+
+      async function loadFeed() {
+        if (!db || !currentUser) return;
+        if (!feedUnsubscribe) {
+          feedList.innerHTML = '<div class="panel small">' + t("loadingTitle") + "</div>";
+          startFeedRealtime();
+          return;
+        }
+        await renderFeedFromCache(true);
+        setFeedFirstPostPromptVisibility();
       }
 
       function applyTranslations() {
@@ -2811,21 +4051,37 @@
         levelDesc.textContent = t("levelChoiceDesc");
         feedTitle.textContent = t("feedTitle");
         feedSubtitle.textContent = t("feedSubtitle");
+        feedFirstPostTitle.textContent = t("feedFirstPostTitle");
+        feedFirstPostText.textContent = t("feedFirstPostText");
+        feedFirstPostMoney.textContent = t("feedFirstPostMoney");
+        feedFirstPostBtn.textContent = t("feedFirstPostBtn");
         feedFilterAll.textContent = t("feedAll");
         feedFilterVote.textContent = t("feedVotes");
         feedFilterQuiz.textContent = t("feedQuiz");
         shareTitle.textContent = t("shareTitle");
         shareSubtitle.textContent = t("shareSubtitle");
+        shareOpenAssetsLabel.textContent = t("shareOpenAssetsLabel");
+        shareSelectedCount.textContent = selectedCountText();
         shareAddQuestion.textContent = t("shareAddQuestion");
         shareAddQuestion.setAttribute("aria-label", t("shareAddQuestion"));
         shareAddHelp.textContent = t("shareAddHelp");
         shareSubmitBtn.textContent = t("sharePublish");
         shareTypeVote.textContent = t("simpleVote");
         shareTypeQuiz.textContent = t("postTypeQuiz");
+        assetTitle.textContent = t("assetTitle");
+        assetClose.textContent = t("assetClose");
+        assetSearch.placeholder = t("assetSearchPlaceholder");
+        assetHint.textContent = t("assetHint");
+        assetApply.textContent = t("assetApply");
+        langModalTitle.textContent = t("languageChoiceTitle");
+        langModalSubtitle.textContent = t("languageChoiceSubtitle");
+        langModalMonetization.textContent = t("languageChoiceMonetization");
+        langModalClose.textContent = t("later");
         shareDescription.placeholder = t("shareDescPlaceholder");
         shareTags.placeholder = t("shareTagsPlaceholder");
         shareMentions.placeholder = t("shareMentionsPlaceholder");
         refreshShareQuestionVisibility();
+        renderAssetGrid();
         difficultyEasy.textContent = t("easy");
         difficultyMedium.textContent = t("medium");
         difficultyHard.textContent = t("hard");
@@ -2842,6 +4098,8 @@
           leaderboardLevelFilter.options[10].text = t("filterAll");
         }
         profileTitle.textContent = t("profileTitle");
+        profileChangeAvatar.textContent = t("changeAvatar");
+        profileCreatorBtn.textContent = t("creatorDashboard");
         profileLabelPseudo.textContent = t("pseudo");
         profileLabelFirst.textContent = t("firstScore");
         profileLabelSecond.textContent = t("secondScore");
@@ -2852,6 +4110,25 @@
         navShare.textContent = t("navShare");
         navLeaderboard.textContent = t("navLeaderboard");
         navProfile.textContent = t("navProfile");
+        backFromUserProfile.textContent = "← " + t("backToFeed");
+        backFromCreator.textContent = "← " + t("backProfile");
+        creatorTitle.textContent = t("creatorDashboard");
+        creatorMonetizationTitle.textContent = t("creatorMonetizationTitle");
+        creatorMonetizationLine1.textContent = t("creatorMonetizationLine1");
+        creatorMonetizationLine2.textContent = t("creatorMonetizationLine2");
+        creatorMonetizationLine3.textContent = t("creatorMonetizationLine3");
+        creatorFollowersLabel.textContent = t("newFollowers");
+        creatorUnfollowsLabel.textContent = t("unfollows");
+        creatorViewsLabel.textContent = t("totalViewsLabel");
+        creatorLikesLabel.textContent = t("totalLikesCount");
+        creatorParticipantsLabel.textContent = t("totalParticipantsLabel");
+        creatorSearch.placeholder = t("searchUserPlaceholder");
+        creatorDetailTitle.textContent = t("profilesLabel");
+        if (publicFollowBtn.dataset.following === "1") {
+          publicFollowBtn.textContent = t("following");
+        } else {
+          publicFollowBtn.textContent = t("follow");
+        }
         scoreView.textContent = t("score") + ": " + score;
         syncQuizData();
         backLevel.textContent = "← " + t("levelLabel") + " " + currentLevel;
@@ -2893,6 +4170,7 @@
           accountBtn.textContent = "👤";
           bottomNav.classList.add("locked");
           profilePseudo.textContent = "-";
+          profileAvatar.src = fallbackAvatarUrl();
           profileFirst.textContent = "-";
           profileSecond.textContent = "-";
           profileRank.textContent = "#-";
@@ -2902,9 +4180,11 @@
           return;
         }
         const initial = (currentPseudo || currentUser.email || "U").trim().charAt(0).toUpperCase();
-        accountBtn.textContent = initial;
+        const avatar = currentUserAvatar || fallbackAvatarUrl();
+        accountBtn.innerHTML = '<img src="' + escapeHtml(avatar) + '" alt="' + escapeHtml(initial) + '" />';
         bottomNav.classList.remove("locked");
         profilePseudo.textContent = currentPseudo || currentUser.email;
+        profileAvatar.src = currentUserAvatar || fallbackAvatarUrl();
         profileFirst.textContent = firstScoreEasy === null ? "-" : String(firstScoreEasy) + "/7";
         profileSecond.textContent = secondScoreEasy === null ? "-" : String(secondScoreEasy) + "/7";
         profileBadge.textContent = t("badgeLabel") + ": " + getBadge(firstScoreEasy === null ? 0 : firstScoreEasy);
@@ -3033,6 +4313,7 @@
             (unlockMediumL1 && !Boolean(data.unlockMediumL1)) ||
             (unlockHardL1 && !Boolean(data.unlockHardL1));
           currentPseudo = String(data.pseudo || currentPseudo || "");
+          currentUserAvatar = String(data.avatarUrl || "");
         } else {
           firstScoreEasy = null;
           secondScoreEasy = null;
@@ -3042,6 +4323,7 @@
           unlockedModesByLevel = { 1: { easy: true, medium: false, hard: false } };
           completedModesByLevel = { 1: { easy: false, medium: false, hard: false } };
           referenceScoresByLevel = { 1: { easy: null, medium: null, hard: null } };
+          currentUserAvatar = "";
         }
 
         if (shouldPatchUnlock || shouldPatchReference) {
@@ -3370,6 +4652,24 @@
       startHard.addEventListener("click", () => startQuiz("hard"));
       backLevel.addEventListener("click", () => showScreen("level"));
       profilePlayBtn.addEventListener("click", () => showScreen("level"));
+      backFromUserProfile.addEventListener("click", () => showScreen("feed"));
+      backFromCreator.addEventListener("click", () => showScreen("profile"));
+      profileCreatorBtn.addEventListener("click", async () => {
+        showScreen("creatorDashboard");
+        await loadCreatorDashboard();
+      });
+      creatorCardFollowers.addEventListener("click", () => renderCreatorRows("followers"));
+      creatorCardUnfollows.addEventListener("click", () => renderCreatorRows("unfollows"));
+      creatorCardViews.addEventListener("click", () => renderCreatorRows("views"));
+      creatorCardLikes.addEventListener("click", () => renderCreatorRows("likes"));
+      creatorCardParticipants.addEventListener("click", () => renderCreatorRows("participants"));
+      creatorMonthFilter.addEventListener("change", async () => {
+        creatorMonthKey = creatorMonthFilter.value;
+        await loadCreatorDashboard();
+      });
+      creatorSearch.addEventListener("input", () => {
+        renderCreatorRows(creatorMetricSelected || "views");
+      });
 
       shareAddQuestion.addEventListener("click", () => {
         if (shareType.value === "vote") return;
@@ -3386,11 +4686,89 @@
         refreshShareQuestionVisibility();
       });
 
-      shareImages.addEventListener("change", () => {
-        clearSharePreviewUrls();
-        const files = [...(shareImages.files || [])].slice(0, 4);
-        sharePreviewUrls = files.map((file) => URL.createObjectURL(file));
-        renderSharePreview(0);
+      function openAssetPicker(mode) {
+        assetPickerMode = mode;
+        if (assetPickerMode === "avatar") {
+          const current = assetLibrary.find((item) => item.url === currentUserAvatar);
+          selectedAvatarAssetId = current ? current.id : "";
+        }
+        assetModal.classList.add("open");
+        renderAssetGrid();
+      }
+
+      shareOpenAssets.addEventListener("click", () => {
+        openAssetPicker("post");
+      });
+      profileChangeAvatar.addEventListener("click", () => openAssetPicker("avatar"));
+      assetClose.addEventListener("click", () => {
+        assetModal.classList.remove("open");
+      });
+      assetApply.addEventListener("click", async () => {
+        assetModal.classList.remove("open");
+        if (assetPickerMode === "avatar") {
+          const selected = assetLibrary.find((item) => item.id === selectedAvatarAssetId);
+          if (!selected || !currentUser || !db) return;
+          currentUserAvatar = selected.url;
+          profileAvatar.src = currentUserAvatar;
+          userAvatarCache.set(currentUser.uid, currentUserAvatar);
+          updateAccountUi();
+          await setDoc(
+            doc(db, "users", currentUser.uid),
+            { avatarUrl: currentUserAvatar, updatedAt: serverTimestamp() },
+            { merge: true }
+          );
+        } else {
+          syncSelectedAssetsPreview();
+        }
+      });
+      assetSearch.addEventListener("input", () => renderAssetGrid());
+      assetModal.addEventListener("click", (event) => {
+        if (event.target === assetModal) assetModal.classList.remove("open");
+      });
+
+      publicFollowBtn.addEventListener("click", async () => {
+        if (!currentPublicProfileUid) return;
+        if (publicProfileFollowInFlight) return;
+        if (currentPublicProfileUid === currentUser.uid) return;
+        publicProfileFollowInFlight = true;
+        const beforeFollowing = publicProfileState.following;
+        const beforeFollowers = publicProfileState.followersCount;
+        publicProfileState.following = !beforeFollowing;
+        publicProfileState.followersCount = Math.max(
+          0,
+          beforeFollowers + (publicProfileState.following ? 1 : -1)
+        );
+        publicMeta.textContent =
+          String(publicProfileState.followersCount) +
+          " " +
+          t("followers") +
+          " · " +
+          String(publicProfileState.likesTotal) +
+          " " +
+          t("totalLikesLabel");
+        publicFollowBtn.dataset.following = publicProfileState.following ? "1" : "0";
+        publicFollowBtn.textContent = publicProfileState.following ? t("following") : t("follow");
+        publicFollowBtn.disabled = true;
+        try {
+          await toggleFollowUser(currentPublicProfileUid);
+        } catch (err) {
+          console.error(err);
+          publicProfileState.following = beforeFollowing;
+          publicProfileState.followersCount = beforeFollowers;
+          publicMeta.textContent =
+            String(publicProfileState.followersCount) +
+            " " +
+            t("followers") +
+            " · " +
+            String(publicProfileState.likesTotal) +
+            " " +
+            t("totalLikesLabel");
+          publicFollowBtn.dataset.following = publicProfileState.following ? "1" : "0";
+          publicFollowBtn.textContent = publicProfileState.following ? t("following") : t("follow");
+        } finally {
+          publicFollowBtn.disabled = false;
+          publicProfileFollowInFlight = false;
+        }
       });
 
       feedFilterAll.addEventListener("click", () => {
@@ -3408,15 +4786,37 @@
         updateFeedFilterButtons();
         loadFeed().catch(console.error);
       });
+      feedFirstPostBtn.addEventListener("click", () => {
+        showScreen("share");
+      });
+
+      langModalClose.addEventListener("click", () => closeLanguageModal(true));
+      langModalFr.addEventListener("click", () => {
+        currentLang = "fr";
+        localStorage.setItem("avataronn_lang", currentLang);
+        applyTranslations();
+        closeLanguageModal(true);
+      });
+      langModalEn.addEventListener("click", () => {
+        currentLang = "en";
+        localStorage.setItem("avataronn_lang", currentLang);
+        applyTranslations();
+        closeLanguageModal(true);
+      });
+      langModal.addEventListener("click", (event) => {
+        if (event.target === langModal) closeLanguageModal(true);
+      });
 
       shareForm.addEventListener("submit", async (event) => {
         event.preventDefault();
-        if (!currentUser || !db || !storage) {
+        if (!currentUser || !db) {
           setShareMessage(t("shareNeedAuth"), true);
           return;
         }
-        const files = [...(shareImages.files || [])].slice(0, 4);
-        if (!files.length) {
+        const imageUrls = assetLibrary
+          .filter((item) => selectedAssetIds.includes(item.id))
+          .map((item) => item.url);
+        if (!imageUrls.length) {
           setShareMessage(t("shareNeedImage"), true);
           return;
         }
@@ -3434,7 +4834,6 @@
         shareSubmitBtn.disabled = true;
         shareSubmitBtn.style.opacity = "0.7";
         try {
-          const imageUrls = await withTimeout(uploadPostImages(currentUser.uid, files), 45000);
           const tags = normalizeTagList(shareTags.value);
           const mentions = normalizeMentionList(shareMentions.value);
           const voteStats = new Array((questions[0]?.options || []).length).fill(0);
@@ -3443,6 +4842,7 @@
               ownerUid: currentUser.uid,
               ownerPseudo: currentPseudo || (currentUser.email || "fan").split("@")[0],
               ownerEmail: currentUser.email || "",
+              ownerAvatarUrl: currentUserAvatar || "",
               description: shareDescription.value.trim().slice(0, 260),
               tags,
               mentions,
@@ -3458,20 +4858,20 @@
             20000
           );
           shareForm.reset();
+          selectedAssetIds = [];
           visibleShareQuestions = 1;
           refreshShareQuestionVisibility();
           clearSharePreviewUrls();
           renderSharePreview(0);
+          shareSelectedCount.textContent = selectedCountText();
+          assetSearch.value = "";
+          renderAssetGrid();
           setShareMessage(t("sharePublished"));
           showScreen("feed");
           await loadFeed();
         } catch (err) {
           console.error(err);
-          if (String(err && err.message) === "timeout") {
-            setShareMessage(t("shareUploadTimeout"), true);
-          } else {
-            setShareMessage(t("errorPrefix") + ": " + (err.message || t("sharePostTimeout")), true);
-          }
+          setShareMessage(t("errorPrefix") + ": " + (err.message || t("sharePostTimeout")), true);
         } finally {
           shareSubmitBtn.disabled = false;
           shareSubmitBtn.style.opacity = "1";
@@ -3525,6 +4925,7 @@
 
       langBtn.addEventListener("click", () => {
         currentLang = currentLang === "fr" ? "en" : "fr";
+        localStorage.setItem("avataronn_lang", currentLang);
         applyTranslations();
         if (questionText.textContent.trim() && !resultBox.classList.contains("show")) {
           renderQuestion();
@@ -3536,8 +4937,17 @@
         }
         if (quizInProgress) saveQuizProgress();
         if (currentUser) {
-          loadLeaderboard().then(refreshProfileStats).catch(console.error);
-          if (screens.feed.classList.contains("active")) loadFeed().catch(console.error);
+          if (screens.leaderboard.classList.contains("active")) {
+            loadLeaderboard().then(refreshProfileStats).catch(console.error);
+          } else {
+            refreshProfileStats().catch(console.error);
+          }
+          if (screens.userProfile.classList.contains("active") && currentPublicProfileUid) {
+            openPublicProfile(currentPublicProfileUid).catch(console.error);
+          }
+          if (screens.creatorDashboard.classList.contains("active")) {
+            loadCreatorDashboard().catch(console.error);
+          }
         }
       });
 
@@ -3588,6 +4998,10 @@
             {
               pseudo,
               email,
+              avatarUrl: "",
+              followersCount: 0,
+              followingCount: 0,
+              totalLikesReceived: 0,
               createdAt: serverTimestamp(),
               firstScoreEasy: null,
               secondScoreEasy: null,
@@ -3626,7 +5040,11 @@
           currentUser = user;
           loadQuestionHistory();
           if (!user) {
+            stopFeedRealtime();
             currentPseudo = "";
+            currentUserAvatar = "";
+            closeLanguageModal(false);
+            feedFirstPostBox.classList.add("hidden");
             updateAccountUi();
             showScreen("authLogin");
             return;
@@ -3635,9 +5053,11 @@
           try {
             const snap = await getDoc(doc(db, "users", user.uid));
             currentPseudo = snap.exists() ? String(snap.data().pseudo || "") : "";
+            currentUserAvatar = snap.exists() ? String(snap.data().avatarUrl || "") : "";
           } catch (err) {
             console.error(err);
             currentPseudo = "";
+            currentUserAvatar = "";
           }
 
           try {
@@ -3652,6 +5072,7 @@
           }
           await refreshProfileStats();
           updateAccountUi();
+          openLanguageModalIfNeeded();
           showScreen("home");
         });
       }
