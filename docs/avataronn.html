@@ -5043,10 +5043,10 @@
             stopFeedRealtime();
             currentPseudo = "";
             currentUserAvatar = "";
-            closeLanguageModal(false);
             feedFirstPostBox.classList.add("hidden");
             updateAccountUi();
             showScreen("authLogin");
+            openLanguageModalIfNeeded();
             return;
           }
 
@@ -5083,6 +5083,7 @@
       if (!auth) {
         authResolved = true;
         showScreen("authLogin");
+        openLanguageModalIfNeeded();
       } else {
         showScreen("loading");
       }
