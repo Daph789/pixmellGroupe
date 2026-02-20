@@ -822,9 +822,55 @@
         cursor: default;
       }
 
-      .poll-rank-line {
+      .poll-rank-chart {
+        display: flex;
+        gap: 10px;
+        align-items: end;
+        min-height: 150px;
+        padding: 10px 2px 2px;
+      }
+
+      .poll-rank-bar {
+        flex: 1;
+        min-width: 0;
+        display: grid;
+        gap: 6px;
+        justify-items: center;
+      }
+
+      .poll-rank-value {
+        font-size: 0.74rem;
+        font-weight: 800;
+        color: #1d6545;
+      }
+
+      .poll-rank-track {
+        width: 100%;
+        height: 112px;
+        border-radius: 10px;
+        border: 1px solid #cae4d6;
+        background: linear-gradient(180deg, #eef8f3, #f8fcfa);
+        display: flex;
+        align-items: end;
+        overflow: hidden;
+      }
+
+      .poll-rank-fill {
+        width: 100%;
+        background: linear-gradient(180deg, #74e29f 0%, #2ebf68 100%);
+        border-radius: 8px 8px 0 0;
+        min-height: 4px;
+        transition: height 0.35s ease;
+      }
+
+      .poll-rank-label {
+        font-size: 0.72rem;
         color: #2a5e49;
-        font-size: 0.85rem;
+        text-align: center;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .answer-box {
@@ -1056,6 +1102,25 @@
         margin-top: 6px;
         font-size: 0.84rem;
         font-weight: 800;
+      }
+
+      .avatar-cta {
+        position: sticky;
+        bottom: 0;
+        z-index: 3;
+        margin-top: 4px;
+        border: 1px solid #9fddb9;
+        background: #eafbf1;
+        border-radius: 12px;
+        padding: 10px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .avatar-cta-text {
+        font-size: 0.86rem;
+        font-weight: 800;
+        color: #1b6e43;
       }
 
       .stat-block {
@@ -1438,6 +1503,10 @@
           <input id="asset-search" type="text" placeholder="Rechercher une image..." />
           <div class="small" id="asset-hint">Clique pour sélectionner plusieurs images.</div>
           <div class="asset-grid" id="asset-grid"></div>
+          <div class="avatar-cta hidden" id="asset-avatar-cta">
+            <div class="avatar-cta-text" id="asset-avatar-cta-text">Choisir cette photo de profil</div>
+            <button class="auth-submit" id="asset-avatar-confirm" type="button">Choisir cette photo de profil</button>
+          </div>
           <button class="auth-submit" id="asset-apply" type="button">Valider la sélection</button>
         </div>
       </div>
@@ -1455,6 +1524,22 @@
           <div class="lang-choice">
             <button class="auth-submit" id="lang-modal-fr" type="button">🇫🇷 Français</button>
             <button class="auth-toggle" id="lang-modal-en" type="button">🇬🇧 English</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="asset-modal" id="gallery-update-modal">
+        <div class="asset-dialog">
+          <div class="asset-head">
+            <h3 id="gallery-update-title">Nouvelles images disponibles</h3>
+            <button class="asset-close" id="gallery-update-close" type="button">Fermer</button>
+          </div>
+          <p class="small" id="gallery-update-text">
+            De nouvelles images sont disponibles dans la galerie Avatar. Mets ton profil à jour.
+          </p>
+          <div class="lang-choice">
+            <button class="auth-toggle" id="gallery-update-later" type="button">Plus tard</button>
+            <button class="auth-submit" id="gallery-update-view" type="button">Voir</button>
           </div>
         </div>
       </div>
@@ -1809,6 +1894,9 @@
       const assetSearch = document.getElementById("asset-search");
       const assetHint = document.getElementById("asset-hint");
       const assetGrid = document.getElementById("asset-grid");
+      const assetAvatarCta = document.getElementById("asset-avatar-cta");
+      const assetAvatarCtaText = document.getElementById("asset-avatar-cta-text");
+      const assetAvatarConfirm = document.getElementById("asset-avatar-confirm");
       const assetApply = document.getElementById("asset-apply");
       const langModal = document.getElementById("lang-modal");
       const langModalTitle = document.getElementById("lang-modal-title");
@@ -1817,6 +1905,12 @@
       const langModalClose = document.getElementById("lang-modal-close");
       const langModalFr = document.getElementById("lang-modal-fr");
       const langModalEn = document.getElementById("lang-modal-en");
+      const galleryUpdateModal = document.getElementById("gallery-update-modal");
+      const galleryUpdateTitle = document.getElementById("gallery-update-title");
+      const galleryUpdateText = document.getElementById("gallery-update-text");
+      const galleryUpdateClose = document.getElementById("gallery-update-close");
+      const galleryUpdateLater = document.getElementById("gallery-update-later");
+      const galleryUpdateView = document.getElementById("gallery-update-view");
       const difficultyEasy = document.getElementById("difficulty-easy");
       const difficultyMedium = document.getElementById("difficulty-medium");
       const difficultyHard = document.getElementById("difficulty-hard");
@@ -1922,6 +2016,7 @@
         following: false,
       };
       let creatorMetricSelected = "views";
+      const GALLERY_UPDATE_VERSION = "gallery_2026_02_avatars";
       const creatorRowsCache = {
         followers: [],
         unfollows: [],
@@ -2033,6 +2128,11 @@
           languageChoiceMonetization:
             "Monétisation créateur: dès 1 000 vues, ton post peut devenir éligible au paiement.",
           later: "Plus tard",
+          galleryUpdateTitle: "Nouvelles images dans la galerie",
+          galleryUpdateText:
+            "De nouveaux personnages Avatar sont disponibles. Mets à jour ta photo de profil.",
+          galleryUpdateView: "Voir",
+          galleryUpdateClose: "Fermer",
           feedAll: "Tout",
           feedVotes: "Votes",
           feedQuiz: "Quiz",
@@ -2047,6 +2147,7 @@
           assetSearchPlaceholder: "Rechercher une image...",
           assetHint: "Clique pour sélectionner plusieurs images.",
           assetApply: "Valider la sélection",
+          chooseProfilePhoto: "Choisir cette photo de profil",
           shareAddQuestion: "Ajouter une question",
           shareAddHelp: "Ajouter une question (max 3)",
           sharePublish: "Publier",
@@ -2217,6 +2318,11 @@
           languageChoiceMonetization:
             "Creator monetization: from 1,000 views, your post can become payout-eligible.",
           later: "Later",
+          galleryUpdateTitle: "New gallery images available",
+          galleryUpdateText:
+            "New Avatar character images are available. Update your profile picture now.",
+          galleryUpdateView: "View",
+          galleryUpdateClose: "Close",
           feedAll: "All",
           feedVotes: "Votes",
           feedQuiz: "Quiz",
@@ -2231,6 +2337,7 @@
           assetSearchPlaceholder: "Search an image...",
           assetHint: "Click to select multiple images.",
           assetApply: "Apply selection",
+          chooseProfilePhoto: "Choose this profile picture",
           shareAddQuestion: "Add a question",
           shareAddHelp: "Add a question (max 3)",
           sharePublish: "Publish",
@@ -3069,7 +3176,76 @@
         { id: "toruk_01", name: "Toruk makto sky", tags: ["toruk", "vol", "pandora"], url: "assets/gallery/toruk_01.jpg" },
         { id: "ikran_reef", name: "Ikran ridge", tags: ["ikran", "banshee", "na'vi"], url: "assets/gallery/ikran_reef.jpg" },
         { id: "pandora_forest", name: "Pandora forest", tags: ["foret", "eywa", "nuit"], url: "assets/gallery/pandora_forest.jpg" },
+        {
+          id: "jake_neytiri_duo_01",
+          name: "Jake Sully & Neytiri (duo)",
+          nameFr: "Jake Sully & Neytiri (duo)",
+          nameEn: "Jake Sully & Neytiri (duo)",
+          tags: ["jake", "neytiri", "couple", "na'vi", "avatar"],
+          url: "assets/gallery/jake_neytiri_duo_01.jpg",
+        },
+        {
+          id: "kiri_portrait_01",
+          name: "Kiri (portrait luminescent)",
+          nameFr: "Kiri (portrait luminescent)",
+          nameEn: "Kiri (glowing portrait)",
+          tags: ["kiri", "portrait", "na'vi", "way of water", "avatar"],
+          url: "assets/gallery/kiri_portrait_01.jpg",
+        },
+        {
+          id: "neteyam_portrait_01",
+          name: "Neteyam (portrait intense 1)",
+          nameFr: "Neteyam (portrait intense 1)",
+          nameEn: "Neteyam (intense portrait 1)",
+          tags: ["neteyam", "portrait", "na'vi", "avatar"],
+          url: "assets/gallery/neteyam_portrait_01.jpg",
+        },
+        {
+          id: "neteyam_portrait_02",
+          name: "Neteyam (portrait intense 2)",
+          nameFr: "Neteyam (portrait intense 2)",
+          nameEn: "Neteyam (intense portrait 2)",
+          tags: ["neteyam", "portrait", "na'vi", "avatar"],
+          url: "assets/gallery/neteyam_portrait_02.jpg",
+        },
+        {
+          id: "neytiri_portrait_01",
+          name: "Neytiri (portrait 1)",
+          nameFr: "Neytiri (portrait 1)",
+          nameEn: "Neytiri (portrait 1)",
+          tags: ["neytiri", "portrait", "na'vi", "avatar"],
+          url: "assets/gallery/neytiri_portrait_01.jpg",
+        },
+        {
+          id: "neytiri_portrait_02",
+          name: "Neytiri (portrait 2)",
+          nameFr: "Neytiri (portrait 2)",
+          nameEn: "Neytiri (portrait 2)",
+          tags: ["neytiri", "portrait", "na'vi", "avatar", "way of water"],
+          url: "assets/gallery/neytiri_portrait_02.jpg",
+        },
+        {
+          id: "loak_portrait_01",
+          name: "Lo'ak (portrait 1)",
+          nameFr: "Lo'ak (portrait 1)",
+          nameEn: "Lo'ak (portrait 1)",
+          tags: ["lo'ak", "loak", "portrait", "na'vi", "avatar"],
+          url: "assets/gallery/loak_portrait_01.jpg",
+        },
+        {
+          id: "loak_portrait_02",
+          name: "Lo'ak (portrait 2 - colère)",
+          nameFr: "Lo'ak (portrait 2 - colère)",
+          nameEn: "Lo'ak (portrait 2 - angry)",
+          tags: ["lo'ak", "loak", "portrait", "colere", "na'vi", "avatar"],
+          url: "assets/gallery/loak_portrait_02.jpg",
+        },
       ];
+
+      function getAssetDisplayName(item) {
+        if (currentLang === "en") return String(item.nameEn || item.name || "");
+        return String(item.nameFr || item.name || "");
+      }
 
       function fallbackAvatarUrl() {
         return "https://ui-avatars.com/api/?background=E8F5EE&color=1B6C43&bold=true&name=" + encodeURIComponent(currentPseudo || "Fan");
@@ -3244,11 +3420,20 @@
         const searchTerm = assetSearch.value.trim().toLowerCase();
         const list = assetLibrary.filter((item) => {
           if (!searchTerm) return true;
-          const haystack = [item.name, ...(item.tags || []), item.id].join(" ").toLowerCase();
+          const haystack = [
+            item.name,
+            item.nameFr || "",
+            item.nameEn || "",
+            ...(item.tags || []),
+            item.id,
+          ]
+            .join(" ")
+            .toLowerCase();
           return haystack.includes(searchTerm);
         });
         assetGrid.innerHTML = "";
         list.forEach((item) => {
+          const label = getAssetDisplayName(item);
           const card = document.createElement("button");
           card.type = "button";
           const active = assetPickerMode === "avatar"
@@ -3256,8 +3441,8 @@
             : selectedAssetIds.includes(item.id);
           card.className = "asset-card" + (active ? " active" : "");
           card.innerHTML =
-            '<img src="' + escapeHtml(item.url) + '" alt="' + escapeHtml(item.name) + '" />' +
-            '<div class="asset-name">' + escapeHtml(item.name) + "</div>";
+            '<img src="' + escapeHtml(item.url) + '" alt="' + escapeHtml(label) + '" />' +
+            '<div class="asset-name">' + escapeHtml(label) + "</div>";
           card.addEventListener("click", () => {
             if (assetPickerMode === "avatar") {
               selectedAvatarAssetId = item.id;
@@ -3272,6 +3457,7 @@
           });
           assetGrid.appendChild(card);
         });
+        updateAvatarPickerCta();
       }
 
       async function getUserPostInteraction(postId) {
@@ -3318,6 +3504,7 @@
 
       async function submitVote(postId, optionIndex, optionsCount) {
         if (!currentUser || !db) return;
+        let changed = false;
         await runTransaction(db, async (tx) => {
           const interRef = doc(db, "users", currentUser.uid, "postInteractions", postId);
           const interSnap = await tx.get(interRef);
@@ -3348,11 +3535,14 @@
             },
             { merge: true }
           );
+          changed = true;
         });
+        return changed;
       }
 
       async function submitQuiz(postId, answers, scoreValue) {
         if (!currentUser || !db) return;
+        let changed = false;
         await runTransaction(db, async (tx) => {
           const postRef = doc(db, "posts", postId);
           const interRef = doc(db, "users", currentUser.uid, "postInteractions", postId);
@@ -3380,7 +3570,9 @@
             },
             { merge: true }
           );
+          changed = true;
         });
+        return changed;
       }
 
       async function toggleLike(postId, alreadyLiked) {
@@ -3435,21 +3627,30 @@
           .map((option, index) => {
             const count = Number(voteStats[index] || 0);
             const pct = total > 0 ? Math.round((count / total) * 100) : 0;
-            return { option, count, pct };
-          })
-          .sort((a, b) => b.count - a.count);
-        return rows
-          .map(
-            (row, rank) =>
-              '<div class="poll-rank-line">#' +
-              (rank + 1) +
-              " - " +
-              escapeHtml(row.option) +
-              " (" +
-              row.pct +
-              "%)</div>"
-          )
-          .join("");
+            return { option, count, pct, index };
+          });
+        return (
+          '<div class="poll-rank-chart">' +
+          rows
+            .map((row) => {
+              const safeHeight = Math.max(4, Math.min(100, row.pct));
+              return (
+                '<div class="poll-rank-bar" title="' +
+                escapeHtml(row.option) +
+                " - " +
+                row.count +
+                '"><div class="poll-rank-value">' +
+                row.pct +
+                '%</div><div class="poll-rank-track"><div class="poll-rank-fill" style="height:' +
+                safeHeight +
+                '%"></div></div><div class="poll-rank-label">' +
+                escapeHtml(row.option) +
+                "</div></div>"
+              );
+            })
+            .join("") +
+          "</div>"
+        );
       }
 
       function getUiIcon(name, active = false) {
@@ -3617,20 +3818,36 @@
         if (firstQuestion) {
           const pollNode = document.createElement("div");
           pollNode.className = "post-poll";
-          const header = document.createElement("div");
-          header.className = "poll-question";
-          header.textContent = (data.postType === "vote" ? t("postTypeVote") : t("postTypeQuiz")) + " - " + firstQuestion.text;
-          pollNode.appendChild(header);
+          const questions = Array.isArray(data.questions) ? data.questions : [];
+          const participantsCounterNode = card.querySelector('[data-count-participants="1"]');
+          let hasVotedOrPlayed = Boolean(interaction.participated);
 
-          if (interaction.participated) {
+          const bumpParticipantsLocal = () => {
+            if (hasVotedOrPlayed) return;
+            hasVotedOrPlayed = true;
+            data.participantsCount = Number(data.participantsCount || 0) + 1;
+            if (participantsCounterNode) {
+              participantsCounterNode.textContent = String(Number(participantsCounterNode.textContent || 0) + 1);
+            }
+          };
+
+          const renderDoneState = () => {
+            pollNode.innerHTML = "";
+            const head = document.createElement("div");
+            head.className = "poll-question";
+            head.textContent =
+              (data.postType === "vote" ? t("postTypeVote") : t("postTypeQuiz")) + " - " + firstQuestion.text;
+            pollNode.appendChild(head);
+
             const doneNode = document.createElement("div");
             doneNode.className = "small";
             doneNode.textContent =
               data.postType === "vote"
                 ? t("yourVoteDone")
-                : t("yourQuizDone") + (typeof interaction.score === "number" ? " (" + interaction.score + "/" + data.questions.length + ")" : "");
+                : t("yourQuizDone") +
+                  (typeof interaction.score === "number" ? " (" + interaction.score + "/" + questions.length + ")" : "");
             pollNode.appendChild(doneNode);
-            const questions = Array.isArray(data.questions) ? data.questions : [];
+
             if (questions.length) {
               questions.forEach((question, index) => {
                 const line = document.createElement("div");
@@ -3638,6 +3855,7 @@
                 pollNode.appendChild(line);
               });
             }
+
             if (data.postType === "vote") {
               const rankNode = document.createElement("div");
               rankNode.innerHTML =
@@ -3647,15 +3865,29 @@
                 voteRankingHtml(firstQuestion.options || [], voteStats);
               pollNode.appendChild(rankNode);
             }
+          };
+
+          if (interaction.participated) {
+            renderDoneState();
           } else if (data.postType === "vote") {
-            (firstQuestion.options || []).forEach((option, optionIndex) => {
+            const options = firstQuestion.options || [];
+            options.forEach((option, optionIndex) => {
               const optionBtn = document.createElement("button");
               optionBtn.type = "button";
               optionBtn.className = "poll-option";
               optionBtn.textContent = option;
               optionBtn.addEventListener("click", async () => {
-                await submitVote(docSnap.id, optionIndex, (firstQuestion.options || []).length);
-                await renderFeedFromCache(true);
+                const buttons = [...pollNode.querySelectorAll(".poll-option")];
+                buttons.forEach((btn) => (btn.disabled = true));
+                const changed = await submitVote(docSnap.id, optionIndex, options.length);
+                if (changed) {
+                  interaction.participated = true;
+                  interaction.votedIndex = optionIndex;
+                  interaction.type = "vote";
+                  voteStats[optionIndex] = Number(voteStats[optionIndex] || 0) + 1;
+                  bumpParticipantsLocal();
+                }
+                renderDoneState();
               });
               pollNode.appendChild(optionBtn);
             });
@@ -3663,7 +3895,6 @@
             let quizStep = 0;
             let quizScore = 0;
             const userAnswers = [];
-            const questions = Array.isArray(data.questions) ? data.questions : [];
             const renderQuizStep = () => {
               const item = questions[quizStep];
               if (!item) return;
@@ -3682,8 +3913,15 @@
                   if (Number(item.correctIndex) === optionIndex) quizScore += 1;
                   quizStep += 1;
                   if (quizStep >= questions.length) {
-                    await submitQuiz(docSnap.id, userAnswers, quizScore);
-                    await renderFeedFromCache(true);
+                    const changed = await submitQuiz(docSnap.id, userAnswers, quizScore);
+                    if (changed) {
+                      interaction.participated = true;
+                      interaction.answers = [...userAnswers];
+                      interaction.score = quizScore;
+                      interaction.type = "quiz";
+                      bumpParticipantsLocal();
+                    }
+                    renderDoneState();
                   } else {
                     renderQuizStep();
                   }
@@ -3730,17 +3968,6 @@
         setFeedFirstPostPromptVisibility();
       }
 
-      function toMillisSafe(value) {
-        try {
-          if (!value) return 0;
-          if (typeof value.toMillis === "function") return value.toMillis();
-          const dt = new Date(value);
-          return Number.isNaN(dt.getTime()) ? 0 : dt.getTime();
-        } catch (_) {
-          return 0;
-        }
-      }
-
       function buildPostSignature(docSnap) {
         const data = docSnap.data() || {};
         const imageKey = Array.isArray(data.imageUrls) ? data.imageUrls.join("|") : "";
@@ -3762,16 +3989,14 @@
 
       function dedupePostDocs(docs) {
         const byId = new Set();
-        const bySignature = new Map();
+        const bySignature = new Set();
         const deduped = [];
         docs.forEach((docSnap) => {
           if (byId.has(docSnap.id)) return;
           byId.add(docSnap.id);
           const sig = buildPostSignature(docSnap);
-          const ts = toMillisSafe((docSnap.data() || {}).createdAt);
-          const prevTs = bySignature.get(sig);
-          if (sig && prevTs && Math.abs(prevTs - ts) <= 120000) return;
-          if (sig) bySignature.set(sig, ts || Date.now());
+          if (sig && bySignature.has(sig)) return;
+          if (sig) bySignature.add(sig);
           deduped.push(docSnap);
         });
         return deduped;
@@ -4134,6 +4359,11 @@
         return "avataronn_lang_prompt_seen_" + currentUser.uid;
       }
 
+      function galleryUpdatePromptKey() {
+        const owner = currentUser ? currentUser.uid : "guest";
+        return "avataronn_gallery_update_seen_" + GALLERY_UPDATE_VERSION + "_" + owner;
+      }
+
       function openLanguageModalIfNeeded() {
         const key = langPromptKey();
         const seen = localStorage.getItem(key) === "1";
@@ -4144,6 +4374,20 @@
       function closeLanguageModal(markSeen = true) {
         langModal.classList.remove("open");
         if (markSeen) localStorage.setItem(langPromptKey(), "1");
+        openGalleryUpdateModalIfNeeded();
+      }
+
+      function openGalleryUpdateModalIfNeeded() {
+        if (!currentUser) return;
+        if (langModal.classList.contains("open")) return;
+        const seen = localStorage.getItem(galleryUpdatePromptKey()) === "1";
+        if (seen) return;
+        galleryUpdateModal.classList.add("open");
+      }
+
+      function closeGalleryUpdateModal(markSeen = true) {
+        galleryUpdateModal.classList.remove("open");
+        if (markSeen) localStorage.setItem(galleryUpdatePromptKey(), "1");
       }
 
       async function loadFeed() {
@@ -4209,10 +4453,17 @@
         assetSearch.placeholder = t("assetSearchPlaceholder");
         assetHint.textContent = t("assetHint");
         assetApply.textContent = t("assetApply");
+        assetAvatarCtaText.textContent = t("chooseProfilePhoto");
+        assetAvatarConfirm.textContent = t("chooseProfilePhoto");
         langModalTitle.textContent = t("languageChoiceTitle");
         langModalSubtitle.textContent = t("languageChoiceSubtitle");
         langModalMonetization.textContent = t("languageChoiceMonetization");
         langModalClose.textContent = t("later");
+        galleryUpdateTitle.textContent = t("galleryUpdateTitle");
+        galleryUpdateText.textContent = t("galleryUpdateText");
+        galleryUpdateClose.textContent = t("galleryUpdateClose");
+        galleryUpdateLater.textContent = t("later");
+        galleryUpdateView.textContent = t("galleryUpdateView");
         shareDescription.placeholder = t("shareDescPlaceholder");
         shareTags.placeholder = t("shareTagsPlaceholder");
         shareMentions.placeholder = t("shareMentionsPlaceholder");
@@ -4889,8 +5140,34 @@
           const current = assetLibrary.find((item) => item.url === currentUserAvatar);
           selectedAvatarAssetId = current ? current.id : "";
         }
+        assetApply.classList.toggle("hidden", assetPickerMode === "avatar");
         assetModal.classList.add("open");
         renderAssetGrid();
+      }
+
+      function updateAvatarPickerCta() {
+        const showCta = assetPickerMode === "avatar" && Boolean(selectedAvatarAssetId);
+        assetAvatarCta.classList.toggle("hidden", !showCta);
+      }
+
+      async function applyAssetSelection() {
+        assetModal.classList.remove("open");
+        if (assetPickerMode === "avatar") {
+          const selected = assetLibrary.find((item) => item.id === selectedAvatarAssetId);
+          if (!selected || !currentUser || !db) return;
+          currentUserAvatar = selected.url;
+          profileAvatar.src = currentUserAvatar;
+          userAvatarCache.set(currentUser.uid, currentUserAvatar);
+          userCertCache.set(currentUser.uid, Boolean(currentUserCertified));
+          updateAccountUi();
+          await setDoc(
+            doc(db, "users", currentUser.uid),
+            { avatarUrl: currentUserAvatar, updatedAt: serverTimestamp() },
+            { merge: true }
+          );
+          return;
+        }
+        syncSelectedAssetsPreview();
       }
 
       shareOpenAssets.addEventListener("click", () => {
@@ -4910,23 +5187,10 @@
         assetModal.classList.remove("open");
       });
       assetApply.addEventListener("click", async () => {
-        assetModal.classList.remove("open");
-        if (assetPickerMode === "avatar") {
-          const selected = assetLibrary.find((item) => item.id === selectedAvatarAssetId);
-          if (!selected || !currentUser || !db) return;
-          currentUserAvatar = selected.url;
-          profileAvatar.src = currentUserAvatar;
-          userAvatarCache.set(currentUser.uid, currentUserAvatar);
-          userCertCache.set(currentUser.uid, Boolean(currentUserCertified));
-          updateAccountUi();
-          await setDoc(
-            doc(db, "users", currentUser.uid),
-            { avatarUrl: currentUserAvatar, updatedAt: serverTimestamp() },
-            { merge: true }
-          );
-        } else {
-          syncSelectedAssetsPreview();
-        }
+        await applyAssetSelection();
+      });
+      assetAvatarConfirm.addEventListener("click", async () => {
+        await applyAssetSelection();
       });
       assetSearch.addEventListener("input", () => renderAssetGrid());
       assetModal.addEventListener("click", (event) => {
@@ -5012,6 +5276,16 @@
       });
       langModal.addEventListener("click", (event) => {
         if (event.target === langModal) closeLanguageModal(true);
+      });
+      galleryUpdateClose.addEventListener("click", () => closeGalleryUpdateModal(true));
+      galleryUpdateLater.addEventListener("click", () => closeGalleryUpdateModal(true));
+      galleryUpdateView.addEventListener("click", () => {
+        closeGalleryUpdateModal(true);
+        showScreen("profile");
+        openAssetPicker("avatar");
+      });
+      galleryUpdateModal.addEventListener("click", (event) => {
+        if (event.target === galleryUpdateModal) closeGalleryUpdateModal(true);
       });
 
       shareForm.addEventListener("submit", async (event) => {
@@ -5259,6 +5533,7 @@
             currentUserAvatar = "";
             currentUserCertified = false;
             userCertCache.clear();
+            closeGalleryUpdateModal(false);
             feedFirstPostBox.classList.add("hidden");
             updateAccountUi();
             showScreen("authLogin");
@@ -5293,6 +5568,7 @@
           await refreshProfileStats();
           updateAccountUi();
           openLanguageModalIfNeeded();
+          openGalleryUpdateModalIfNeeded();
           showScreen("home");
         });
       }
