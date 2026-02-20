@@ -836,6 +836,7 @@
         display: grid;
         gap: 6px;
         justify-items: center;
+        cursor: pointer;
       }
 
       .poll-rank-value {
@@ -871,6 +872,15 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+      }
+
+      .vote-label-overlay {
+        border: 1px solid #b9e3cb;
+        border-radius: 12px;
+        background: #ffffff;
+        padding: 10px;
+        display: grid;
+        gap: 8px;
       }
 
       .answer-box {
@@ -2173,6 +2183,7 @@
           views: "vues",
           participants: "participants",
           voteRanking: "Classement des votes",
+          voteOptionLabel: "Réponse",
           yourVoteDone: "Vote enregistré.",
           yourQuizDone: "Quiz terminé",
           liked: "Aimé",
@@ -2184,6 +2195,7 @@
           pollAnswerLabel: "Répondre",
           nextInPostQuiz: "Suivant",
           remove: "Retirer",
+          close: "Fermer",
           likeAction: "Like",
           noScore: "Aucun score pour le moment.",
           fanLabel: "Fan",
@@ -2363,6 +2375,7 @@
           views: "views",
           participants: "participants",
           voteRanking: "Vote ranking",
+          voteOptionLabel: "Answer",
           yourVoteDone: "Vote saved.",
           yourQuizDone: "Quiz completed",
           liked: "Liked",
@@ -2374,6 +2387,7 @@
           pollAnswerLabel: "Answer",
           nextInPostQuiz: "Next",
           remove: "Remove",
+          close: "Close",
           likeAction: "Like",
           noScore: "No score yet.",
           fanLabel: "Fan",
@@ -2866,37 +2880,142 @@
         }
       }
 
+      function buildExpandedPool(basePool, level, mode, lang) {
+        const base = (basePool || []).map((item) => ({
+          q: String(item.q || ""),
+          options: Array.isArray(item.options) ? [...item.options] : [],
+          answer: Number(item.answer || 0),
+        }));
+        const levelName = getLevelTitle(level);
+        const frSuffix = {
+          easy: [
+            "Version initiation",
+            "Version fan club",
+            "Version rapide",
+            "Version debut de parcours",
+            "Version challenge doux",
+            "Version memo",
+            "Version entrainement",
+            "Version confirmation",
+          ],
+          medium: [
+            "Analyse de contexte",
+            "Lecture attentive",
+            "Niveau intermediaire",
+            "Precision lore",
+            "Memoire narrative",
+            "Lien de scene",
+            "Point de detail",
+            "Vision globale",
+          ],
+          hard: [
+            "Mode expert",
+            "Chronologie avancee",
+            "Interpretation fine",
+            "Detail canon",
+            "Recoupement d'indices",
+            "Analyse complete",
+            "Version elite",
+            "Verification finale",
+          ],
+        };
+        const enSuffix = {
+          easy: [
+            "Starter round",
+            "Fan club round",
+            "Quick round",
+            "Early journey round",
+            "Soft challenge round",
+            "Memory round",
+            "Training round",
+            "Checkpoint round",
+          ],
+          medium: [
+            "Context analysis",
+            "Close reading",
+            "Intermediate round",
+            "Lore precision",
+            "Narrative memory",
+            "Scene connection",
+            "Detail focus",
+            "Global view",
+          ],
+          hard: [
+            "Expert mode",
+            "Advanced timeline",
+            "Fine interpretation",
+            "Canon detail",
+            "Clue cross-check",
+            "Full analysis",
+            "Elite round",
+            "Final validation",
+          ],
+        };
+        const suffixes = (lang === "en" ? enSuffix : frSuffix)[mode] || [];
+        const expanded = [];
+        suffixes.forEach((label, idx) => {
+          base.forEach((item, qIndex) => {
+            const prefix =
+              lang === "en"
+                ? "Level " + level + " - " + levelName + " - "
+                : "Niveau " + level + " - " + levelName + " - ";
+            expanded.push({
+              q: prefix + item.q + " (" + label + " " + (qIndex + 1) + ")",
+              options: [...item.options],
+              answer: item.answer,
+            });
+          });
+        });
+        return [...base, ...expanded];
+      }
+
       function buildQuizSet(level, mode, lang) {
         const source =
           level === 5
             ? animalsQuizByLang[lang][mode]
             : quizDataByLang[lang][mode];
         const bonus = bonusQuestionsByLang[lang][mode] || [];
-        const pool = [...source, ...bonus];
+        const pool = buildExpandedPool([...source, ...bonus], level, mode, lang);
         const count = 7;
-        const bucketKey = String(level) + "_" + mode + "_" + lang;
-        const recent = recentQuestionHistory[bucketKey] || [];
-        const recentSet = new Set(recent);
+        const normalizedPool = pool.map((item) => ({
+          q: item.q,
+          options: [...item.options],
+          answer: item.answer,
+        }));
+        if (normalizedPool.length <= count) return normalizedPool.slice(0, count);
 
-        const shuffle = (arr) => {
-          const copy = [...arr];
-          for (let i = copy.length - 1; i > 0; i -= 1) {
-            const j = Math.floor(Math.random() * (i + 1));
-            const tmp = copy[i];
-            copy[i] = copy[j];
-            copy[j] = tmp;
+        const makeSeed = (text) => {
+          let h = 2166136261;
+          const src = String(text || "");
+          for (let i = 0; i < src.length; i += 1) {
+            h ^= src.charCodeAt(i);
+            h = Math.imul(h, 16777619);
           }
-          return copy;
+          return h >>> 0;
         };
 
-        const fresh = shuffle(pool.filter((item) => !recentSet.has(item.q)));
-        const used = fresh.slice(0, count);
-        if (used.length < count) {
-          const remaining = shuffle(pool.filter((item) => !used.some((u) => u.q === item.q)));
-          used.push(...remaining.slice(0, count - used.length));
+        const createRng = (seedValue) => {
+          let state = seedValue || 1;
+          return () => {
+            state = (Math.imul(1664525, state) + 1013904223) >>> 0;
+            return state / 4294967296;
+          };
+        };
+
+        // Mêmes questions pour tout le monde sur un niveau/mode/langue donné = difficulté équitable.
+        const rng = createRng(makeSeed(lang + "_" + mode));
+        const shuffled = [...normalizedPool];
+        for (let i = shuffled.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(rng() * (i + 1));
+          const tmp = shuffled[i];
+          shuffled[i] = shuffled[j];
+          shuffled[j] = tmp;
         }
 
-        return used.map((item) => ({
+        // On décale la fenêtre selon le niveau pour éviter de répéter le même set d'un niveau à l'autre.
+        const maxStart = Math.max(0, shuffled.length - count);
+        const offset = maxStart > 0 ? ((level - 1) * count) % (maxStart + 1) : 0;
+        return shuffled.slice(offset, offset + count).map((item) => ({
           q: item.q,
           options: [...item.options],
           answer: item.answer,
@@ -3485,10 +3604,14 @@
       async function registerPostView(postId, postOwnerUid, interaction) {
         if (!currentUser || !db || (interaction && interaction.viewed)) return;
         await runTransaction(db, async (tx) => {
+          const interRef = doc(db, "users", currentUser.uid, "postInteractions", postId);
+          const interSnap = await tx.get(interRef);
+          const interData = interSnap.exists() ? interSnap.data() : {};
+          if (interData.viewed) return;
           const postRef = doc(db, "posts", postId);
           tx.update(postRef, { viewsCount: increment(1) });
           tx.set(
-            doc(db, "users", currentUser.uid, "postInteractions", postId),
+            interRef,
             {
               viewed: true,
               viewedAt: serverTimestamp(),
@@ -3639,6 +3762,8 @@
                 escapeHtml(row.option) +
                 " - " +
                 row.count +
+                '" data-vote-label="' +
+                escapeHtml(row.option) +
                 '"><div class="poll-rank-value">' +
                 row.pct +
                 '%</div><div class="poll-rank-track"><div class="poll-rank-fill" style="height:' +
@@ -3651,6 +3776,31 @@
             .join("") +
           "</div>"
         );
+      }
+
+      function bindVoteBarOverlay(pollNode) {
+        const bars = [...pollNode.querySelectorAll("[data-vote-label]")];
+        bars.forEach((bar) => {
+          bar.addEventListener("click", () => {
+            const label = String(bar.getAttribute("data-vote-label") || "");
+            if (!label) return;
+            const old = pollNode.querySelector(".vote-label-overlay");
+            if (old) old.remove();
+            const overlay = document.createElement("div");
+            overlay.className = "vote-label-overlay";
+            overlay.innerHTML =
+              '<div class="small" style="font-weight:800;">' +
+              t("voteOptionLabel") +
+              '</div><div style="font-weight:800;">' +
+              escapeHtml(label) +
+              '</div><button type="button" class="auth-toggle">' +
+              t("close") +
+              "</button>";
+            const closeBtn = overlay.querySelector("button");
+            closeBtn.addEventListener("click", () => overlay.remove());
+            pollNode.appendChild(overlay);
+          });
+        });
       }
 
       function getUiIcon(name, active = false) {
@@ -3864,6 +4014,7 @@
                 "</div>" +
                 voteRankingHtml(firstQuestion.options || [], voteStats);
               pollNode.appendChild(rankNode);
+              bindVoteBarOverlay(pollNode);
             }
           };
 
@@ -4225,6 +4376,13 @@
         });
       }
 
+      function interactionViewerUid(docSnap, data) {
+        const fromData = String((data && data.viewerUid) || "");
+        if (fromData) return fromData;
+        const parts = String(docSnap.ref.path || "").split("/");
+        return parts.length >= 2 ? String(parts[1] || "") : "";
+      }
+
       async function loadCreatorDashboard() {
         if (!db || !currentUser) return;
         fillCreatorMonthFilter();
@@ -4264,38 +4422,54 @@
         );
         const postsSnap = await getDocs(query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(120)));
         const myPosts = postsSnap.docs.filter((row) => String(row.data().ownerUid || "") === currentUser.uid);
+        const uniqueFollowersMonth = new Set(
+          followersSnap.docs.map((row) => String((row.data() && row.data().uid) || row.id)).filter(Boolean)
+        );
+        const uniquePrevFollowersMonth = new Set(
+          prevFollowersSnap.docs.map((row) => String((row.data() && row.data().uid) || row.id)).filter(Boolean)
+        );
+        const uniqueUnfollowsMonth = new Set(
+          unfollowsSnap.docs.map((row) => String((row.data() && row.data().uid) || row.id)).filter(Boolean)
+        );
+        const uniquePrevUnfollowsMonth = new Set(
+          prevUnfollowsSnap.docs.map((row) => String((row.data() && row.data().uid) || row.id)).filter(Boolean)
+        );
         const viewsTotal = myPosts.reduce((acc, row) => acc + Number((row.data().viewsCount || 0)), 0);
         const likesTotal = myPosts.reduce((acc, row) => acc + Number((row.data().likesCount || 0)), 0);
         const participantsTotal = myPosts.reduce((acc, row) => acc + Number((row.data().participantsCount || 0)), 0);
 
-        creatorFollowersValue.textContent = String(followersSnap.size);
-        const fTrend = trendText(followersSnap.size, prevFollowersSnap.size, false);
+        creatorFollowersValue.textContent = String(uniqueFollowersMonth.size);
+        const fTrend = trendText(uniqueFollowersMonth.size, uniquePrevFollowersMonth.size, false);
         creatorFollowersTrend.className = "trend " + fTrend.cls;
         creatorFollowersTrend.textContent = fTrend.text;
-        creatorUnfollowsValue.textContent = String(unfollowsSnap.size);
-        const uTrend = trendText(unfollowsSnap.size, prevUnfollowsSnap.size, true);
+        creatorUnfollowsValue.textContent = String(uniqueUnfollowsMonth.size);
+        const uTrend = trendText(uniqueUnfollowsMonth.size, uniquePrevUnfollowsMonth.size, true);
         creatorUnfollowsTrend.className = "trend " + uTrend.cls;
         creatorUnfollowsTrend.textContent = uTrend.text;
         creatorViewsValue.textContent = String(viewsTotal);
         creatorLikesValue.textContent = String(likesTotal);
         creatorParticipantsValue.textContent = String(participantsTotal);
 
-        const followersRows = await fetchUserRowsFromUids(
-          followersSnap.docs.map((row) => String((row.data() && row.data().uid) || row.id))
-        );
-        const unfollowsRows = await fetchUserRowsFromUids(
-          unfollowsSnap.docs.map((row) => String((row.data() && row.data().uid) || row.id))
-        );
+        const followersRows = await fetchUserRowsFromUids([...uniqueFollowersMonth]);
+        const unfollowsRows = await fetchUserRowsFromUids([...uniqueUnfollowsMonth]);
         const interactionsSnap = await getDocs(
           query(collectionGroup(db, "postInteractions"), where("postOwnerUid", "==", currentUser.uid), limit(500))
         );
         const viewerMap = new Map();
+        const currentMonthStart = range.start.toMillis();
+        const currentMonthEnd = range.end.toMillis();
         interactionsSnap.docs.forEach((row) => {
           const data = row.data();
-          const key = String(data.viewerUid || row.id);
+          const rawTime = data.answeredAt || data.likedAt || data.viewedAt || null;
+          if (!rawTime || typeof rawTime.toMillis !== "function") return;
+          const ms = rawTime.toMillis();
+          if (ms < currentMonthStart || ms >= currentMonthEnd) return;
+          const viewerUid = interactionViewerUid(row, data);
+          if (!viewerUid) return;
+          const key = viewerUid;
           const item =
             viewerMap.get(key) || {
-              uid: String(data.viewerUid || ""),
+              uid: viewerUid,
               pseudo: String(data.viewerPseudo || data.viewerUid || "fan"),
               viewed: false,
               liked: false,
@@ -4307,9 +4481,19 @@
           item.participated = item.participated || Boolean(data.participated);
           viewerMap.set(key, item);
         });
-        const viewersRows = [...viewerMap.values()].filter((x) => x.viewed);
-        const likersRows = [...viewerMap.values()].filter((x) => x.liked);
-        const participantsRows = [...viewerMap.values()].filter((x) => x.participated);
+        const baseViewerRows = [...viewerMap.values()];
+        const enrichedViewerRows = await fetchUserRowsFromUids(baseViewerRows.map((row) => row.uid));
+        const profileByUid = new Map(enrichedViewerRows.map((row) => [row.uid, row]));
+        baseViewerRows.forEach((row) => {
+          const profile = profileByUid.get(row.uid);
+          if (profile) {
+            row.pseudo = profile.pseudo || row.pseudo;
+            row.avatarUrl = profile.avatarUrl || row.avatarUrl;
+          }
+        });
+        const viewersRows = baseViewerRows.filter((x) => x.viewed);
+        const likersRows = baseViewerRows.filter((x) => x.liked);
+        const participantsRows = baseViewerRows.filter((x) => x.participated);
         creatorRowsCache.followers = followersRows;
         creatorRowsCache.unfollows = unfollowsRows;
         creatorRowsCache.views = viewersRows;
