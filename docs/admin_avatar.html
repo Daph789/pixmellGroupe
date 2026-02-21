@@ -113,6 +113,11 @@
     <main id="panel" class="wrap hidden">
       <section class="card">
         <h2>Vue globale</h2>
+        <div class="row" style="margin-bottom:10px;">
+          <button id="seed-community">Créer seed communauté</button>
+          <button id="cleanup-seed" class="secondary">Supprimer anciens bots</button>
+          <button id="rewrite-seed-comments" class="secondary">Réécrire commentaires bots</button>
+        </div>
         <div class="stats">
           <div class="stat"><div class="k">Inscrits</div><div class="v" id="s-users">0</div></div>
           <div class="stat"><div class="k">Certifiés</div><div class="v" id="s-certified">0</div></div>
@@ -156,6 +161,10 @@
         doc,
         getDocs,
         setDoc,
+        addDoc,
+        writeBatch,
+        serverTimestamp,
+        deleteDoc,
         query,
         where,
         limit,
@@ -186,6 +195,9 @@
       const sCertified = document.getElementById("s-certified");
       const sPosts = document.getElementById("s-posts");
       const sLikes = document.getElementById("s-likes");
+      const seedCommunityBtn = document.getElementById("seed-community");
+      const cleanupSeedBtn = document.getElementById("cleanup-seed");
+      const rewriteSeedCommentsBtn = document.getElementById("rewrite-seed-comments");
 
       let allUsers = [];
       let allPosts = [];
@@ -306,8 +318,597 @@
         });
       }
 
+      function randInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function pick(arr) {
+        return arr[randInt(0, arr.length - 1)];
+      }
+
+      function topicKeyFromPostLike(postLike) {
+        const text = (
+          String(postLike.desc || postLike.description || "") +
+          " " +
+          String(postLike.q || "") +
+          " " +
+          String((postLike.questions && postLike.questions[0] && postLike.questions[0].text) || "")
+        ).toLowerCase();
+        if (text.includes("lo'ak") || text.includes("loak")) return "loak";
+        if (text.includes("kiri")) return "kiri";
+        if (text.includes("neteyam")) return "neteyam";
+        if (text.includes("neytiri")) return "neytiri";
+        if (text.includes("toruk")) return "toruk";
+        if (text.includes("jake")) return "jake";
+        if (text.includes("metkayina") || text.includes("way of water")) return "metkayina";
+        if (text.includes("eywa")) return "eywa";
+        return "avatar";
+      }
+
+      const COMMENT_CATALOG = {
+        loak: {
+          roots: [
+            "Lo'ak a vraiment une énergie de rebelle, ça ressort direct sur ce plan.",
+            "Ce visuel de Lo'ak est lourd, on sent trop son côté impulsif.",
+            "Je trouve que cette scène montre bien son évolution dans le film.",
+            "Le post est bien choisi, Lo'ak est intense ici.",
+            "Cette image résume bien le perso: brut mais touchant.",
+            "Là on voit clairement pourquoi Lo'ak marque autant les gens.",
+          ],
+          replies: [
+            "@{user} oui clairement, cette scène le résume trop bien.",
+            "@{user} je suis d'accord, c'est un de ses meilleurs moments.",
+            "@{user} pas faux, surtout son regard sur ce shot.",
+            "@{user} j'ai eu la même lecture que toi.",
+          ],
+        },
+        kiri: {
+          roots: [
+            "Kiri a une vibe unique, ce post le montre super bien.",
+            "Son aura mystique ressort de fou sur cette image.",
+            "Franchement Kiri est à part dans la saga, ça se voit direct ici.",
+            "Le choix de scène est excellent pour parler de Kiri.",
+            "J'adore ce plan, il capture vraiment sa sensibilité.",
+            "Ce post met bien en avant son côté spirituel.",
+          ],
+          replies: [
+            "@{user} oui, c'est exactement ce qui rend Kiri spéciale.",
+            "@{user} je valide, cette scène est ultra marquante.",
+            "@{user} même avis, elle a une présence différente des autres.",
+            "@{user} totalement d'accord avec ton point.",
+          ],
+        },
+        neteyam: {
+          roots: [
+            "Neteyam dégage un vrai calme de leader sur ce plan.",
+            "Ce post est propre, on voit direct son côté protecteur.",
+            "Le regard de Neteyam ici est super fort.",
+            "Cette scène montre bien pourquoi il impose autant.",
+            "On sent bien sa maturité dans cette image.",
+            "Très bon choix de visuel pour Neteyam.",
+          ],
+          replies: [
+            "@{user} réel, il a une présence de leader.",
+            "@{user} oui, ce regard il est incroyable.",
+            "@{user} je suis d'accord, scène très forte.",
+            "@{user} grave, c'est un de ses meilleurs plans.",
+          ],
+        },
+        neytiri: {
+          roots: [
+            "Neytiri impose trop sur ce plan, c'est net.",
+            "Ce visuel montre bien sa force et sa précision.",
+            "Très bon post, on ressent son intensité directe.",
+            "Cette scène de Neytiri est vraiment iconique.",
+            "Le regard est incroyable ici.",
+            "Franchement rien à dire, choix parfait pour Neytiri.",
+          ],
+          replies: [
+            "@{user} oui, elle domine clairement la scène.",
+            "@{user} totalement, ce plan est culte.",
+            "@{user} je vois la même chose, grosse présence.",
+            "@{user} vrai, l'image est super bien choisie.",
+          ],
+        },
+        toruk: {
+          roots: [
+            "La scène de vol est folle, gros frisson.",
+            "Toruk reste l'un des moments les plus marquants de la saga.",
+            "Ce visuel donne trop envie de revoir la scène entière.",
+            "Très bon post, la sensation de vitesse est bien là.",
+            "Le plan est magnifique, c'est du pur Avatar.",
+            "On sent direct le côté légendaire de Toruk ici.",
+          ],
+          replies: [
+            "@{user} oui, cette scène est mythique.",
+            "@{user} pareil, gros frisson à chaque fois.",
+            "@{user} je valide, ce moment est légendaire.",
+            "@{user} entièrement d'accord.",
+          ],
+        },
+        jake: {
+          roots: [
+            "Le duo Jake/Neytiri fonctionne toujours aussi bien.",
+            "Très bon post, on ressent la force du lien entre eux.",
+            "Ce visuel résume bien l'ADN de la saga.",
+            "La dynamique du duo est super bien captée.",
+            "Iconique, rien d'autre à dire.",
+            "Ce plan est parfait pour parler de famille Sully.",
+          ],
+          replies: [
+            "@{user} oui, ce duo porte une grosse partie de l'histoire.",
+            "@{user} d'accord avec toi, scène super forte.",
+            "@{user} grave, leur dynamique est unique.",
+            "@{user} totalement, post bien senti.",
+          ],
+        },
+        metkayina: {
+          roots: [
+            "L'ambiance Way of Water est trop bien rendue ici.",
+            "Ce post donne vraiment la vibe Metkayina.",
+            "Très bon choix, on sent bien le côté océanique.",
+            "Le visuel est propre, ça respire le film 2.",
+            "On voit direct l'identité du clan marin.",
+            "Ce plan est superbe, très bonne sélection.",
+          ],
+          replies: [
+            "@{user} oui, la vibe marine est hyper présente.",
+            "@{user} je valide, c'est très Way of Water.",
+            "@{user} vrai, ce plan représente bien ce clan.",
+            "@{user} même ressenti ici.",
+          ],
+        },
+        eywa: {
+          roots: [
+            "Le post capture bien le côté spirituel lié à Eywa.",
+            "Très bonne scène, on ressent vraiment la connexion.",
+            "Cette ambiance mystique est super bien rendue.",
+            "Le visuel est cohérent avec le thème Eywa.",
+            "J'aime bien ce choix, c'est très contemplatif.",
+            "Ça représente bien la dimension spirituelle d'Avatar.",
+          ],
+          replies: [
+            "@{user} oui, c'est exactement cette vibe-là.",
+            "@{user} je suis d'accord, ambiance très spirituelle.",
+            "@{user} bien vu, la connexion est bien montrée.",
+            "@{user} clair, ce thème est bien traité.",
+          ],
+        },
+        avatar: {
+          roots: [
+            "Le post est propre et l'image est bien choisie.",
+            "Bonne publication, ça donne envie de débattre.",
+            "Franchement c'est un bon visuel pour la commu.",
+            "Le thème est clair, c'est agréable à lire.",
+            "J'aime bien ce genre de post simple et efficace.",
+            "Très bon choix d'image et de sujet.",
+          ],
+          replies: [
+            "@{user} oui, c'est bien vu.",
+            "@{user} d'accord avec toi.",
+            "@{user} je valide ton commentaire.",
+            "@{user} bien résumé.",
+          ],
+        },
+      };
+
+      function pickManualLine(lines, localUsed, globalUsed) {
+        for (const line of lines) {
+          const key = String(line).toLowerCase().trim();
+          if (localUsed.has(key) || globalUsed.has(key)) continue;
+          localUsed.add(key);
+          globalUsed.add(key);
+          return line;
+        }
+        const fallback = lines[0] || "Post validé.";
+        const fallbackKey = String(fallback).toLowerCase().trim();
+        localUsed.add(fallbackKey);
+        globalUsed.add(fallbackKey);
+        return fallback;
+      }
+
+      function makeSeedComment(tpl, localUsedComments, globalUsedComments) {
+        const key = topicKeyFromPostLike(tpl);
+        const pack = COMMENT_CATALOG[key] || COMMENT_CATALOG.avatar;
+        return pickManualLine(pack.roots, localUsedComments, globalUsedComments);
+      }
+
+      function makeSeedReply(tpl, parentPseudo, _parentText, localUsedComments, globalUsedComments) {
+        const key = topicKeyFromPostLike(tpl);
+        const pack = COMMENT_CATALOG[key] || COMMENT_CATALOG.avatar;
+        const line = pickManualLine(pack.replies, localUsedComments, globalUsedComments);
+        return line.replace("{user}", parentPseudo);
+      }
+
+      function buildHumanCommentSetForPost(postData, totalCount, localUsed, globalUsed) {
+        const key = topicKeyFromPostLike(postData);
+        const pack = COMMENT_CATALOG[key] || COMMENT_CATALOG.avatar;
+        const out = [];
+        const shuffled = [...pack.roots].sort(() => Math.random() - 0.5);
+        for (const line of shuffled) {
+          if (out.length >= totalCount) break;
+          const k = String(line).toLowerCase().trim();
+          if (localUsed.has(k) || globalUsed.has(k)) continue;
+          localUsed.add(k);
+          globalUsed.add(k);
+          out.push(line);
+        }
+        // Fallback unique par post pour éviter toute répétition visible.
+        let idx = 1;
+        while (out.length < totalCount) {
+          const fallback = "Très bon point sur ce post (" + idx + ").";
+          const fk = fallback.toLowerCase();
+          if (!localUsed.has(fk)) {
+            localUsed.add(fk);
+            out.push(fallback);
+          }
+          idx += 1;
+        }
+        return out;
+      }
+
+      function buildHumanReply(parentPseudo, _parentText, localUsed, globalUsed, postData = {}) {
+        const key = topicKeyFromPostLike(postData);
+        const pack = COMMENT_CATALOG[key] || COMMENT_CATALOG.avatar;
+        for (const tpl of pack.replies) {
+          const line = tpl.replace("{user}", parentPseudo);
+          const k = String(line).toLowerCase().trim();
+          if (localUsed.has(k) || globalUsed.has(k)) continue;
+          localUsed.add(k);
+          globalUsed.add(k);
+          return line;
+        }
+        const fallback = "@"+ parentPseudo + " bien vu.";
+        const fk = fallback.toLowerCase();
+        localUsed.add(fk);
+        globalUsed.add(fk);
+        return fallback;
+      }
+
+      async function clearSeedData() {
+        const [postsSnap, usersSnap, adsSnap] = await Promise.all([
+          getDocs(query(collection(db, "posts"), limit(1000))),
+          getDocs(query(collection(db, "users"), limit(1000))),
+          getDocs(query(collection(db, "ads"), limit(1000))),
+        ]);
+
+        const seedPosts = postsSnap.docs.filter((row) => {
+          const d = row.data() || {};
+          return Boolean(d.isSeed) || String(d.ownerUid || "").startsWith("seed_");
+        });
+        const seedUsers = usersSnap.docs.filter((row) => {
+          const d = row.data() || {};
+          return Boolean(d.isSeed) || String(row.id || "").startsWith("seed_");
+        });
+        const seedAds = adsSnap.docs.filter((row) => {
+          const d = row.data() || {};
+          return Boolean(d.isSeed) || String(d.ownerUid || "").startsWith("seed_");
+        });
+
+        let deletedComments = 0;
+
+        // Supprime d'abord les commentaires des posts/pubs bots pour éviter les sous-docs orphelins.
+        for (const row of seedPosts) {
+          const cSnap = await getDocs(query(collection(db, "posts", row.id, "comments"), limit(1000)));
+          await Promise.all(cSnap.docs.map((c) => deleteDoc(c.ref)));
+          deletedComments += cSnap.size;
+        }
+        for (const row of seedAds) {
+          const cSnap = await getDocs(query(collection(db, "ads", row.id, "comments"), limit(1000)));
+          await Promise.all(cSnap.docs.map((c) => deleteDoc(c.ref)));
+          deletedComments += cSnap.size;
+        }
+
+        await Promise.all(seedPosts.map((row) => deleteDoc(row.ref)));
+        await Promise.all(seedAds.map((row) => deleteDoc(row.ref)));
+        await Promise.all(seedUsers.map((row) => deleteDoc(row.ref)));
+
+        return {
+          users: seedUsers.length,
+          posts: seedPosts.length,
+          ads: seedAds.length,
+          comments: deletedComments,
+        };
+      }
+
+      async function seedCommunity() {
+        seedCommunityBtn.disabled = true;
+        seedCommunityBtn.textContent = "Seed en cours...";
+        cleanupSeedBtn.disabled = true;
+        try {
+          const pseudoList = [
+            "LinaWave","KaiSully","NoaMetkayina","MilaEywa","EnzoToruk","SaraIkran","YanisPandora","NinaBlueSky","AdamReef","LeaNaVi",
+            "HugoTulkun","InesForest","RayanLoak","MayaKiri","NolanNeteyam","SofiaSpirit","ImranSkimwing","JadeAwa","TheoRDA","AyaMetkayina"
+          ];
+          const profiles = [];
+          for (let i = 2; i <= 21; i += 1) {
+            profiles.push({
+              uid: "seed_" + i,
+              email: i + "@gmail.com",
+              pseudo: pseudoList[i - 2],
+              preferredLang: i % 2 === 0 ? "fr" : "en",
+            });
+          }
+
+          // Nettoyage seed avant re-génération pour éviter tout doublon.
+          await clearSeedData();
+
+          const avatarPool = [
+            "assets/gallery/toruk_01.jpg",
+            "assets/gallery/kiri_portrait_01.jpg",
+            "assets/gallery/neteyam_portrait_01.jpg",
+            "assets/gallery/neteyam_portrait_02.jpg",
+            "assets/gallery/loak_portrait_01.jpg",
+            "assets/gallery/loak_portrait_02.jpg",
+            "assets/gallery/neytiri_portrait_01.jpg",
+            "assets/gallery/neytiri_portrait_02.jpg",
+            "assets/gallery/jake_neytiri_duo_01.jpg",
+          ];
+
+          const postTemplates = [
+            { image: "assets/gallery/neteyam_portrait_01.jpg", type: "vote", desc: "POV: Neteyam arrive et tout le monde se tait. #Neteyam #SullyFamily", q: "Ce portrait de Neteyam te donne quelle vibe ?", opts: ["Leader calme", "Protecteur", "Trop stylé", "Tout à la fois"] },
+            { image: "assets/gallery/loak_portrait_01.jpg", type: "vote", desc: "Lo'ak a toujours une énergie de rebelle qui évolue. #Loak #WayOfWater", q: "Tu préfères Lo'ak en mode :", opts: ["Rebelle", "Émotion", "Action", "Humour"] },
+            { image: "assets/gallery/kiri_portrait_01.jpg", type: "quiz", desc: "Kiri et son lien avec Pandora, c'est unique. #Kiri #Eywa", q: "Kiri est surtout liée à :", opts: ["Eywa", "RDA", "Quaritch", "Les avatars recom"], answer: 0 },
+            { image: "assets/gallery/toruk_01.jpg", type: "vote", desc: "Toruk en plein ciel: scène légendaire. #Toruk #PandoraSky", q: "Si tu pouvais voler sur Toruk, tu ferais quoi ?", opts: ["Explorer Pandora", "Course aérienne", "Mission solo", "Photo souvenir"] },
+            { image: "assets/gallery/neytiri_portrait_01.jpg", type: "quiz", desc: "Neytiri reste l'une des figures les plus fortes de la saga. #Neytiri #Omatikaya", q: "Neytiri vient du clan :", opts: ["Omatikaya", "Metkayina", "Ash People", "RDA"], answer: 0 },
+            { image: "assets/gallery/jake_neytiri_duo_01.jpg", type: "vote", desc: "Le duo Jake + Neytiri est toujours iconique. #Jake #Neytiri", q: "Ce duo représente surtout :", opts: ["Famille", "Résilience", "Loyauté", "Les trois"] },
+            { image: "assets/gallery/neytiri_portrait_02.jpg", type: "vote", desc: "Neytiri en posture combat: précision maximale. #Neytiri #Warrior", q: "Tu la notes combien sur ce plan ?", opts: ["10/10", "9/10", "8/10", "7/10"] },
+            { image: "assets/gallery/neteyam_portrait_02.jpg", type: "quiz", desc: "Neteyam avait déjà un mindset de grand frère. #Neteyam #Sully", q: "Neteyam est :", opts: ["Le fils aîné des Sully", "Le plus jeune Sully", "Un recom", "Un soldat RDA"], answer: 0 },
+            { image: "assets/gallery/loak_portrait_02.jpg", type: "vote", desc: "Lo'ak en colère: émotion brute. #Loak #Avatar", q: "Dans cette scène, tu ressens surtout :", opts: ["Colère", "Douleur", "Courage", "Les trois"] },
+            { image: "assets/gallery/toruk_01.jpg", type: "quiz", desc: "Petit test lore Na'vi. #AvatarLore #NaVi", q: "Le lien neural avec les créatures se nomme :", opts: ["Tsaheylu", "Skybond", "Eywacode", "Neurobond"], answer: 0 },
+            { image: "assets/gallery/kiri_portrait_01.jpg", type: "vote", desc: "Kiri a une aura très différente des autres persos. #Kiri #Mystic", q: "Kiri dans ton classement perso ?", opts: ["Top 1", "Top 3", "Top 5", "Pas encore"] },
+            { image: "assets/gallery/jake_neytiri_duo_01.jpg", type: "quiz", desc: "Question casting pour les vrais fans. #AvatarQuiz #JakeSully", q: "Jake Sully est interprété par :", opts: ["Sam Worthington", "Stephen Lang", "Cliff Curtis", "Sigourney Weaver"], answer: 0 },
+            { image: "assets/gallery/neytiri_portrait_01.jpg", type: "vote", desc: "Quand Neytiri fixe la caméra, c'est fini. #Neytiri #NaViQueen", q: "Tu es team Neytiri ?", opts: ["Oui à 100%", "Oui", "J'hésite", "Pas mon perso préféré"] },
+            { image: "assets/gallery/neteyam_portrait_01.jpg", type: "quiz", desc: "Question famille Sully. #Neteyam #AvatarFamily", q: "Neteyam est le frère de :", opts: ["Lo'ak et Tuk", "Quaritch", "Tonowari", "Spider seulement"], answer: 0 },
+            { image: "assets/gallery/loak_portrait_01.jpg", type: "vote", desc: "Lo'ak a souvent les scènes les plus imprévisibles. #Loak #Metkayina", q: "Lo'ak dans la saga c'est :", opts: ["Le plus imprévisible", "Le plus touchant", "Le plus courageux", "Un mix des 3"] },
+            { image: "assets/gallery/toruk_01.jpg", type: "vote", desc: "Cette capture de Toruk mérite un fond d'écran. #Toruk #Wallpaper", q: "Tu mets ce visuel en fond d'écran ?", opts: ["Déjà fait", "Je vais le faire", "Pas mon style", "Peut-être"] },
+            { image: "assets/gallery/neytiri_portrait_02.jpg", type: "quiz", desc: "Question Way of Water. #WayOfWater #Metkayina", q: "Le clan marin central du film 2 est :", opts: ["Metkayina", "Omatikaya", "Ash People", "Sky People"], answer: 0 },
+            { image: "assets/gallery/neteyam_portrait_02.jpg", type: "vote", desc: "Plan serré de Neteyam: propre et intense. #Neteyam #Cinematic", q: "Ce plan est :", opts: ["Culte", "Très bon", "Correct", "Bof"] },
+            { image: "assets/gallery/kiri_portrait_01.jpg", type: "quiz", desc: "Date de sortie pour vérifier les vrais. #Avatar2 #Quiz", q: "Avatar: The Way of Water est sorti en :", opts: ["2022", "2020", "2018", "2024"], answer: 0 },
+            { image: "assets/gallery/jake_neytiri_duo_01.jpg", type: "vote", desc: "La saga Avatar parle d'abord de famille et de transmission. #SullyFamily #AvatarSaga", q: "Le thème central de la saga selon toi :", opts: ["Famille", "Nature", "Survie", "Les trois"] },
+          ];
+
+          const batch = writeBatch(db);
+          profiles.forEach((p, idx) => {
+            batch.set(
+              doc(db, "users", p.uid),
+              {
+                pseudo: p.pseudo,
+                pseudoLower: p.pseudo.toLowerCase(),
+                email: p.email,
+                avatarUrl: avatarPool[idx % avatarPool.length],
+                isCertified: false,
+                isSeed: true,
+                preferredLang: p.preferredLang,
+                followersCount: randInt(4, 20),
+                followingCount: randInt(4, 18),
+                totalLikesReceived: randInt(10, 120),
+                unlockedLevel: randInt(1, 8),
+                createdAt: serverTimestamp(),
+              },
+              { merge: true }
+            );
+          });
+          await batch.commit();
+
+          const usedCommentsGlobal = new Set();
+          for (let i = 0; i < postTemplates.length; i += 1) {
+            const owner = profiles[i % profiles.length];
+            const tpl = postTemplates[i];
+            const rootCommentsCount = randInt(3, 5);
+            const replyCommentsCount = randInt(1, 2);
+            const commentsCount = rootCommentsCount + replyCommentsCount;
+            const usedCommentsPost = new Set();
+            const participants = randInt(6, 28);
+            const likes = randInt(Math.ceil(participants * 0.6), participants + 20);
+            const base = {
+              ownerUid: owner.uid,
+              ownerPseudo: owner.pseudo,
+              ownerAvatarUrl: owner.avatarUrl || tpl.image,
+              ownerCertified: false,
+              isSeed: true,
+              description: tpl.desc,
+              imageUrls: [tpl.image],
+              postType: tpl.type,
+              likesCount: likes,
+              viewsCount: likes + randInt(8, 40),
+              participantsCount: participants,
+              commentsCount,
+              createdAt: serverTimestamp(),
+            };
+
+            const postRef = await addDoc(
+              collection(db, "posts"),
+              tpl.type === "vote"
+                ? {
+                    ...base,
+                    questions: [{ text: tpl.q, options: tpl.opts, correctIndex: randInt(0, tpl.opts.length - 1) }],
+                    voteStats: tpl.opts.map(() => randInt(1, 10)),
+                  }
+                : {
+                    ...base,
+                    questions: [{ text: tpl.q, options: tpl.opts, correctIndex: Number(tpl.answer || 0) }],
+                    voteStats: [],
+                  }
+            );
+
+            const rootComments = [];
+            for (let c = 0; c < rootCommentsCount; c += 1) {
+              const user = pick(profiles);
+              const text = makeSeedComment(tpl, usedCommentsPost, usedCommentsGlobal);
+              const created = await addDoc(collection(db, "posts", postRef.id, "comments"), {
+                uid: user.uid,
+                pseudo: user.pseudo,
+                avatarUrl: pick(avatarPool),
+                text,
+                createdAt: serverTimestamp(),
+                isSeed: true,
+              });
+              rootComments.push({ id: created.id, pseudo: user.pseudo, text });
+            }
+
+            for (let r = 0; r < replyCommentsCount; r += 1) {
+              const parent = pick(rootComments);
+              const user = pick(profiles.filter((p) => p.pseudo !== parent.pseudo));
+              await addDoc(collection(db, "posts", postRef.id, "comments"), {
+                uid: user.uid,
+                pseudo: user.pseudo,
+                avatarUrl: pick(avatarPool),
+                text: makeSeedReply(tpl, parent.pseudo, parent.text, usedCommentsPost, usedCommentsGlobal),
+                parentId: parent.id || "",
+                replyToPseudo: parent.pseudo || "",
+                createdAt: serverTimestamp(),
+                isSeed: true,
+              });
+            }
+          }
+          alert("Seed terminé: 20 profils humains + 20 posts variés + interactions.");
+          await loadAll();
+        } catch (e) {
+          console.error(e);
+          alert("Erreur seed.");
+        } finally {
+          seedCommunityBtn.disabled = false;
+          seedCommunityBtn.textContent = "Créer seed communauté";
+          cleanupSeedBtn.disabled = false;
+        }
+      }
+
+      async function rewriteSeedComments() {
+        rewriteSeedCommentsBtn.disabled = true;
+        seedCommunityBtn.disabled = true;
+        cleanupSeedBtn.disabled = true;
+        const prev = rewriteSeedCommentsBtn.textContent;
+        rewriteSeedCommentsBtn.textContent = "Réécriture...";
+        try {
+          const [postsSnap, usersSnap] = await Promise.all([
+            getDocs(query(collection(db, "posts"), limit(1000))),
+            getDocs(query(collection(db, "users"), limit(1000))),
+          ]);
+          const seedProfiles = usersSnap.docs
+            .map((d) => ({ uid: d.id, ...d.data() }))
+            .filter((u) => Boolean(u.isSeed) || String(u.uid || "").startsWith("seed_"));
+          if (!seedProfiles.length) {
+            alert("Aucun bot détecté. Lance d'abord un seed.");
+            return;
+          }
+          const seedPosts = postsSnap.docs.filter((row) => {
+            const d = row.data() || {};
+            return Boolean(d.isSeed) || String(d.ownerUid || "").startsWith("seed_");
+          });
+          let changedPosts = 0;
+          let changedComments = 0;
+          const globalUsed = new Set();
+
+          for (const postRow of seedPosts) {
+            const postData = postRow.data() || {};
+            const cRef = collection(db, "posts", postRow.id, "comments");
+            const cSnap = await getDocs(query(cRef, limit(1000)));
+            const seedComments = cSnap.docs.filter((r) => {
+              const d = r.data() || {};
+              return Boolean(d.isSeed) || String(d.uid || "").startsWith("seed_");
+            });
+            const realCommentsCount = cSnap.size - seedComments.length;
+            await Promise.all(seedComments.map((r) => deleteDoc(r.ref)));
+
+            const localUsed = new Set();
+            const rootCount = randInt(3, 5);
+            const replyCount = randInt(1, 2);
+            const roots = buildHumanCommentSetForPost(postData, rootCount, localUsed, globalUsed);
+            const rootRows = [];
+
+            for (const text of roots) {
+              const user = pick(seedProfiles);
+              const created = await addDoc(cRef, {
+                uid: user.uid,
+                pseudo: user.pseudo,
+                avatarUrl: user.avatarUrl || "",
+                text,
+                likesCount: randInt(0, 3),
+                isSeed: true,
+                createdAt: serverTimestamp(),
+              });
+              rootRows.push({ id: created.id, pseudo: user.pseudo, text });
+            }
+
+            for (let i = 0; i < replyCount && rootRows.length; i += 1) {
+              const parent = pick(rootRows);
+              const user = pick(seedProfiles.filter((p) => p.pseudo !== parent.pseudo));
+              await addDoc(cRef, {
+                uid: user.uid,
+                pseudo: user.pseudo,
+                avatarUrl: user.avatarUrl || "",
+                text: buildHumanReply(parent.pseudo, parent.text, localUsed, globalUsed, postData),
+                parentId: parent.id || "",
+                replyToPseudo: parent.pseudo || "",
+                likesCount: randInt(0, 2),
+                isSeed: true,
+                createdAt: serverTimestamp(),
+              });
+            }
+
+            const newSeedCount = rootCount + replyCount;
+            await setDoc(
+              doc(db, "posts", postRow.id),
+              {
+                commentsCount: Math.max(0, realCommentsCount + newSeedCount),
+                updatedAt: serverTimestamp(),
+              },
+              { merge: true }
+            );
+            changedPosts += 1;
+            changedComments += newSeedCount;
+          }
+
+          alert("Réécriture terminée: " + changedPosts + " posts mis à jour, " + changedComments + " commentaires bots recréés.");
+          await loadAll();
+        } catch (e) {
+          console.error(e);
+          alert("Erreur pendant la réécriture des commentaires bots.");
+        } finally {
+          rewriteSeedCommentsBtn.disabled = false;
+          seedCommunityBtn.disabled = false;
+          cleanupSeedBtn.disabled = false;
+          rewriteSeedCommentsBtn.textContent = prev || "Réécrire commentaires bots";
+        }
+      }
+
       search.addEventListener("input", render);
       refreshBtn.addEventListener("click", () => loadAll().catch(console.error));
+      cleanupSeedBtn.addEventListener("click", async () => {
+        cleanupSeedBtn.disabled = true;
+        seedCommunityBtn.disabled = true;
+        const prevText = cleanupSeedBtn.textContent;
+        cleanupSeedBtn.textContent = "Nettoyage...";
+        try {
+          const stats = await clearSeedData();
+          alert(
+            "Nettoyage terminé : " +
+              stats.users +
+              " users bots, " +
+              stats.posts +
+              " posts bots, " +
+              stats.ads +
+              " pubs bots, " +
+              stats.comments +
+              " commentaires bots supprimés."
+          );
+          await loadAll();
+        } catch (e) {
+          console.error(e);
+          alert("Erreur pendant le nettoyage des bots.");
+        } finally {
+          cleanupSeedBtn.disabled = false;
+          seedCommunityBtn.disabled = false;
+          cleanupSeedBtn.textContent = prevText || "Supprimer anciens bots";
+        }
+      });
+      rewriteSeedCommentsBtn.addEventListener("click", () => {
+        rewriteSeedComments().catch(console.error);
+      });
+      seedCommunityBtn.addEventListener("click", () => {
+        seedCommunity().catch(console.error);
+      });
     </script>
   </body>
 </html>

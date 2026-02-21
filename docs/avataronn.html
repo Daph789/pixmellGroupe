@@ -89,6 +89,19 @@
         cursor: pointer;
       }
 
+      .search-top-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        border: 2px solid #cce8d8;
+        background: #fff;
+        color: #1e7f48;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
       .account {
         width: 44px;
         height: 44px;
@@ -438,7 +451,7 @@
       }
 
       .hidden {
-        display: none;
+        display: none !important;
       }
 
       .auth-form {
@@ -759,6 +772,38 @@
         margin: 0;
       }
 
+      .post-desc .tag {
+        cursor: pointer;
+      }
+
+      .search-form {
+        display: grid;
+        gap: 8px;
+      }
+
+      .search-results {
+        margin-top: 10px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .search-item {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fff;
+        padding: 10px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .search-item img {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid #d4e8dd;
+        object-fit: cover;
+        max-height: 220px;
+      }
+
       .tag {
         color: #1f63c5;
         font-weight: 800;
@@ -923,6 +968,217 @@
         border: 1px solid #cde4d8;
         background: #f7fcf9;
         font-size: 0.84rem;
+      }
+
+      .comments-box {
+        border: 1px solid #d7ece1;
+        background: #f8fcfa;
+        border-radius: 12px;
+        padding: 10px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .comments-list {
+        display: grid;
+        gap: 6px;
+      }
+
+      .comment-row {
+        font-size: 0.84rem;
+        border: 1px solid #d8ebe1;
+        border-radius: 10px;
+        background: #fff;
+        padding: 7px 8px;
+      }
+
+      .comment-meta {
+        font-weight: 800;
+        margin-bottom: 3px;
+      }
+
+      .comment-form {
+        display: flex;
+        gap: 6px;
+      }
+
+      .comment-form input {
+        flex: 1;
+      }
+
+      .comments-sheet {
+        position: fixed;
+        inset: 0;
+        z-index: 1200;
+        display: none;
+      }
+
+      .comments-sheet.open {
+        display: block;
+      }
+
+      .comments-sheet-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(10, 24, 18, 0.5);
+      }
+
+      .comments-sheet-panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        max-height: 78vh;
+        border-radius: 18px 18px 0 0;
+        background: #f8fcfa;
+        border: 1px solid #d4e9de;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        overflow: hidden;
+      }
+
+      .comments-sheet-head {
+        padding: 10px 14px;
+        border-bottom: 1px solid #d9ece2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .comments-sheet-list {
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 10px 14px 8px;
+        display: grid;
+        gap: 10px;
+        align-content: start;
+      }
+
+      .comments-sheet-form {
+        border-top: 1px solid #d9ece2;
+        background: #f8fcfa;
+        padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+        display: grid;
+        gap: 8px;
+      }
+
+      .comments-sheet-input-row {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .comments-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        object-fit: cover;
+        border: 1px solid #c7e5d6;
+        background: #edf7f2;
+      }
+
+      .comments-sheet-input-row input {
+        min-width: 0;
+      }
+
+      .comment-row {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 9px;
+        align-items: start;
+      }
+
+      .comment-body {
+        border: 1px solid #d8ebe1;
+        border-radius: 12px;
+        background: #fff;
+        padding: 8px 10px;
+      }
+
+      .comment-text {
+        font-size: 0.86rem;
+      }
+
+      .comment-actions {
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .comment-reply-btn,
+      .comment-replies-toggle {
+        border: none;
+        background: transparent;
+        padding: 0;
+        color: #4f7467;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.8rem;
+      }
+
+      .comment-replies-wrap {
+        margin-top: 8px;
+        display: none;
+        padding-left: 12px;
+        border-left: 2px solid #d8ebe1;
+        gap: 8px;
+      }
+
+      .comment-replies-wrap.open {
+        display: grid;
+      }
+
+      .comment-row.reply {
+        grid-template-columns: auto 1fr;
+      }
+
+      .comment-row.reply .comments-avatar {
+        width: 28px;
+        height: 28px;
+      }
+
+      .replying-indicator {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        border: 1px solid #cae6d7;
+        border-radius: 10px;
+        background: #eef8f3;
+        padding: 6px 8px;
+        font-size: 0.8rem;
+      }
+
+      .replying-indicator.open {
+        display: flex;
+      }
+
+      .comment-like-btn {
+        border: none;
+        background: transparent;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: #5b7f73;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .comment-like-btn.done {
+        color: #db3f66;
+      }
+
+      .comment-like-btn .icon-svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .single-post-wrap {
+        display: grid;
+        gap: 10px;
       }
 
       .composer-grid {
@@ -1371,6 +1627,9 @@
       <header class="topbar">
         <div class="brand">avatarOnn</div>
         <div class="top-actions">
+          <button class="search-top-btn" id="search-top-btn" type="button" aria-label="Recherche">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          </button>
           <button class="lang-btn" id="lang-btn" type="button">EN</button>
           <button class="account" id="account-btn" aria-label="Compte utilisateur">👤</button>
         </div>
@@ -1491,6 +1750,17 @@
             <button class="auth-submit" id="feed-first-post-btn" type="button">Créer mon premier post</button>
           </div>
           <div class="feed-list" id="feed-list"></div>
+        </div>
+      </section>
+
+      <section id="screen-search" class="screen">
+        <div class="panel">
+          <button class="back-btn" id="search-back-btn" type="button">← Retour</button>
+          <h2 id="search-title">Recherche</h2>
+          <form id="search-form" class="search-form">
+            <input id="search-input" type="text" placeholder="Rechercher #hashtag, @pseudo ou texte..." />
+          </form>
+          <div id="search-results" class="search-results"></div>
         </div>
       </section>
 
@@ -1777,6 +2047,54 @@
         </div>
       </section>
 
+      <section id="screen-publication-detail" class="screen">
+        <button class="back-btn" id="back-from-publication-detail">← Retour publications</button>
+        <div class="panel single-post-wrap">
+          <h2 id="publication-detail-title">Publication</h2>
+          <div id="publication-detail-card"></div>
+          <form id="publication-edit-form" class="auth-form hidden">
+            <label id="publication-edit-label-title">Titre</label>
+            <input id="publication-edit-title" type="text" maxlength="80" />
+            <label id="publication-edit-label-description">Description</label>
+            <textarea id="publication-edit-description" rows="4" maxlength="260"></textarea>
+            <label id="publication-edit-label-image">URL image</label>
+            <input id="publication-edit-image" type="url" placeholder="https://..." />
+            <label id="publication-edit-label-link">Lien redirection</label>
+            <input id="publication-edit-link" type="url" placeholder="https://..." />
+            <label id="publication-edit-label-target">Langue ciblée</label>
+            <select id="publication-edit-target">
+              <option value="all">Français + English</option>
+              <option value="fr">Français uniquement</option>
+              <option value="en">English only</option>
+            </select>
+            <button class="auth-submit" id="publication-edit-save" type="submit">Enregistrer</button>
+            <p class="auth-msg" id="publication-edit-msg"></p>
+          </form>
+        </div>
+      </section>
+
+      <div id="comments-sheet" class="comments-sheet" aria-hidden="true">
+        <div class="comments-sheet-backdrop" id="comments-sheet-backdrop"></div>
+        <div class="comments-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="comments-sheet-title">
+          <div class="comments-sheet-head">
+            <strong id="comments-sheet-title">Commentaires</strong>
+            <button type="button" class="auth-toggle" id="comments-sheet-close">Fermer</button>
+          </div>
+          <div class="comments-sheet-list" id="comments-sheet-list"></div>
+          <div class="comments-sheet-form">
+            <div id="comments-sheet-replying" class="replying-indicator">
+              <span id="comments-sheet-replying-text"></span>
+              <button type="button" class="auth-toggle" id="comments-sheet-replying-cancel">Annuler</button>
+            </div>
+            <div class="comments-sheet-input-row">
+              <img id="comments-sheet-avatar" class="comments-avatar" alt="avatar" />
+              <input id="comments-sheet-input" type="text" maxlength="220" placeholder="Écris un commentaire..." />
+              <button type="button" class="auth-submit" id="comments-sheet-send">Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <nav class="bottom-nav locked" id="bottom-nav">
         <button class="nav-btn active" data-target="home">
           <span class="ico" aria-hidden="true">
@@ -1837,6 +2155,7 @@
         addDoc,
         increment,
         runTransaction,
+        deleteDoc,
       } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
       const screens = {
@@ -1852,12 +2171,15 @@
         profile: document.getElementById("screen-profile"),
         adShare: document.getElementById("screen-ad-share"),
         userProfile: document.getElementById("screen-user-profile"),
+        publicationDetail: document.getElementById("screen-publication-detail"),
         creatorDashboard: document.getElementById("screen-creator-dashboard"),
+        search: document.getElementById("screen-search"),
       };
 
       const bottomNav = document.getElementById("bottom-nav");
       const navButtons = [...document.querySelectorAll(".nav-btn")];
       const langBtn = document.getElementById("lang-btn");
+      const searchTopBtn = document.getElementById("search-top-btn");
       const accountBtn = document.getElementById("account-btn");
       const loadingTitle = document.getElementById("loading-title");
       const loadingSubtitle = document.getElementById("loading-subtitle");
@@ -2024,6 +2346,38 @@
       const publicFollowBtn = document.getElementById("public-follow-btn");
       const publicPostGrid = document.getElementById("public-post-grid");
       const backFromUserProfile = document.getElementById("back-from-user-profile");
+      const backFromPublicationDetail = document.getElementById("back-from-publication-detail");
+      const publicationDetailTitle = document.getElementById("publication-detail-title");
+      const publicationDetailCard = document.getElementById("publication-detail-card");
+      const publicationEditForm = document.getElementById("publication-edit-form");
+      const publicationEditLabelTitle = document.getElementById("publication-edit-label-title");
+      const publicationEditTitle = document.getElementById("publication-edit-title");
+      const publicationEditLabelDescription = document.getElementById("publication-edit-label-description");
+      const publicationEditDescription = document.getElementById("publication-edit-description");
+      const publicationEditLabelImage = document.getElementById("publication-edit-label-image");
+      const publicationEditImage = document.getElementById("publication-edit-image");
+      const publicationEditLabelLink = document.getElementById("publication-edit-label-link");
+      const publicationEditLink = document.getElementById("publication-edit-link");
+      const publicationEditLabelTarget = document.getElementById("publication-edit-label-target");
+      const publicationEditTarget = document.getElementById("publication-edit-target");
+      const commentsSheet = document.getElementById("comments-sheet");
+      const commentsSheetBackdrop = document.getElementById("comments-sheet-backdrop");
+      const commentsSheetTitle = document.getElementById("comments-sheet-title");
+      const commentsSheetClose = document.getElementById("comments-sheet-close");
+      const commentsSheetList = document.getElementById("comments-sheet-list");
+      const commentsSheetAvatar = document.getElementById("comments-sheet-avatar");
+      const commentsSheetInput = document.getElementById("comments-sheet-input");
+      const commentsSheetSend = document.getElementById("comments-sheet-send");
+      const commentsSheetReplying = document.getElementById("comments-sheet-replying");
+      const commentsSheetReplyingText = document.getElementById("comments-sheet-replying-text");
+      const commentsSheetReplyingCancel = document.getElementById("comments-sheet-replying-cancel");
+      const searchBackBtn = document.getElementById("search-back-btn");
+      const searchTitle = document.getElementById("search-title");
+      const searchForm = document.getElementById("search-form");
+      const searchInput = document.getElementById("search-input");
+      const searchResults = document.getElementById("search-results");
+      const publicationEditSave = document.getElementById("publication-edit-save");
+      const publicationEditMsg = document.getElementById("publication-edit-msg");
       const backFromCreator = document.getElementById("back-from-creator");
       const creatorTitle = document.getElementById("creator-title");
       const creatorMonetizationTitle = document.getElementById("creator-monetization-title");
@@ -2094,10 +2448,17 @@
       let feedCacheDocs = [];
       let adsUnsubscribe = null;
       let adsCacheDocs = [];
+      let feedRenderVersion = 0;
+      let feedBuildInProgress = false;
+      let savedFeedScrollY = 0;
+      let searchRenderVersion = 0;
       let assetPickerMode = "post";
       let currentPublicProfileUid = "";
+      let currentPublicationType = "";
+      let currentPublicationId = "";
       let selectedAvatarAssetId = "";
       let creatorMonthKey = "";
+      let commentsSheetUnsubscribe = null;
       const userAvatarCache = new Map();
       const userCertCache = new Map();
       let publicProfileFollowInFlight = false;
@@ -2189,6 +2550,15 @@
           adNeedTitle: "Ajoute un titre de publicité.",
           adNeedImage: "Ajoute une URL d'image valide.",
           adNeedLink: "Ajoute une URL de redirection valide.",
+          publicationDetailTitle: "Publication",
+          backFromPublicationDetail: "Retour publications",
+          publicationEditTitle: "Titre",
+          publicationEditDescription: "Description",
+          publicationEditImage: "URL image",
+          publicationEditLink: "Lien redirection",
+          publicationEditTarget: "Langue ciblée",
+          publicationSaved: "Publication mise à jour.",
+          noPublicationFound: "Publication introuvable.",
           edit: "Modifier",
           editPostSaved: "Post mis à jour.",
           editAdSaved: "Publicité mise à jour.",
@@ -2291,6 +2661,21 @@
           views: "vues",
           clicks: "clics",
           adBadge: "Publicité",
+          comments: "commentaires",
+          commentsTitle: "Commentaires",
+          commentPlaceholder: "Écris un commentaire...",
+          send: "Envoyer",
+          delete: "Supprimer",
+          reply: "Répondre",
+          viewReplies: "Voir les réponses",
+          hideReplies: "Masquer les réponses",
+          replyingTo: "Réponse à",
+          cancelReply: "Annuler",
+          searchTitle: "Recherche",
+          searchPlaceholder: "Rechercher #hashtag, @pseudo ou texte...",
+          searchNoResults: "Aucun résultat.",
+          searchBack: "Retour",
+          noComments: "Aucun commentaire pour le moment.",
           participants: "participants",
           voteRanking: "Classement des votes",
           voteOptionLabel: "Réponse",
@@ -2409,6 +2794,15 @@
           adNeedTitle: "Add an ad title.",
           adNeedImage: "Add a valid image URL.",
           adNeedLink: "Add a valid redirect URL.",
+          publicationDetailTitle: "Post",
+          backFromPublicationDetail: "Back to posts",
+          publicationEditTitle: "Title",
+          publicationEditDescription: "Description",
+          publicationEditImage: "Image URL",
+          publicationEditLink: "Redirect link",
+          publicationEditTarget: "Target language",
+          publicationSaved: "Post updated.",
+          noPublicationFound: "Post not found.",
           edit: "Edit",
           editPostSaved: "Post updated.",
           editAdSaved: "Ad updated.",
@@ -2511,6 +2905,21 @@
           views: "views",
           clicks: "clicks",
           adBadge: "Sponsored",
+          comments: "comments",
+          commentsTitle: "Comments",
+          commentPlaceholder: "Write a comment...",
+          send: "Send",
+          delete: "Delete",
+          reply: "Reply",
+          viewReplies: "View replies",
+          hideReplies: "Hide replies",
+          replyingTo: "Replying to",
+          cancelReply: "Cancel",
+          searchTitle: "Search",
+          searchPlaceholder: "Search #hashtag, @username or text...",
+          searchNoResults: "No result.",
+          searchBack: "Back",
+          noComments: "No comments yet.",
           participants: "participants",
           voteRanking: "Vote ranking",
           voteOptionLabel: "Answer",
@@ -3424,6 +3833,11 @@
         adShareMsg.style.color = isError ? "#b83b4d" : "#1f63c5";
       }
 
+      function setPublicationEditMessage(msg, isError = false) {
+        publicationEditMsg.textContent = msg;
+        publicationEditMsg.style.color = isError ? "#b83b4d" : "#1f63c5";
+      }
+
       async function editRegularPost(postId, postData) {
         if (!currentUser || !db) return;
         if (String(postData.ownerUid || "") !== currentUser.uid) return;
@@ -3470,6 +3884,45 @@
           console.error(err);
           setAdShareMessage(t("errorPrefix") + ": " + (err.message || "operation impossible"), true);
         }
+      }
+
+      async function getViewedPostIdSet() {
+        if (!currentUser || !db) return new Set();
+        try {
+          const snap = await getDocs(query(collection(db, "users", currentUser.uid, "postInteractions"), limit(1000)));
+          const set = new Set();
+          snap.docs.forEach((row) => {
+            const data = row.data() || {};
+            if (data.viewed) set.add(row.id);
+          });
+          return set;
+        } catch (err) {
+          console.error(err);
+          return new Set();
+        }
+      }
+
+      async function getPrioritizedFeedDocs(docs) {
+        const viewedSet = await getViewedPostIdSet();
+        const copy = [...docs];
+        copy.sort((a, b) => {
+          const aViewed = viewedSet.has(a.id) ? 1 : 0;
+          const bViewed = viewedSet.has(b.id) ? 1 : 0;
+          if (aViewed !== bViewed) return aViewed - bViewed;
+          const aLikes = Number((a.data() && a.data().likesCount) || 0);
+          const bLikes = Number((b.data() && b.data().likesCount) || 0);
+          if (aLikes !== bLikes) return bLikes - aLikes;
+          const aMs =
+            a.data() && a.data().createdAt && typeof a.data().createdAt.toMillis === "function"
+              ? a.data().createdAt.toMillis()
+              : 0;
+          const bMs =
+            b.data() && b.data().createdAt && typeof b.data().createdAt.toMillis === "function"
+              ? b.data().createdAt.toMillis()
+              : 0;
+          return bMs - aMs;
+        });
+        return copy;
       }
 
       async function persistUserLanguagePreference() {
@@ -3991,6 +4444,354 @@
         );
       }
 
+      function commentsCollectionRef(type, id) {
+        return collection(db, type === "ad" ? "ads" : "posts", id, "comments");
+      }
+
+      function commentDocRef(type, parentId, commentId) {
+        return doc(db, type === "ad" ? "ads" : "posts", parentId, "comments", commentId);
+      }
+
+      function commentLikeDocRef(type, parentId, commentId, uid) {
+        return doc(
+          db,
+          type === "ad" ? "ads" : "posts",
+          parentId,
+          "comments",
+          commentId,
+          "likes",
+          uid
+        );
+      }
+
+      async function resolveUserCertified(uid) {
+        if (!uid) return false;
+        if (userCertCache.has(uid)) return Boolean(userCertCache.get(uid));
+        try {
+          const snap = await getDoc(doc(db, "users", uid));
+          const certified = snap.exists() ? Boolean(snap.data().isCertified) : false;
+          userCertCache.set(uid, certified);
+          return certified;
+        } catch (_) {
+          return false;
+        }
+      }
+
+      async function enrichComments(type, parentId, list) {
+        if (!list.length) return [];
+        const bySignature = new Map();
+        list.forEach((item) => {
+          if (!item || !item.id) return;
+          const signature = [
+            String(item.parentId || ""),
+            String(item.replyToPseudo || "").toLowerCase().trim(),
+            String(item.pseudo || "").toLowerCase().trim(),
+            String(item.text || "").toLowerCase().trim(),
+          ].join("::");
+          const existing = bySignature.get(signature);
+          if (!existing) {
+            bySignature.set(signature, item);
+            return;
+          }
+          const a = existing.createdAt && typeof existing.createdAt.toMillis === "function" ? existing.createdAt.toMillis() : 0;
+          const b = item.createdAt && typeof item.createdAt.toMillis === "function" ? item.createdAt.toMillis() : 0;
+          if (b > a) bySignature.set(signature, item);
+        });
+        const deduped = [...bySignature.values()];
+        const enriched = await Promise.all(
+          deduped.map(async (item) => {
+            const certifiedFromDoc = Boolean(item.isCertified);
+            const certified = certifiedFromDoc || (await resolveUserCertified(String(item.uid || "")));
+            let likedByMe = false;
+            if (currentUser && item.id) {
+              try {
+                const likeSnap = await getDoc(
+                  commentLikeDocRef(type, parentId, item.id, currentUser.uid)
+                );
+                likedByMe = likeSnap.exists();
+              } catch (_) {}
+            }
+            return { ...item, _certified: certified, _likedByMe: likedByMe };
+          })
+        );
+        return enriched;
+      }
+
+      async function loadComments(type, id) {
+        if (!db) return [];
+        try {
+          const snap = await getDocs(
+            query(commentsCollectionRef(type, id), orderBy("createdAt", "desc"), limit(60))
+          );
+          const raw = snap.docs.map((row) => ({ id: row.id, ...row.data() }));
+          return await enrichComments(type, id, raw);
+        } catch (err) {
+          console.error(err);
+          return [];
+        }
+      }
+
+      async function addComment(type, id, text, parentId = "", replyToPseudo = "") {
+        if (!currentUser || !db) return false;
+        const content = String(text || "").trim().slice(0, 220);
+        if (!content) return false;
+        try {
+          const recent = await getDocs(
+            query(commentsCollectionRef(type, id), orderBy("createdAt", "desc"), limit(25))
+          );
+          const duplicate = recent.docs.some((row) => {
+            const data = row.data() || {};
+            return (
+              String(data.uid || "") === currentUser.uid &&
+              String(data.parentId || "") === String(parentId || "") &&
+              String(data.text || "").trim().toLowerCase() === content.toLowerCase()
+            );
+          });
+          if (duplicate) return false;
+        } catch (_) {}
+        await addDoc(commentsCollectionRef(type, id), {
+          uid: currentUser.uid,
+          pseudo: currentPseudo || (currentUser.email || "fan").split("@")[0],
+          avatarUrl: currentUserAvatar || "",
+          isCertified: Boolean(currentUserCertified),
+          text: content,
+          parentId: String(parentId || ""),
+          replyToPseudo: String(replyToPseudo || ""),
+          likesCount: 0,
+          createdAt: serverTimestamp(),
+        });
+        await setDoc(
+          doc(db, type === "ad" ? "ads" : "posts", id),
+          { commentsCount: increment(1), updatedAt: serverTimestamp() },
+          { merge: true }
+        );
+        return true;
+      }
+
+      async function deleteComment(type, parentId, commentId) {
+        if (!currentUser || !db || !commentId) return false;
+        const cRef = commentDocRef(type, parentId, commentId);
+        const cSnap = await getDoc(cRef);
+        if (!cSnap.exists()) return false;
+        const cData = cSnap.data() || {};
+        if (String(cData.uid || "") !== currentUser.uid) return false;
+        const replySnap = await getDocs(
+          query(commentsCollectionRef(type, parentId), where("parentId", "==", commentId), limit(100))
+        );
+        const replies = replySnap.docs;
+        await Promise.all(replies.map((r) => deleteDoc(r.ref)));
+        await deleteDoc(cRef);
+        const parentRef = doc(db, type === "ad" ? "ads" : "posts", parentId);
+        const parentSnap = await getDoc(parentRef);
+        const prevCount = parentSnap.exists() ? Number(parentSnap.data().commentsCount || 0) : 0;
+        const removed = 1 + replies.length;
+        await setDoc(
+          parentRef,
+          { commentsCount: Math.max(0, prevCount - removed), updatedAt: serverTimestamp() },
+          { merge: true }
+        );
+        return true;
+      }
+
+      function renderCommentsRows(list) {
+        if (!list.length) return '<div class="small">' + t("noComments") + "</div>";
+        const roots = [];
+        const repliesByParent = new Map();
+        list.forEach((item) => {
+          const parentId = String(item.parentId || "");
+          if (!parentId) {
+            roots.push(item);
+            return;
+          }
+          if (!repliesByParent.has(parentId)) repliesByParent.set(parentId, []);
+          repliesByParent.get(parentId).push(item);
+        });
+
+        function renderCommentItem(item, isReply = false) {
+          const pseudo = item.pseudo || "fan";
+          const avatar = avatarUrlForName(pseudo, item.avatarUrl || "");
+          const likesCount = Number(item.likesCount || 0);
+          const liked = Boolean(item._likedByMe);
+          const replyTo = String(item.replyToPseudo || "");
+          const canDelete = Boolean(currentUser && String(item.uid || "") === currentUser.uid);
+          return (
+            '<div class="comment-row' +
+            (isReply ? " reply" : "") +
+            '"><img class="comments-avatar" src="' +
+            escapeHtml(avatar) +
+            '" alt="avatar" /><div class="comment-body"><div class="comment-meta">@' +
+            escapeHtml(pseudo) +
+            (item._certified ? getCertifiedBadgeHtml() : "") +
+            '</div><div class="comment-text">' +
+            (replyTo ? '<span class="small">@' + escapeHtml(replyTo) + " </span>" : "") +
+            escapeHtml(item.text || "") +
+            '</div><div class="comment-actions"><button type="button" class="comment-like-btn' +
+            (liked ? " done" : "") +
+            '" data-comment-like-btn="1" data-comment-id="' +
+            escapeHtml(item.id || "") +
+            '" data-comment-liked="' +
+            (liked ? "1" : "0") +
+            '">' +
+            getUiIcon("heart", liked) +
+            '<span data-comment-like-count="1">' +
+            likesCount +
+            '</span></button><button type="button" class="comment-reply-btn" data-reply-comment="1" data-comment-id="' +
+            escapeHtml(item.id || "") +
+            '" data-comment-pseudo="' +
+            escapeHtml(pseudo) +
+            '">' +
+            t("reply") +
+            "</button>" +
+            (canDelete
+              ? '<button type="button" class="comment-reply-btn" data-delete-comment="1" data-comment-id="' +
+                escapeHtml(item.id || "") +
+                '">' +
+                t("delete") +
+                "</button>"
+              : "") +
+            "</div></div></div>"
+          );
+        }
+
+        return roots
+          .map((root) => {
+            const replies = repliesByParent.get(root.id) || [];
+            const rootHtml = renderCommentItem(root, false);
+            if (!replies.length) return rootHtml;
+            return (
+              rootHtml +
+              '<button type="button" class="comment-replies-toggle" data-toggle-replies="' +
+              escapeHtml(root.id || "") +
+              '">' +
+              t("viewReplies") +
+              " (" +
+              replies.length +
+              ')</button><div class="comment-replies-wrap" data-replies-wrap="' +
+              escapeHtml(root.id || "") +
+              '">' +
+              replies.map((reply) => renderCommentItem(reply, true)).join("") +
+              "</div>"
+            );
+          })
+          .join("");
+      }
+
+      let activeCommentsType = "";
+      let activeCommentsId = "";
+      let activeCommentsCounterNode = null;
+      let activeReplyParentId = "";
+      let activeReplyPseudo = "";
+
+      async function refreshCommentsSheetList() {
+        if (!activeCommentsType || !activeCommentsId || !commentsSheetList) return;
+        const list = await loadComments(activeCommentsType, activeCommentsId);
+        commentsSheetList.innerHTML = renderCommentsRows(list);
+      }
+
+      function closeCommentsSheet() {
+        if (commentsSheetUnsubscribe) {
+          commentsSheetUnsubscribe();
+          commentsSheetUnsubscribe = null;
+        }
+        activeCommentsType = "";
+        activeCommentsId = "";
+        activeCommentsCounterNode = null;
+        activeReplyParentId = "";
+        activeReplyPseudo = "";
+        commentsSheetReplying.classList.remove("open");
+        commentsSheetReplyingText.textContent = "";
+        commentsSheet.classList.remove("open");
+        commentsSheet.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      async function openCommentsSheet(type, id, counterNode) {
+        activeCommentsType = type;
+        activeCommentsId = id;
+        activeCommentsCounterNode = counterNode || null;
+        commentsSheetTitle.textContent = t("commentsTitle");
+        commentsSheetClose.textContent = t("close");
+        commentsSheetInput.placeholder = t("commentPlaceholder");
+        commentsSheetSend.innerHTML = getUiIcon("send");
+        commentsSheetSend.setAttribute("aria-label", t("send"));
+        commentsSheetReplyingCancel.textContent = t("cancelReply");
+        searchTitle.textContent = t("searchTitle");
+        searchInput.placeholder = t("searchPlaceholder");
+        searchBackBtn.textContent = "← " + t("searchBack");
+        activeReplyParentId = "";
+        activeReplyPseudo = "";
+        commentsSheetReplying.classList.remove("open");
+        commentsSheetReplyingText.textContent = "";
+        commentsSheetAvatar.src = avatarUrlForName(
+          currentPseudo || (currentUser && currentUser.email ? currentUser.email.split("@")[0] : "fan"),
+          currentUserAvatar || ""
+        );
+        commentsSheetInput.value = "";
+        commentsSheetList.innerHTML = '<div class="small">' + t("loadingTitle") + "</div>";
+        commentsSheet.classList.add("open");
+        commentsSheet.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        if (commentsSheetUnsubscribe) {
+          commentsSheetUnsubscribe();
+          commentsSheetUnsubscribe = null;
+        }
+        commentsSheetUnsubscribe = onSnapshot(
+          query(commentsCollectionRef(type, id), orderBy("createdAt", "desc"), limit(60)),
+          async (snap) => {
+            const rows = snap.docs.map((row) => ({ id: row.id, ...row.data() }));
+            const enriched = await enrichComments(type, id, rows);
+            commentsSheetList.innerHTML = renderCommentsRows(enriched);
+          },
+          (err) => {
+            console.error(err);
+          }
+        );
+      }
+
+      async function sendActiveComment() {
+        if (!activeCommentsType || !activeCommentsId || !commentsSheetInput) return;
+        const ok = await addComment(
+          activeCommentsType,
+          activeCommentsId,
+          commentsSheetInput.value,
+          activeReplyParentId,
+          activeReplyPseudo
+        );
+        if (!ok) return;
+        commentsSheetInput.value = "";
+        activeReplyParentId = "";
+        activeReplyPseudo = "";
+        commentsSheetReplying.classList.remove("open");
+        commentsSheetReplyingText.textContent = "";
+        commentsSheetInput.placeholder = t("commentPlaceholder");
+        if (activeCommentsCounterNode) {
+          activeCommentsCounterNode.textContent = String(Number(activeCommentsCounterNode.textContent || 0) + 1);
+        }
+      }
+
+      async function toggleCommentLike(type, parentId, commentId, wasLiked) {
+        if (!currentUser || !db || !commentId) return { liked: wasLiked, count: 0 };
+        return await runTransaction(db, async (tx) => {
+          const cRef = commentDocRef(type, parentId, commentId);
+          const likeRef = commentLikeDocRef(type, parentId, commentId, currentUser.uid);
+          const [cSnap, likeSnap] = await Promise.all([tx.get(cRef), tx.get(likeRef)]);
+          const prev = cSnap.exists() ? Number(cSnap.data().likesCount || 0) : 0;
+          let nextLiked = wasLiked;
+          let nextCount = prev;
+          if (likeSnap.exists()) {
+            tx.delete(likeRef);
+            nextLiked = false;
+            nextCount = Math.max(0, prev - 1);
+          } else {
+            tx.set(likeRef, { uid: currentUser.uid, createdAt: serverTimestamp() });
+            nextLiked = true;
+            nextCount = prev + 1;
+          }
+          tx.set(cRef, { likesCount: nextCount, updatedAt: serverTimestamp() }, { merge: true });
+          return { liked: nextLiked, count: nextCount };
+        });
+      }
+
       function bindVoteBarOverlay(pollNode) {
         const bars = [...pollNode.querySelectorAll("[data-vote-label]")];
         bars.forEach((bar) => {
@@ -4027,6 +4828,12 @@
         }
         if (name === "eye") {
           return '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+        }
+        if (name === "comment") {
+          return '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>';
+        }
+        if (name === "send") {
+          return '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4z"/><path d="m22 2-11 11"/></svg>';
         }
         return '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1"/><path d="M12 12l6-6"/></svg>';
       }
@@ -4124,7 +4931,12 @@
           '<span data-count-views="1">' + Number(data.viewsCount || 0) + "</span>" +
           " " +
           t("views") +
-          '</span><span class="post-stat-item">' +
+          '</span><button type="button" class="post-stat-like-btn" data-comment-toggle="1">' +
+          getUiIcon("comment") +
+          '<span data-count-comments="1">' + Number(data.commentsCount || 0) + "</span>" +
+          " " +
+          t("comments") +
+          '</button><span class="post-stat-item">' +
           getUiIcon("target") +
           '<span data-count-participants="1">' + Number(data.participantsCount || 0) + "</span>" +
           " " +
@@ -4143,7 +4955,7 @@
         }
         if (editBtn) {
           editBtn.addEventListener("click", async () => {
-            await editRegularPost(docSnap.id, data);
+            await openPublicationDetail("post", docSnap.id, String(data.ownerUid || ""));
           });
         }
         const likeStatBtn = card.querySelector('[data-like-btn="1"]');
@@ -4192,6 +5004,14 @@
             { passive: false }
           );
         });
+
+        const commentToggleBtn = card.querySelector('[data-comment-toggle="1"]');
+        if (commentToggleBtn) {
+          commentToggleBtn.addEventListener("click", async () => {
+            const node = card.querySelector('[data-count-comments="1"]');
+            await openCommentsSheet("post", docSnap.id, node);
+          });
+        }
 
         if (firstQuestion) {
           const pollNode = document.createElement("div");
@@ -4402,9 +5222,9 @@
         });
       }
 
-      async function renderAdCard(adDocSnap) {
+      async function renderAdCard(adDocSnap, forceVisible = false) {
         const data = adDocSnap.data() || {};
-        if (!isAdVisibleForLang(data)) return null;
+        if (!forceVisible && !isAdVisibleForLang(data)) return null;
         if (data.active === false) return null;
         const interaction = (await getUserAdInteraction(adDocSnap.id)) || {};
         await registerAdView(adDocSnap.id, interaction);
@@ -4413,6 +5233,10 @@
           data.ownerPseudo || "Fan",
           data.ownerAvatarUrl || ""
         );
+        const ownerCertified =
+          typeof data.ownerCertified === "boolean"
+            ? data.ownerCertified
+            : Boolean(userCertCache.get(String(data.ownerUid || "")));
         const canEdit = Boolean(currentUser && String(data.ownerUid || "") === currentUser.uid);
         const card = document.createElement("article");
         card.className = "post-card ad-card";
@@ -4427,6 +5251,7 @@
           escapeHtml(ownerAvatar) +
           '" alt="avatar" /><div class="post-author">@' +
           escapeHtml(data.ownerPseudo || "fan") +
+          (ownerCertified ? getCertifiedBadgeHtml() : "") +
           '</div></button><div class="post-head-right">' +
           (canEdit
             ? '<button type="button" class="post-edit-btn" data-edit-ad="' +
@@ -4459,7 +5284,13 @@
           Number(data.viewsCount || 0) +
           "</span> " +
           t("views") +
-          '</span><span class="post-stat-item">' +
+          '</span><button type="button" class="post-stat-like-btn" data-ad-comment-toggle="1">' +
+          getUiIcon("comment") +
+          '<span data-count-ad-comments="1">' +
+          Number(data.commentsCount || 0) +
+          "</span> " +
+          t("comments") +
+          '</button><span class="post-stat-item">' +
           getUiIcon("target") +
           '<span data-count-ad-clicks="1">' +
           clicksCount +
@@ -4470,6 +5301,7 @@
         const likeBtn = card.querySelector('[data-ad-like-btn="1"]');
         const clickTarget = card.querySelector(".post-media img");
         const descTarget = card.querySelector(".post-desc");
+        const commentToggleBtn = card.querySelector('[data-ad-comment-toggle="1"]');
         const authorBtn = card.querySelector("[data-open-user]");
         const editBtn = card.querySelector("[data-edit-ad]");
         if (authorBtn) {
@@ -4480,7 +5312,7 @@
         }
         if (editBtn) {
           editBtn.addEventListener("click", async () => {
-            await editAdPost(adDocSnap.id, data);
+            await openPublicationDetail("ad", adDocSnap.id, String(data.ownerUid || ""));
           });
         }
         if (likeBtn) {
@@ -4496,6 +5328,12 @@
               "</span> " +
               t("likes");
             await toggleAdLike(adDocSnap.id, prev);
+          });
+        }
+        if (commentToggleBtn) {
+          commentToggleBtn.addEventListener("click", async () => {
+            const node = card.querySelector('[data-count-ad-comments="1"]');
+            await openCommentsSheet("ad", adDocSnap.id, node);
           });
         }
         const openAdLink = async () => {
@@ -4520,9 +5358,11 @@
         const data = docSnap.data();
         const likesNode = card.querySelector('[data-count-likes="1"]');
         const viewsNode = card.querySelector('[data-count-views="1"]');
+        const commentsNode = card.querySelector('[data-count-comments="1"]');
         const partsNode = card.querySelector('[data-count-participants="1"]');
         if (likesNode) likesNode.textContent = String(Number(data.likesCount || 0));
         if (viewsNode) viewsNode.textContent = String(Number(data.viewsCount || 0));
+        if (commentsNode) commentsNode.textContent = String(Number(data.commentsCount || 0));
         if (partsNode) partsNode.textContent = String(Number(data.participantsCount || 0));
       }
 
@@ -4532,14 +5372,17 @@
         const data = docSnap.data() || {};
         const likesNode = card.querySelector('[data-count-ad-likes="1"]');
         const viewsNode = card.querySelector('[data-count-ad-views="1"]');
+        const commentsNode = card.querySelector('[data-count-ad-comments="1"]');
         const clicksNode = card.querySelector('[data-count-ad-clicks="1"]');
         if (likesNode) likesNode.textContent = String(Number(data.likesCount || 0));
         if (viewsNode) viewsNode.textContent = String(Number(data.viewsCount || 0));
+        if (commentsNode) commentsNode.textContent = String(Number(data.commentsCount || 0));
         if (clicksNode) clicksNode.textContent = String(Number(data.clicksCount || 0));
       }
 
       async function renderFeedFromCache(forceRebuild = false) {
         if (!currentUser) return;
+        const runId = ++feedRenderVersion;
         const hasCards = feedList.querySelector(".post-card");
         if (!forceRebuild && hasCards) {
           feedCacheDocs.forEach((row) => updateFeedCardCounters(row));
@@ -4547,61 +5390,198 @@
           setFeedFirstPostPromptVisibility();
           return;
         }
-        feedList.innerHTML = "";
-        const visibleAds = adsCacheDocs.filter((row) => isAdVisibleForLang(row.data() || {}));
-        let adIndex = 0;
-        let postsRendered = 0;
-        for (const row of feedCacheDocs) {
-          const node = await renderFeedPost(row);
-          if (node) {
-            feedList.appendChild(node);
-            postsRendered += 1;
+        feedBuildInProgress = true;
+        try {
+          feedList.innerHTML = "";
+          const prioritizedPosts = await getPrioritizedFeedDocs(feedCacheDocs);
+          const visibleAds = adsCacheDocs.filter((row) => isAdVisibleForLang(row.data() || {}));
+          const seenFeedKeys = new Set();
+          let adIndex = 0;
+          let postsRendered = 0;
+          for (const row of prioritizedPosts) {
+            if (runId !== feedRenderVersion) return;
+            const postKey = "post::" + row.id;
+            if (seenFeedKeys.has(postKey)) continue;
+            seenFeedKeys.add(postKey);
+            const node = await renderFeedPost(row);
+            if (runId !== feedRenderVersion) return;
+            if (node) {
+              feedList.appendChild(node);
+              postsRendered += 1;
+            }
+            if (visibleAds.length && adIndex < visibleAds.length && postsRendered > 0 && postsRendered % 3 === 0) {
+              const adDoc = visibleAds[adIndex];
+              adIndex += 1;
+              const adKey = "ad::" + adDoc.id;
+              if (seenFeedKeys.has(adKey)) continue;
+              seenFeedKeys.add(adKey);
+              const adNode = await renderAdCard(adDoc);
+              if (runId !== feedRenderVersion) return;
+              if (adNode) feedList.appendChild(adNode);
+            }
           }
-          if (visibleAds.length && postsRendered > 0 && postsRendered % 3 === 0) {
-            const adDoc = visibleAds[adIndex % visibleAds.length];
-            adIndex += 1;
-            const adNode = await renderAdCard(adDoc);
-            if (adNode) feedList.appendChild(adNode);
+          if (runId !== feedRenderVersion) return;
+          if (!feedList.children.length) {
+            feedList.innerHTML = '<div class="panel small">' + t("noPosts") + "</div>";
           }
+          setFeedFirstPostPromptVisibility();
+          if (screens.search.classList.contains("active")) {
+            renderSearchResults(searchInput.value).catch(console.error);
+          }
+        } finally {
+          if (runId === feedRenderVersion) feedBuildInProgress = false;
         }
-        if (!feedList.children.length) {
-          feedList.innerHTML = '<div class="panel small">' + t("noPosts") + "</div>";
-        }
-        setFeedFirstPostPromptVisibility();
       }
 
       function buildPostSignature(docSnap) {
         const data = docSnap.data() || {};
+        const normalize = (value) =>
+          String(value || "")
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, " ")
+            .replace(/[.,;:!?'"`’\-_/\\(){}\[\]]+/g, "");
         const imageKey = Array.isArray(data.imageUrls) ? data.imageUrls.join("|") : "";
         const qKey =
           Array.isArray(data.questions) && data.questions[0]
-            ? String(data.questions[0].q || "")
+            ? String(data.questions[0].text || data.questions[0].q || "")
             : "";
         return [
-          String(data.ownerUid || ""),
-          String(data.postType || ""),
-          String(data.description || ""),
-          imageKey,
-          qKey,
-        ]
-          .join("::")
-          .toLowerCase()
-          .trim();
+          normalize(data.postType || ""),
+          normalize(data.description || ""),
+          normalize(imageKey),
+          normalize(qKey),
+        ].join("::");
       }
 
       function dedupePostDocs(docs) {
         const byId = new Set();
-        const bySignature = new Set();
         const deduped = [];
         docs.forEach((docSnap) => {
           if (byId.has(docSnap.id)) return;
           byId.add(docSnap.id);
-          const sig = buildPostSignature(docSnap);
-          if (sig && bySignature.has(sig)) return;
-          if (sig) bySignature.add(sig);
           deduped.push(docSnap);
         });
         return deduped;
+      }
+
+      function buildAdSignature(docSnap) {
+        const data = docSnap.data() || {};
+        const normalize = (value) =>
+          String(value || "")
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, " ")
+            .replace(/[.,;:!?'"`’\-_/\\(){}\[\]]+/g, "");
+        return [
+          normalize(data.ownerUid || ""),
+          normalize(data.title || ""),
+          normalize(data.description || ""),
+          normalize(data.imageUrl || ""),
+          normalize(data.redirectUrl || ""),
+          normalize(data.targetLang || "all"),
+        ].join("::");
+      }
+
+      function dedupeAdDocs(docs) {
+        const byId = new Set();
+        const deduped = [];
+        docs.forEach((docSnap) => {
+          if (byId.has(docSnap.id)) return;
+          byId.add(docSnap.id);
+          deduped.push(docSnap);
+        });
+        return deduped;
+      }
+
+      function normalizeSearchQuery(value) {
+        return String(value || "").trim().toLowerCase();
+      }
+
+      function matchPostSearch(row, q) {
+        const d = row.data() || {};
+        const tags = (String(d.description || "").match(/#[\p{L}\p{N}_-]+/gu) || []).map((x) => x.toLowerCase());
+        const questionText =
+          Array.isArray(d.questions) && d.questions[0]
+            ? String(d.questions[0].text || "") +
+              " " +
+              (Array.isArray(d.questions[0].options) ? d.questions[0].options.join(" ") : "")
+            : "";
+        const haystack = (
+          String(d.description || "") +
+          " @" +
+          String(d.ownerPseudo || "fan") +
+          " " +
+          questionText +
+          " " +
+          tags.join(" ")
+        ).toLowerCase();
+        if (!q) return true;
+        if (q.startsWith("#")) return tags.includes(q);
+        return haystack.includes(q);
+      }
+
+      function matchAdSearch(row, q) {
+        const d = row.data() || {};
+        const haystack = (
+          String(d.title || "") +
+          " " +
+          String(d.description || "") +
+          " @" +
+          String(d.ownerPseudo || "fan")
+        ).toLowerCase();
+        if (!q) return true;
+        if (q.startsWith("#")) return false;
+        return haystack.includes(q);
+      }
+
+      async function renderSearchResults(queryText) {
+        const runId = ++searchRenderVersion;
+        const q = normalizeSearchQuery(queryText);
+        searchResults.innerHTML = '<div class="panel small">' + t("loadingTitle") + "</div>";
+        const posts = dedupePostDocs(feedCacheDocs)
+          .filter((row) => matchPostSearch(row, q))
+          .slice(0, 80);
+        const ads = dedupeAdDocs(adsCacheDocs)
+          .filter((row) => isAdVisibleForLang(row.data() || {}))
+          .filter((row) => matchAdSearch(row, q))
+          .slice(0, 40);
+        const seen = new Set();
+        const nodes = [];
+        for (const row of posts) {
+          if (runId !== searchRenderVersion) return;
+          const key = "p::" + row.id;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          const node = await renderFeedPost(row);
+          if (node) nodes.push(node);
+        }
+        for (const row of ads) {
+          if (runId !== searchRenderVersion) return;
+          const key = "a::" + row.id;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          const node = await renderAdCard(row);
+          if (node) nodes.push(node);
+        }
+        if (runId !== searchRenderVersion) return;
+        searchResults.innerHTML = "";
+        if (!nodes.length) {
+          searchResults.innerHTML = '<div class="panel small">' + t("searchNoResults") + "</div>";
+          return;
+        }
+        nodes.forEach((node) => searchResults.appendChild(node));
+      }
+
+      function openSearchScreen(initialQuery = "") {
+        if (screens.feed.classList.contains("active")) {
+          savedFeedScrollY = window.scrollY || 0;
+        }
+        showScreen("search");
+        const next = String(initialQuery || "").trim();
+        searchInput.value = next;
+        renderSearchResults(next).catch(console.error);
+        setTimeout(() => searchInput.focus(), 0);
       }
 
       async function isFollowingUser(targetUid) {
@@ -4642,6 +5622,68 @@
             tx.set(targetRef, { followersCount: increment(1) }, { merge: true });
           }
         });
+      }
+
+      async function openPublicationDetail(type, id, ownerUid = "") {
+        if (!db || !currentUser || !id) return;
+        currentPublicationType = type === "ad" ? "ad" : "post";
+        currentPublicationId = id;
+        publicationDetailCard.innerHTML = '<div class="panel small">' + t("loadingTitle") + "</div>";
+        publicationEditForm.classList.add("hidden");
+        setPublicationEditMessage("");
+        showScreen("publicationDetail");
+
+        const refNode =
+          currentPublicationType === "ad" ? doc(db, "ads", id) : doc(db, "posts", id);
+        const snap = await getDoc(refNode);
+        if (!snap.exists()) {
+          publicationDetailCard.innerHTML = '<div class="panel small">' + t("noPublicationFound") + "</div>";
+          return;
+        }
+
+        const data = snap.data() || {};
+        const canEdit = Boolean(currentUser && String(data.ownerUid || "") === currentUser.uid);
+        const cardNode =
+          currentPublicationType === "ad"
+            ? await renderAdCard(snap, true)
+            : await renderFeedPost(snap);
+        publicationDetailCard.innerHTML = "";
+        if (cardNode) publicationDetailCard.appendChild(cardNode);
+
+        if (!canEdit) return;
+        publicationEditForm.classList.remove("hidden");
+        if (currentPublicationType === "ad") {
+          publicationEditLabelTitle.classList.remove("hidden");
+          publicationEditTitle.classList.remove("hidden");
+          publicationEditLabelImage.classList.remove("hidden");
+          publicationEditImage.classList.remove("hidden");
+          publicationEditLabelLink.classList.remove("hidden");
+          publicationEditLink.classList.remove("hidden");
+          publicationEditLabelTarget.classList.remove("hidden");
+          publicationEditTarget.classList.remove("hidden");
+          publicationEditTitle.disabled = false;
+          publicationEditImage.disabled = false;
+          publicationEditLink.disabled = false;
+          publicationEditTarget.disabled = false;
+          publicationEditTitle.value = String(data.title || "");
+          publicationEditImage.value = String(data.imageUrl || "");
+          publicationEditLink.value = String(data.redirectUrl || "");
+          publicationEditTarget.value = String(data.targetLang || "all");
+        } else {
+          publicationEditLabelTitle.classList.add("hidden");
+          publicationEditTitle.classList.add("hidden");
+          publicationEditLabelImage.classList.add("hidden");
+          publicationEditImage.classList.add("hidden");
+          publicationEditLabelLink.classList.add("hidden");
+          publicationEditLink.classList.add("hidden");
+          publicationEditLabelTarget.classList.add("hidden");
+          publicationEditTarget.classList.add("hidden");
+          publicationEditTitle.value = "";
+          publicationEditImage.value = "";
+          publicationEditLink.value = "";
+          publicationEditTarget.value = "all";
+        }
+        publicationEditDescription.value = String(data.description || "");
       }
 
       async function openPublicProfile(targetUid) {
@@ -4728,16 +5770,7 @@
           card.className = "user-mini-card";
           card.innerHTML = '<img src="' + escapeHtml(item.image) + '" alt="post" />';
           card.addEventListener("click", async () => {
-            showScreen("feed");
-            await loadFeed();
-            setTimeout(() => {
-              const selector =
-                item.type === "ad"
-                  ? '[data-ad-id="' + item.id + '"]'
-                  : '[data-post-id="' + item.id + '"]';
-              const target = feedList.querySelector(selector);
-              if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-            }, 80);
+            await openPublicationDetail(item.type, item.id, targetUid);
           });
           publicPostGrid.appendChild(card);
         });
@@ -4989,12 +6022,16 @@
       function startFeedRealtime() {
         if (!db || !currentUser) return;
         if (feedUnsubscribe) return;
-        const qPosts = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(30));
+        const qPosts = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(200));
         feedUnsubscribe = onSnapshot(
           qPosts,
           (snap) => {
             feedCacheDocs = dedupePostDocs(snap.docs);
-            renderFeedFromCache(false).catch(console.error);
+            const hasStructuralChange = snap.docChanges().some(
+              (change) => change.type === "added" || change.type === "removed"
+            );
+            if (!hasStructuralChange && feedBuildInProgress) return;
+            renderFeedFromCache(hasStructuralChange).catch(console.error);
             setFeedFirstPostPromptVisibility();
           },
           (err) => {
@@ -5006,14 +6043,15 @@
       function startAdsRealtime() {
         if (!db || !currentUser) return;
         if (adsUnsubscribe) return;
-        const qAds = query(collection(db, "ads"), orderBy("createdAt", "desc"), limit(40));
+        const qAds = query(collection(db, "ads"), orderBy("createdAt", "desc"), limit(200));
         adsUnsubscribe = onSnapshot(
           qAds,
           (snap) => {
-            adsCacheDocs = snap.docs;
+            adsCacheDocs = dedupeAdDocs(snap.docs);
             const hasStructuralChange = snap.docChanges().some(
               (change) => change.type === "added" || change.type === "removed"
             );
+            if (!hasStructuralChange && feedBuildInProgress) return;
             renderFeedFromCache(hasStructuralChange).catch(console.error);
           },
           (err) => {
@@ -5028,6 +6066,8 @@
           feedUnsubscribe = null;
         }
         feedCacheDocs = [];
+        feedBuildInProgress = false;
+        feedRenderVersion += 1;
         if (adsUnsubscribe) {
           adsUnsubscribe();
           adsUnsubscribe = null;
@@ -5091,7 +6131,7 @@
           return;
         }
         if (!adsUnsubscribe) startAdsRealtime();
-        await renderFeedFromCache(true);
+        await renderFeedFromCache(false);
         setFeedFirstPostPromptVisibility();
       }
 
@@ -5196,6 +6236,19 @@
         navLeaderboard.textContent = t("navLeaderboard");
         navProfile.textContent = t("navProfile");
         backFromUserProfile.textContent = "← " + t("backToFeed");
+        backFromPublicationDetail.textContent = "← " + t("backFromPublicationDetail");
+        publicationDetailTitle.textContent = t("publicationDetailTitle");
+        publicationEditLabelTitle.textContent = t("publicationEditTitle");
+        publicationEditLabelDescription.textContent = t("publicationEditDescription");
+        publicationEditLabelImage.textContent = t("publicationEditImage");
+        publicationEditLabelLink.textContent = t("publicationEditLink");
+        publicationEditLabelTarget.textContent = t("publicationEditTarget");
+        publicationEditSave.textContent = t("save");
+        if (publicationEditTarget && publicationEditTarget.options.length >= 3) {
+          publicationEditTarget.options[0].textContent = t("adTargetAll");
+          publicationEditTarget.options[1].textContent = t("adTargetFr");
+          publicationEditTarget.options[2].textContent = t("adTargetEn");
+        }
         backFromCreator.textContent = "← " + t("backProfile");
         backFromAdShare.textContent = "← " + t("backFromAdShare");
         adShareTitle.textContent = t("adShareTitle");
@@ -5211,6 +6264,11 @@
           adLangTarget.options[2].textContent = t("adTargetEn");
         }
         adShareSubmit.textContent = t("adPublish");
+        commentsSheetTitle.textContent = t("commentsTitle");
+        commentsSheetClose.textContent = t("close");
+        commentsSheetInput.placeholder = t("commentPlaceholder");
+        commentsSheetSend.innerHTML = getUiIcon("send");
+        commentsSheetSend.setAttribute("aria-label", t("send"));
         creatorTitle.textContent = t("creatorDashboard");
         creatorMonetizationTitle.textContent = t("creatorMonetizationTitle");
         creatorMonetizationLine1.textContent = t("creatorMonetizationLine1");
@@ -5248,6 +6306,9 @@
         }
         if (!currentUser && name !== "authLogin" && name !== "authSignup" && name !== "loading") {
           name = "authLogin";
+        }
+        if (commentsSheet.classList.contains("open")) {
+          closeCommentsSheet();
         }
         Object.entries(screens).forEach(([key, node]) => {
           node.classList.toggle("active", key === name);
@@ -5811,6 +6872,7 @@
       backLevel.addEventListener("click", () => showScreen("level"));
       profilePlayBtn.addEventListener("click", () => showScreen("level"));
       backFromUserProfile.addEventListener("click", () => showScreen("feed"));
+      backFromPublicationDetail.addEventListener("click", () => showScreen("userProfile"));
       backFromCreator.addEventListener("click", () => showScreen("profile"));
       backFromAdShare.addEventListener("click", () => showScreen("profile"));
       profileCreatorBtn.addEventListener("click", async () => {
@@ -5914,6 +6976,108 @@
       assetSearch.addEventListener("input", () => renderAssetGrid());
       assetModal.addEventListener("click", (event) => {
         if (event.target === assetModal) assetModal.classList.remove("open");
+      });
+      commentsSheetBackdrop.addEventListener("click", () => closeCommentsSheet());
+      commentsSheetClose.addEventListener("click", () => closeCommentsSheet());
+      commentsSheetSend.addEventListener("click", () => {
+        sendActiveComment().catch(console.error);
+      });
+      commentsSheetList.addEventListener("click", (event) => {
+        const toggleBtn = event.target.closest("[data-toggle-replies]");
+        if (toggleBtn) {
+          const parentId = String(toggleBtn.getAttribute("data-toggle-replies") || "");
+          const wrap = commentsSheetList.querySelector('[data-replies-wrap="' + parentId + '"]');
+          if (wrap) {
+            const isOpen = wrap.classList.toggle("open");
+            toggleBtn.textContent =
+              (isOpen ? t("hideReplies") : t("viewReplies")) +
+              " (" +
+              wrap.querySelectorAll(".comment-row.reply").length +
+              ")";
+          }
+          return;
+        }
+        const replyBtn = event.target.closest("[data-reply-comment='1']");
+        if (replyBtn) {
+          activeReplyParentId = String(replyBtn.getAttribute("data-comment-id") || "");
+          activeReplyPseudo = String(replyBtn.getAttribute("data-comment-pseudo") || "");
+          commentsSheetReplyingText.textContent =
+            t("replyingTo") + " @" + activeReplyPseudo;
+          commentsSheetReplying.classList.add("open");
+          commentsSheetInput.placeholder = t("replyingTo") + " @" + activeReplyPseudo + "...";
+          commentsSheetInput.focus();
+          return;
+        }
+        const deleteBtn = event.target.closest("[data-delete-comment='1']");
+        if (deleteBtn) {
+          const commentId = String(deleteBtn.getAttribute("data-comment-id") || "");
+          if (!commentId || !activeCommentsType || !activeCommentsId) return;
+          deleteComment(activeCommentsType, activeCommentsId, commentId).catch(console.error);
+          return;
+        }
+        const btn = event.target.closest("[data-comment-like-btn='1']");
+        if (!btn || !activeCommentsType || !activeCommentsId) return;
+        const commentId = String(btn.getAttribute("data-comment-id") || "");
+        if (!commentId) return;
+        const wasLiked = btn.getAttribute("data-comment-liked") === "1";
+        const countNode = btn.querySelector("[data-comment-like-count='1']");
+        let count = Number((countNode && countNode.textContent) || 0);
+        const nextLiked = !wasLiked;
+        count = Math.max(0, count + (nextLiked ? 1 : -1));
+        btn.setAttribute("data-comment-liked", nextLiked ? "1" : "0");
+        btn.classList.toggle("done", nextLiked);
+        btn.innerHTML = getUiIcon("heart", nextLiked) + '<span data-comment-like-count="1">' + count + "</span>";
+        toggleCommentLike(activeCommentsType, activeCommentsId, commentId, wasLiked).catch(console.error);
+      });
+      commentsSheetReplyingCancel.addEventListener("click", () => {
+        activeReplyParentId = "";
+        activeReplyPseudo = "";
+        commentsSheetReplying.classList.remove("open");
+        commentsSheetReplyingText.textContent = "";
+        commentsSheetInput.placeholder = t("commentPlaceholder");
+      });
+      searchTopBtn.addEventListener("click", () => {
+        openSearchScreen(searchInput.value || "");
+      });
+      searchBackBtn.addEventListener("click", () => {
+        showScreen("feed");
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: savedFeedScrollY, behavior: "auto" });
+        });
+      });
+      searchForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        renderSearchResults(searchInput.value).catch(console.error);
+      });
+      searchInput.addEventListener("input", () => {
+        renderSearchResults(searchInput.value).catch(console.error);
+      });
+      feedList.addEventListener("click", (event) => {
+        const tag = event.target.closest(".tag");
+        if (!tag) return;
+        const value = String(tag.textContent || "").trim();
+        if (!value.startsWith("#")) return;
+        event.preventDefault();
+        openSearchScreen(value.toLowerCase());
+      });
+      searchResults.addEventListener("click", (event) => {
+        const tag = event.target.closest(".tag");
+        if (!tag) return;
+        const value = String(tag.textContent || "").trim();
+        if (!value.startsWith("#")) return;
+        event.preventDefault();
+        openSearchScreen(value.toLowerCase());
+      });
+      commentsSheetInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          sendActiveComment().catch(console.error);
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && commentsSheet.classList.contains("open")) {
+          closeCommentsSheet();
+        }
       });
 
       publicFollowBtn.addEventListener("click", async () => {
@@ -6039,6 +7203,7 @@
             ownerUid: currentUser.uid,
             ownerPseudo: currentPseudo || (currentUser.email || "fan").split("@")[0],
             ownerAvatarUrl: currentUserAvatar || "",
+            ownerCertified: Boolean(currentUserCertified),
             imageUrl,
             title: title.slice(0, 80),
             description: description.slice(0, 220),
@@ -6060,6 +7225,62 @@
           setAdShareMessage(t("errorPrefix") + ": " + (err.message || "operation impossible"), true);
         } finally {
           adShareSubmit.disabled = false;
+        }
+      });
+
+      publicationEditForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!currentUser || !db || !currentPublicationId || !currentPublicationType) return;
+        setPublicationEditMessage("");
+        publicationEditSave.disabled = true;
+        try {
+          if (currentPublicationType === "ad") {
+            const title = String(publicationEditTitle.value || "").trim();
+            const description = String(publicationEditDescription.value || "").trim();
+            const imageUrl = String(publicationEditImage.value || "").trim();
+            const redirectUrl = String(publicationEditLink.value || "").trim();
+            const targetLang = String(publicationEditTarget.value || "all");
+            if (!title) {
+              setPublicationEditMessage(t("adNeedTitle"), true);
+              return;
+            }
+            if (!isValidHttpUrl(imageUrl)) {
+              setPublicationEditMessage(t("adNeedImage"), true);
+              return;
+            }
+            if (!isValidHttpUrl(redirectUrl)) {
+              setPublicationEditMessage(t("adNeedLink"), true);
+              return;
+            }
+            await setDoc(
+              doc(db, "ads", currentPublicationId),
+              {
+                title: title.slice(0, 80),
+                description: description.slice(0, 220),
+                imageUrl,
+                redirectUrl,
+                targetLang: targetLang === "fr" || targetLang === "en" ? targetLang : "all",
+                updatedAt: serverTimestamp(),
+              },
+              { merge: true }
+            );
+            setPublicationEditMessage(t("publicationSaved"));
+            await openPublicationDetail("ad", currentPublicationId, currentUser.uid);
+            return;
+          }
+          const description = String(publicationEditDescription.value || "").trim();
+          await setDoc(
+            doc(db, "posts", currentPublicationId),
+            { description: description.slice(0, 260), updatedAt: serverTimestamp() },
+            { merge: true }
+          );
+          setPublicationEditMessage(t("publicationSaved"));
+          await openPublicationDetail("post", currentPublicationId, currentUser.uid);
+        } catch (err) {
+          console.error(err);
+          setPublicationEditMessage(t("errorPrefix") + ": " + (err.message || "operation impossible"), true);
+        } finally {
+          publicationEditSave.disabled = false;
         }
       });
 
