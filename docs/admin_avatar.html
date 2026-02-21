@@ -823,6 +823,12 @@
 
           const batch = writeBatch(db);
           profiles.forEach((p, idx) => {
+            const unlockedLevel = randInt(1, 8);
+            const firstScoreByLevel = {};
+            for (let lv = 1; lv <= unlockedLevel; lv += 1) {
+              firstScoreByLevel[String(lv)] = 4 + randInt(0, 3);
+            }
+            const firstScoreEasy = Number(firstScoreByLevel["1"] || 0);
             batch.set(
               doc(db, "users", p.uid),
               {
@@ -836,7 +842,10 @@
                 followersCount: randInt(4, 20),
                 followingCount: randInt(4, 18),
                 totalLikesReceived: randInt(10, 120),
-                unlockedLevel: randInt(1, 8),
+                unlockedLevel,
+                firstScoreByLevel,
+                firstScoreEasy,
+                bestScoreEasy: firstScoreEasy,
                 createdAt: serverTimestamp(),
               },
               { merge: true }

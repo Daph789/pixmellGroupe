@@ -18,60 +18,73 @@
   </head>
   <body>
     <div class="noise"></div>
+    <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Changer la langue">
+      🇫🇷 FR
+    </button>
+    <div id="lang-modal" class="lang-modal" role="dialog" aria-modal="true" aria-labelledby="lang-modal-title">
+      <div class="lang-modal-card">
+        <h2 id="lang-modal-title">Choisissez votre langue</h2>
+        <p id="lang-modal-subtitle">Choose your language</p>
+        <div class="lang-actions">
+          <button id="lang-fr" class="btn primary" type="button">🇫🇷 Français</button>
+          <button id="lang-en" class="btn ghost" type="button">🇬🇧 English</button>
+        </div>
+      </div>
+    </div>
     <header class="hero">
       <nav class="nav">
         <div class="logo">Pixmell</div>
         <div class="nav-links">
-          <a href="#services">Services</a>
-          <a href="#incubation">Incubation</a>
-          <a href="#projets">Projets</a>
-          <a href="#team">Team</a>
-          <a href="#contact">Contact</a>
+          <a href="#services" id="nav-services">Services</a>
+          <a href="#incubation" id="nav-incubation">Incubation</a>
+          <a href="#projets" id="nav-projects">Projets</a>
+          <a href="#team" id="nav-team">Team</a>
+          <a href="#contact" id="nav-contact">Contact</a>
         </div>
       </nav>
 
       <div class="hero-content">
-        <p class="eyebrow">Studio jeune et ambitieux • 7 personnes en mode Team</p>
-        <h1>
+        <p class="eyebrow" id="hero-eyebrow">Studio jeune et ambitieux • 7 personnes en mode Team</p>
+        <h1 id="hero-title">
           Nous construisons des expériences web, apps et jeux 2D/3D avec une
           exécution propre et ambitieuse.
         </h1>
-        <p class="lead">
+        <p class="lead" id="hero-lead">
           Pixmell est un collectif de jeunes développeurs qui livrent des
           produits solides, visuels et performants. Nous présentons uniquement
           les projets pour lesquels nos clients ont validé le partenariat de
           partage et de communication.
         </p>
         <div class="hero-cta">
-          <a class="btn primary" href="#projets">Voir nos projets</a>
-          <a class="btn ghost" href="#contact">Parlons ensemble</a>
+          <a class="btn primary" id="hero-btn-projects" href="#projets">Voir nos projets</a>
+          <a class="btn ghost" id="hero-btn-contact" href="#contact">Parlons ensemble</a>
         </div>
       </div>
     </header>
 
     <section id="services" class="section">
       <div class="section-header">
-        <h2>Ce que nous faisons</h2>
-        <p>
+        <h2 id="services-title">Ce que nous faisons</h2>
+        <p id="services-subtitle">
           Du prototype au lancement, nous couvrons le design, le dev et le
           suivi.
         </p>
       </div>
       <div class="cards">
         <article class="card">
-          <h3>Web & Ecommerce</h3>
-          <p>
+          <h3 id="service-web-title">Web & Ecommerce</h3>
+          <p id="service-web-text">
             Sites vitrines, e-commerce premium, parcours fluides, SEO
             structurel.
           </p>
         </article>
         <article class="card">
-          <h3>Applications</h3>
-          <p>Apps mobiles et desktop, stacks modernes, performance et UX.</p>
+          <h3 id="service-app-title">Applications</h3>
+          <p id="service-app-text">Apps mobiles et desktop, stacks modernes, performance et UX.</p>
         </article>
         <article class="card">
-          <h3>Jeux 2D/3D</h3>
-          <p>
+          <h3 id="service-game-title">Jeux 2D/3D</h3>
+          <p id="service-game-text">
             Prototypage rapide, gameplay loop, intégration multi-plateformes.
           </p>
         </article>
@@ -81,14 +94,14 @@
     <section id="incubation" class="section incubation">
       <div class="incubation-shell">
         <div class="incubation-copy">
-          <p class="incubation-kicker">Nouveau service Pixmell</p>
-          <h2>Incubation pour petits entrepreneurs</h2>
-          <p>
+          <p class="incubation-kicker" id="incubation-kicker">Nouveau service Pixmell</p>
+          <h2 id="incubation-title">Incubation pour petits entrepreneurs</h2>
+          <p id="incubation-text-1">
             Nous accompagnons les entrepreneurs qui n'ont pas encore
             d'auto-entreprise pour se relier à Pixmell et entreprendre
             légalement via notre cadre de collaboration.
           </p>
-          <p>
+          <p id="incubation-text-2">
             Ce plan est conçu pour démarrer rapidement, sécuriser les
             prestations et lancer l'activité avec un cadre pro dès le départ.
           </p>
@@ -99,10 +112,11 @@
             href="https://buy.stripe.com/5kQeVd8n2dzF9o5eMy2B20W"
             target="_blank"
             rel="noreferrer"
+            id="incubation-cta-join"
           >
             Adhérer immédiatement à ce plan
           </a>
-          <a class="btn ghost wide" href="mailto:pixmell.contact@gmail.com">
+          <a class="btn ghost wide" id="incubation-cta-contact" href="mailto:pixmell.contact@gmail.com">
             Contacter l'équipe Pixmell
           </a>
           <a
@@ -110,6 +124,7 @@
             href="https://www.instagram.com/daphnel.takam/"
             target="_blank"
             rel="noreferrer"
+            id="incubation-cta-insta"
           >
             Rejoindre Pixmell sur Instagram
           </a>
@@ -119,11 +134,30 @@
 
     <section id="projets" class="section section-dark">
       <div class="section-header">
-        <h2>Projets avec accord de partage</h2>
-        <p>Sélection transparente. Respect total des accords clients.</p>
+        <h2 id="projects-title">Projets avec accord de partage</h2>
+        <p id="projects-subtitle">Sélection transparente. Respect total des accords clients.</p>
       </div>
 
       <div class="project-grid">
+        <article class="project project-recent">
+          <div class="project-top">
+            <h3>AvatarOnn</h3>
+            <span class="tag" id="project-recent-tag">Projet récent</span>
+          </div>
+          <div class="project-links">
+            <a
+              class="pill-link"
+              href="avataronn.html"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span id="project-recent-visit">Visiter le site</span>
+            </a>
+          </div>
+          <p class="project-meta" id="project-recent-owner">Responsable: Non communiqué</p>
+          <p class="project-price" id="project-recent-price">Valeur estimée: 260 EUR</p>
+        </article>
+
         <article class="project">
           <div class="project-top">
             <h3>Karcharelle</h3>
@@ -136,7 +170,7 @@
               target="_blank"
               rel="noreferrer"
             >
-              Site officiel
+              <span class="site-official-label">Site officiel</span>
             </a>
           </div>
           <p class="project-meta">Contact: karcharelle@gmail.com</p>
@@ -156,7 +190,7 @@
               target="_blank"
               rel="noreferrer"
             >
-              Site officiel
+              <span class="site-official-label">Site officiel</span>
             </a>
           </div>
           <p class="project-meta">
@@ -177,7 +211,7 @@
               target="_blank"
               rel="noreferrer"
             >
-              Site officiel
+              <span class="site-official-label">Site officiel</span>
             </a>
           </div>
           <p class="project-price">Estimation: 1250 EUR</p>
@@ -196,7 +230,7 @@
               target="_blank"
               rel="noreferrer"
             >
-              Page de l'application
+              <span id="app-page-label">Page de l'application</span>
             </a>
           </div>
           <p class="project-price">Facturation: 2450 EUR</p>
@@ -204,28 +238,28 @@
       </div>
 
       <div class="project-footnote">
-        <p>+ 7 autres projets non communiqués (confidentialité client).</p>
+        <p id="projects-footnote">+ 7 autres projets non communiqués (confidentialité client).</p>
       </div>
     </section>
 
     <section class="section">
       <div class="section-header">
-        <h2>Impact financier</h2>
-        <p>
+        <h2 id="impact-title">Impact financier</h2>
+        <p id="impact-subtitle">
           Estimation du chiffre généré par ces projets (hors 7 projets non
           communiqués).
         </p>
       </div>
       <div class="impact">
         <div class="impact-card">
-          <div class="impact-value">7 250 EUR</div>
-          <div class="impact-label">
+          <div class="impact-value">7 510 EUR</div>
+          <div class="impact-label" id="impact-public-label">
             Total estimé pour les projets publics ci-dessus
           </div>
         </div>
         <div class="impact-card subtle">
           <div class="impact-value">7 projets</div>
-          <div class="impact-label">
+          <div class="impact-label" id="impact-private-label">
             Non communiqués pour raisons de confidentialité
           </div>
         </div>
@@ -234,8 +268,8 @@
 
     <section id="team" class="section section-gradient">
       <div class="section-header">
-        <h2>Team jeune, execution solide</h2>
-        <p>
+        <h2 id="team-title">Team jeune, execution solide</h2>
+        <p id="team-subtitle">
           7 talents complémentaires. Une énergie jeune, une méthode pro, et un
           focus sur la qualité.
         </p>
@@ -265,8 +299,8 @@
     <section id="contact" class="section">
       <div class="contact-card">
         <div>
-          <h2>Parlons de votre projet</h2>
-          <p>
+          <h2 id="contact-title">Parlons de votre projet</h2>
+          <p id="contact-subtitle">
             Nous travaillons en partenariat clair, avec un niveau pro et un
             rendu clean.
           </p>
@@ -278,14 +312,209 @@
     </section>
 
     <footer class="footer">
-      <p>Pixmell — Studio web, app & jeux 2D/3D.</p>
+      <p id="footer-text">Pixmell — Studio web, app & jeux 2D/3D.</p>
       <p>
-        Instagram:
+        <span id="footer-instagram-label">Instagram:</span>
         <a href="https://www.instagram.com/daphnel.takam/" target="_blank" rel="noreferrer">
           @daphnel.takam
         </a>
       </p>
-      <p>© 2026 Pixmell. Tous droits réservés.</p>
+      <p id="footer-rights">© 2026 Pixmell. Tous droits réservés.</p>
     </footer>
+    <script>
+      (function () {
+        const i18n = {
+          fr: {
+            langBtn: "🇫🇷 FR",
+            modalTitle: "Choisissez votre langue",
+            modalSubtitle: "Choose your language",
+            navServices: "Services",
+            navIncubation: "Incubation",
+            navProjects: "Projets",
+            navTeam: "Team",
+            navContact: "Contact",
+            heroEyebrow: "Studio jeune et ambitieux • 7 personnes en mode Team",
+            heroTitle: "Nous construisons des expériences web, apps et jeux 2D/3D avec une exécution propre et ambitieuse.",
+            heroLead:
+              "Pixmell est un collectif de jeunes développeurs qui livrent des produits solides, visuels et performants. Nous présentons uniquement les projets pour lesquels nos clients ont validé le partenariat de partage et de communication.",
+            heroBtnProjects: "Voir nos projets",
+            heroBtnContact: "Parlons ensemble",
+            servicesTitle: "Ce que nous faisons",
+            servicesSubtitle: "Du prototype au lancement, nous couvrons le design, le dev et le suivi.",
+            serviceWebTitle: "Web & Ecommerce",
+            serviceWebText: "Sites vitrines, e-commerce premium, parcours fluides, SEO structurel.",
+            serviceAppTitle: "Applications",
+            serviceAppText: "Apps mobiles et desktop, stacks modernes, performance et UX.",
+            serviceGameTitle: "Jeux 2D/3D",
+            serviceGameText: "Prototypage rapide, gameplay loop, intégration multi-plateformes.",
+            incubationKicker: "Nouveau service Pixmell",
+            incubationTitle: "Incubation pour petits entrepreneurs",
+            incubationText1:
+              "Nous accompagnons les entrepreneurs qui n'ont pas encore d'auto-entreprise pour se relier à Pixmell et entreprendre légalement via notre cadre de collaboration.",
+            incubationText2:
+              "Ce plan est conçu pour démarrer rapidement, sécuriser les prestations et lancer l'activité avec un cadre pro dès le départ.",
+            incubationCtaJoin: "Adhérer immédiatement à ce plan",
+            incubationCtaContact: "Contacter l'équipe Pixmell",
+            incubationCtaInsta: "Rejoindre Pixmell sur Instagram",
+            projectsTitle: "Projets avec accord de partage",
+            projectsSubtitle: "Sélection transparente. Respect total des accords clients.",
+            projectRecentTag: "Projet récent",
+            projectRecentVisit: "Visiter le site",
+            projectRecentOwner: "Responsable: Non communiqué",
+            projectRecentPrice: "Valeur estimée: 260 EUR",
+            siteOfficial: "Site officiel",
+            appPageLabel: "Page de l'application",
+            projectsFootnote: "+ 7 autres projets non communiqués (confidentialité client).",
+            impactTitle: "Impact financier",
+            impactSubtitle: "Estimation du chiffre généré par ces projets (hors 7 projets non communiqués).",
+            impactPublicLabel: "Total estimé pour les projets publics ci-dessus",
+            impactPrivateLabel: "Non communiqués pour raisons de confidentialité",
+            teamTitle: "Team jeune, execution solide",
+            teamSubtitle:
+              "7 talents complémentaires. Une énergie jeune, une méthode pro, et un focus sur la qualité.",
+            contactTitle: "Parlons de votre projet",
+            contactSubtitle: "Nous travaillons en partenariat clair, avec un niveau pro et un rendu clean.",
+            footerText: "Pixmell — Studio web, app & jeux 2D/3D.",
+            footerInstagramLabel: "Instagram:",
+            footerRights: "© 2026 Pixmell. Tous droits réservés.",
+          },
+          en: {
+            langBtn: "🇬🇧 EN",
+            modalTitle: "Choose your language",
+            modalSubtitle: "Choisissez votre langue",
+            navServices: "Services",
+            navIncubation: "Incubation",
+            navProjects: "Projects",
+            navTeam: "Team",
+            navContact: "Contact",
+            heroEyebrow: "Young and ambitious studio • 7 people working as one team",
+            heroTitle: "We build web, app, and 2D/3D game experiences with clean and ambitious execution.",
+            heroLead:
+              "Pixmell is a collective of young developers delivering solid, visual, and high-performance products. We only showcase projects for which clients approved sharing and communication.",
+            heroBtnProjects: "View our projects",
+            heroBtnContact: "Let's talk",
+            servicesTitle: "What we do",
+            servicesSubtitle: "From prototype to launch, we cover design, development, and support.",
+            serviceWebTitle: "Web & Ecommerce",
+            serviceWebText: "Showcase websites, premium ecommerce, smooth journeys, structural SEO.",
+            serviceAppTitle: "Applications",
+            serviceAppText: "Mobile and desktop apps, modern stacks, performance and UX.",
+            serviceGameTitle: "2D/3D Games",
+            serviceGameText: "Rapid prototyping, gameplay loops, multi-platform integration.",
+            incubationKicker: "New Pixmell service",
+            incubationTitle: "Incubation for small entrepreneurs",
+            incubationText1:
+              "We support entrepreneurs who do not yet have a registered business, so they can connect to Pixmell and legally operate through our collaboration framework.",
+            incubationText2:
+              "This plan is designed to start fast, secure services, and launch activities with a professional framework from day one.",
+            incubationCtaJoin: "Join this plan now",
+            incubationCtaContact: "Contact Pixmell team",
+            incubationCtaInsta: "Join Pixmell on Instagram",
+            projectsTitle: "Projects approved for sharing",
+            projectsSubtitle: "Transparent selection. Full respect for client agreements.",
+            projectRecentTag: "Recent project",
+            projectRecentVisit: "Visit the website",
+            projectRecentOwner: "Manager: Not disclosed",
+            projectRecentPrice: "Estimated value: EUR 260",
+            siteOfficial: "Official website",
+            appPageLabel: "App page",
+            projectsFootnote: "+ 7 other undisclosed projects (client confidentiality).",
+            impactTitle: "Financial impact",
+            impactSubtitle: "Estimated revenue generated by these projects (excluding 7 undisclosed projects).",
+            impactPublicLabel: "Estimated total for the public projects above",
+            impactPrivateLabel: "Not disclosed for confidentiality reasons",
+            teamTitle: "Young team, solid execution",
+            teamSubtitle: "7 complementary talents. Young energy, pro method, and strong quality focus.",
+            contactTitle: "Let's talk about your project",
+            contactSubtitle: "We work in clear partnership, with a professional level and clean delivery.",
+            footerText: "Pixmell — Web, app & 2D/3D game studio.",
+            footerInstagramLabel: "Instagram:",
+            footerRights: "© 2026 Pixmell. All rights reserved.",
+          },
+        };
+
+        const els = {
+          modal: document.getElementById("lang-modal"),
+          toggle: document.getElementById("lang-toggle"),
+          modalTitle: document.getElementById("lang-modal-title"),
+          modalSubtitle: document.getElementById("lang-modal-subtitle"),
+          navServices: document.getElementById("nav-services"),
+          navIncubation: document.getElementById("nav-incubation"),
+          navProjects: document.getElementById("nav-projects"),
+          navTeam: document.getElementById("nav-team"),
+          navContact: document.getElementById("nav-contact"),
+          heroEyebrow: document.getElementById("hero-eyebrow"),
+          heroTitle: document.getElementById("hero-title"),
+          heroLead: document.getElementById("hero-lead"),
+          heroBtnProjects: document.getElementById("hero-btn-projects"),
+          heroBtnContact: document.getElementById("hero-btn-contact"),
+          servicesTitle: document.getElementById("services-title"),
+          servicesSubtitle: document.getElementById("services-subtitle"),
+          serviceWebTitle: document.getElementById("service-web-title"),
+          serviceWebText: document.getElementById("service-web-text"),
+          serviceAppTitle: document.getElementById("service-app-title"),
+          serviceAppText: document.getElementById("service-app-text"),
+          serviceGameTitle: document.getElementById("service-game-title"),
+          serviceGameText: document.getElementById("service-game-text"),
+          incubationKicker: document.getElementById("incubation-kicker"),
+          incubationTitle: document.getElementById("incubation-title"),
+          incubationText1: document.getElementById("incubation-text-1"),
+          incubationText2: document.getElementById("incubation-text-2"),
+          incubationCtaJoin: document.getElementById("incubation-cta-join"),
+          incubationCtaContact: document.getElementById("incubation-cta-contact"),
+          incubationCtaInsta: document.getElementById("incubation-cta-insta"),
+          projectsTitle: document.getElementById("projects-title"),
+          projectsSubtitle: document.getElementById("projects-subtitle"),
+          projectRecentTag: document.getElementById("project-recent-tag"),
+          projectRecentVisit: document.getElementById("project-recent-visit"),
+          projectRecentOwner: document.getElementById("project-recent-owner"),
+          projectRecentPrice: document.getElementById("project-recent-price"),
+          appPageLabel: document.getElementById("app-page-label"),
+          projectsFootnote: document.getElementById("projects-footnote"),
+          impactTitle: document.getElementById("impact-title"),
+          impactSubtitle: document.getElementById("impact-subtitle"),
+          impactPublicLabel: document.getElementById("impact-public-label"),
+          impactPrivateLabel: document.getElementById("impact-private-label"),
+          teamTitle: document.getElementById("team-title"),
+          teamSubtitle: document.getElementById("team-subtitle"),
+          contactTitle: document.getElementById("contact-title"),
+          contactSubtitle: document.getElementById("contact-subtitle"),
+          footerText: document.getElementById("footer-text"),
+          footerInstagramLabel: document.getElementById("footer-instagram-label"),
+          footerRights: document.getElementById("footer-rights"),
+        };
+
+        function applyLang(lang) {
+          const dict = i18n[lang] || i18n.fr;
+          document.documentElement.lang = lang;
+          Object.keys(els).forEach((k) => {
+            if (!els[k] || !dict[k]) return;
+            els[k].textContent = dict[k];
+          });
+          document.querySelectorAll(".site-official-label").forEach((n) => {
+            n.textContent = dict.siteOfficial;
+          });
+          localStorage.setItem("pixmell_lang", lang);
+          els.modal.classList.add("hidden");
+        }
+
+        document.getElementById("lang-fr").addEventListener("click", function () {
+          applyLang("fr");
+        });
+        document.getElementById("lang-en").addEventListener("click", function () {
+          applyLang("en");
+        });
+        els.toggle.addEventListener("click", function () {
+          els.modal.classList.remove("hidden");
+        });
+
+        const stored = localStorage.getItem("pixmell_lang");
+        if (stored === "fr" || stored === "en") {
+          applyLang(stored);
+        } else {
+          els.modal.classList.remove("hidden");
+        }
+      })();
+    </script>
   </body>
 </html>

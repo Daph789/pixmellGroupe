@@ -3589,6 +3589,17 @@
         return t("leaderboardSubtitleLevel") + " " + t("levelLabel") + " " + leaderboardLevel + ".";
       }
 
+      function seedScoreFallback(data, level) {
+        if (!data || !data.isSeed) return null;
+        const unlocked = Math.max(1, Math.min(10, Number(data.unlockedLevel || 1)));
+        const baseText = String(data.pseudo || data.email || "seed");
+        let hash = 0;
+        for (let i = 0; i < baseText.length; i += 1) hash += baseText.charCodeAt(i);
+        const requestedLevel = level === "all" ? unlocked : Number(level);
+        if (!Number.isFinite(requestedLevel) || requestedLevel < 1 || requestedLevel > unlocked) return null;
+        return 4 + ((hash + requestedLevel * 13) % 4);
+      }
+
       function scoreByLevel(data, level) {
         const firstByLevel = data.firstScoreByLevel || {};
         if (level === "all") {
@@ -3598,6 +3609,7 @@
               if (best === null || value > best) best = value;
             }
           });
+          if (best === null) best = seedScoreFallback(data, "all");
           return best;
         }
         const levelKey = String(level);
@@ -3606,7 +3618,7 @@
           if (typeof data.firstScoreEasy === "number") return data.firstScoreEasy;
           if (typeof data.bestScoreEasy === "number") return data.bestScoreEasy;
         }
-        return null;
+        return seedScoreFallback(data, levelKey);
       }
 
       function syncQuizData() {
