@@ -678,12 +678,34 @@
         overflow: hidden;
       }
 
+      .ad-card {
+        border-color: #ffe0a8;
+        background: #fffdf8;
+      }
+
+      .ad-badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 4px 8px;
+        font-size: 0.72rem;
+        font-weight: 900;
+        background: #ffefc9;
+        color: #8a5a00;
+      }
+
       .post-head {
         padding: 12px 12px 8px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 8px;
+      }
+
+      .post-head-right {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
       }
 
       .post-author {
@@ -696,6 +718,17 @@
       .post-time {
         color: var(--muted);
         font-size: 0.82rem;
+      }
+
+      .post-edit-btn {
+        border: 1px solid #cfe6da;
+        background: #f8fcfa;
+        color: #215b45;
+        border-radius: 999px;
+        padding: 4px 8px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        cursor: pointer;
       }
 
       .post-media {
@@ -1628,6 +1661,7 @@
             </div>
           </div>
           <button class="auth-toggle" id="profile-creator-btn" type="button">Dashboard créateur</button>
+          <button class="auth-toggle" id="profile-ad-btn" type="button">Poster une publicité</button>
           <div class="stat-block">
             <div class="small" id="profile-label-pseudo">Pseudo</div>
             <div class="stat-value" id="profile-pseudo">-</div>
@@ -1650,7 +1684,34 @@
             <div class="stat-value" id="profile-rank">#-</div>
           </div>
           <div class="badge-box" id="profile-badge">Badge: Debutant</div>
+          <button class="auth-toggle" id="profile-my-posts-btn" type="button">Voir mes publications</button>
           <button class="cta-home" id="profile-play-btn">Rejouer maintenant</button>
+        </div>
+      </section>
+
+      <section id="screen-ad-share" class="screen">
+        <button class="back-btn" id="back-from-ad-share">← Retour profil</button>
+        <div class="panel composer-grid">
+          <h2 id="ad-share-title">Publier une publicité</h2>
+          <p class="small" id="ad-share-subtitle">Crée une publicité image avec lien externe et ciblage langue.</p>
+          <form id="ad-share-form" class="auth-form">
+            <label id="ad-image-label">URL de l'image</label>
+            <input id="ad-image-url" type="url" placeholder="https://..." required />
+            <label id="ad-title-label">Titre</label>
+            <input id="ad-title-input" type="text" maxlength="80" required />
+            <label id="ad-description-label">Description</label>
+            <textarea id="ad-description-input" rows="3" maxlength="220"></textarea>
+            <label id="ad-link-label">Lien de redirection</label>
+            <input id="ad-link-url" type="url" placeholder="https://..." required />
+            <label id="ad-lang-target-label">Langue ciblée</label>
+            <select id="ad-lang-target">
+              <option value="all">Français + English</option>
+              <option value="fr">Français uniquement</option>
+              <option value="en">English only</option>
+            </select>
+            <button class="auth-submit" id="ad-share-submit" type="submit">Publier la publicité</button>
+            <p class="auth-msg" id="ad-share-msg"></p>
+          </form>
         </div>
       </section>
 
@@ -1789,6 +1850,7 @@
         quiz: document.getElementById("screen-quiz"),
         leaderboard: document.getElementById("screen-leaderboard"),
         profile: document.getElementById("screen-profile"),
+        adShare: document.getElementById("screen-ad-share"),
         userProfile: document.getElementById("screen-user-profile"),
         creatorDashboard: document.getElementById("screen-creator-dashboard"),
       };
@@ -1853,7 +1915,25 @@
       const profileRank = document.getElementById("profile-rank");
       const profileBadge = document.getElementById("profile-badge");
       const profilePlayBtn = document.getElementById("profile-play-btn");
+      const profileMyPostsBtn = document.getElementById("profile-my-posts-btn");
       const profileCreatorBtn = document.getElementById("profile-creator-btn");
+      const profileAdBtn = document.getElementById("profile-ad-btn");
+      const backFromAdShare = document.getElementById("back-from-ad-share");
+      const adShareTitle = document.getElementById("ad-share-title");
+      const adShareSubtitle = document.getElementById("ad-share-subtitle");
+      const adShareForm = document.getElementById("ad-share-form");
+      const adImageLabel = document.getElementById("ad-image-label");
+      const adImageUrl = document.getElementById("ad-image-url");
+      const adTitleLabel = document.getElementById("ad-title-label");
+      const adTitleInput = document.getElementById("ad-title-input");
+      const adDescriptionLabel = document.getElementById("ad-description-label");
+      const adDescriptionInput = document.getElementById("ad-description-input");
+      const adLinkLabel = document.getElementById("ad-link-label");
+      const adLinkUrl = document.getElementById("ad-link-url");
+      const adLangTargetLabel = document.getElementById("ad-lang-target-label");
+      const adLangTarget = document.getElementById("ad-lang-target");
+      const adShareSubmit = document.getElementById("ad-share-submit");
+      const adShareMsg = document.getElementById("ad-share-msg");
       const levelRows = [...document.querySelectorAll(".level-row")];
       const levelButtons = levelRows.map((row) => row.querySelector(".level-btn"));
       const levelPills = [...document.querySelectorAll(".level-pill")];
@@ -2012,6 +2092,8 @@
       let selectedAssetIds = [];
       let feedUnsubscribe = null;
       let feedCacheDocs = [];
+      let adsUnsubscribe = null;
+      let adsCacheDocs = [];
       let assetPickerMode = "post";
       let currentPublicProfileUid = "";
       let selectedAvatarAssetId = "";
@@ -2089,6 +2171,32 @@
           loadingSubtitle: "Connexion en cours.",
           profileTitle: "Profil joueur",
           changeAvatar: "Changer la photo",
+          profileAdBtn: "Poster une publicité",
+          myPostsBtn: "Voir mes publications",
+          backFromAdShare: "Retour profil",
+          adShareTitle: "Publier une publicité",
+          adShareSubtitle: "Crée une publicité image avec lien externe et ciblage langue.",
+          adImageLabel: "URL de l'image",
+          adTitleLabel: "Titre",
+          adDescriptionLabel: "Description",
+          adLinkLabel: "Lien de redirection",
+          adLangTargetLabel: "Langue ciblée",
+          adTargetAll: "Français + English",
+          adTargetFr: "Français uniquement",
+          adTargetEn: "English only",
+          adPublish: "Publier la publicité",
+          adPublished: "Publicité publiée.",
+          adNeedTitle: "Ajoute un titre de publicité.",
+          adNeedImage: "Ajoute une URL d'image valide.",
+          adNeedLink: "Ajoute une URL de redirection valide.",
+          edit: "Modifier",
+          editPostSaved: "Post mis à jour.",
+          editAdSaved: "Publicité mise à jour.",
+          editPostPrompt: "Modifier la description du post :",
+          editAdTitlePrompt: "Modifier le titre de la publicité :",
+          editAdDescPrompt: "Modifier la description de la publicité :",
+          editAdLinkPrompt: "Modifier le lien de redirection :",
+          editAdImagePrompt: "Modifier l'URL de l'image :",
           pseudoEditPlaceholder: "Nouveau pseudo",
           save: "Enregistrer",
           pseudoUpdated: "Pseudo mis à jour.",
@@ -2181,6 +2289,8 @@
           correctPrefix: "Bonne réponse : option",
           likes: "likes",
           views: "vues",
+          clicks: "clics",
+          adBadge: "Publicité",
           participants: "participants",
           voteRanking: "Classement des votes",
           voteOptionLabel: "Réponse",
@@ -2281,6 +2391,32 @@
           loadingSubtitle: "Signing you in.",
           profileTitle: "Player profile",
           changeAvatar: "Change photo",
+          profileAdBtn: "Post an ad",
+          myPostsBtn: "View my posts",
+          backFromAdShare: "Back profile",
+          adShareTitle: "Publish an ad",
+          adShareSubtitle: "Create an image ad with external link and language targeting.",
+          adImageLabel: "Image URL",
+          adTitleLabel: "Title",
+          adDescriptionLabel: "Description",
+          adLinkLabel: "Redirect link",
+          adLangTargetLabel: "Target language",
+          adTargetAll: "French + English",
+          adTargetFr: "French only",
+          adTargetEn: "English only",
+          adPublish: "Publish ad",
+          adPublished: "Ad published.",
+          adNeedTitle: "Add an ad title.",
+          adNeedImage: "Add a valid image URL.",
+          adNeedLink: "Add a valid redirect URL.",
+          edit: "Edit",
+          editPostSaved: "Post updated.",
+          editAdSaved: "Ad updated.",
+          editPostPrompt: "Edit post description:",
+          editAdTitlePrompt: "Edit ad title:",
+          editAdDescPrompt: "Edit ad description:",
+          editAdLinkPrompt: "Edit redirect link:",
+          editAdImagePrompt: "Edit image URL:",
           pseudoEditPlaceholder: "New username",
           save: "Save",
           pseudoUpdated: "Username updated.",
@@ -2373,6 +2509,8 @@
           correctPrefix: "Correct answer: option",
           likes: "likes",
           views: "views",
+          clicks: "clicks",
+          adBadge: "Sponsored",
           participants: "participants",
           voteRanking: "Vote ranking",
           voteOptionLabel: "Answer",
@@ -3281,6 +3419,72 @@
         shareMsg.style.color = isError ? "#b83b4d" : "#1f63c5";
       }
 
+      function setAdShareMessage(msg, isError = false) {
+        adShareMsg.textContent = msg;
+        adShareMsg.style.color = isError ? "#b83b4d" : "#1f63c5";
+      }
+
+      async function editRegularPost(postId, postData) {
+        if (!currentUser || !db) return;
+        if (String(postData.ownerUid || "") !== currentUser.uid) return;
+        const nextDescription = window.prompt(t("editPostPrompt"), String(postData.description || ""));
+        if (nextDescription === null) return;
+        try {
+          await setDoc(
+            doc(db, "posts", postId),
+            { description: String(nextDescription).trim().slice(0, 260), updatedAt: serverTimestamp() },
+            { merge: true }
+          );
+          setShareMessage(t("editPostSaved"));
+        } catch (err) {
+          console.error(err);
+          setShareMessage(t("errorPrefix") + ": " + (err.message || "operation impossible"), true);
+        }
+      }
+
+      async function editAdPost(adId, adData) {
+        if (!currentUser || !db) return;
+        if (String(adData.ownerUid || "") !== currentUser.uid) return;
+        const nextTitle = window.prompt(t("editAdTitlePrompt"), String(adData.title || ""));
+        if (nextTitle === null || !String(nextTitle).trim()) return;
+        const nextDescription = window.prompt(t("editAdDescPrompt"), String(adData.description || ""));
+        if (nextDescription === null) return;
+        const nextImageUrl = window.prompt(t("editAdImagePrompt"), String(adData.imageUrl || ""));
+        if (nextImageUrl === null || !isValidHttpUrl(nextImageUrl)) return;
+        const nextLinkUrl = window.prompt(t("editAdLinkPrompt"), String(adData.redirectUrl || ""));
+        if (nextLinkUrl === null || !isValidHttpUrl(nextLinkUrl)) return;
+        try {
+          await setDoc(
+            doc(db, "ads", adId),
+            {
+              title: String(nextTitle).trim().slice(0, 80),
+              description: String(nextDescription).trim().slice(0, 220),
+              imageUrl: String(nextImageUrl).trim(),
+              redirectUrl: String(nextLinkUrl).trim(),
+              updatedAt: serverTimestamp(),
+            },
+            { merge: true }
+          );
+          setAdShareMessage(t("editAdSaved"));
+        } catch (err) {
+          console.error(err);
+          setAdShareMessage(t("errorPrefix") + ": " + (err.message || "operation impossible"), true);
+        }
+      }
+
+      async function persistUserLanguagePreference() {
+        if (!currentUser || !db) return;
+        try {
+          await setDoc(
+            doc(db, "users", currentUser.uid),
+            { preferredLang: currentLang, preferredLangUpdatedAt: serverTimestamp() },
+            { merge: true }
+          );
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
       function withTimeout(promise, ms) {
         return Promise.race([
           promise,
@@ -3288,6 +3492,15 @@
             setTimeout(() => reject(new Error("timeout")), ms);
           }),
         ]);
+      }
+
+      function isValidHttpUrl(value) {
+        try {
+          const url = new URL(String(value || "").trim());
+          return url.protocol === "http:" || url.protocol === "https:";
+        } catch (_) {
+          return false;
+        }
       }
 
       // Galerie locale interne (ajoute tes fichiers dans /assets/gallery puis mets les noms ici)
@@ -3863,6 +4076,7 @@
           typeof data.ownerCertified === "boolean"
             ? data.ownerCertified
             : Boolean(userCertCache.get(String(data.ownerUid || "")));
+        const canEdit = Boolean(currentUser && String(data.ownerUid || "") === currentUser.uid);
         const firstQuestion = Array.isArray(data.questions) && data.questions[0] ? data.questions[0] : null;
         const voteStats = Array.isArray(data.voteStats) ? data.voteStats : [];
         card.innerHTML =
@@ -3873,8 +4087,16 @@
           '" alt="avatar" /><div class="post-author">@' +
           escapeHtml(data.ownerPseudo || "fan") +
           (ownerCertified ? getCertifiedBadgeHtml() : "") +
-          "</div></button><div class=\"post-time\">" +
+          '</div></button><div class="post-head-right"><div class="post-time">' +
           formatPostDate(data.createdAt) +
+          "</div>" +
+          (canEdit
+            ? '<button type="button" class="post-edit-btn" data-edit-post="' +
+              escapeHtml(docSnap.id) +
+              '">' +
+              t("edit") +
+              "</button>"
+            : "") +
           '</div></div><div class="post-media">' +
           images
             .map(
@@ -3911,11 +4133,17 @@
 
         const body = card.querySelector(".post-body");
         const authorBtn = card.querySelector("[data-open-user]");
+        const editBtn = card.querySelector("[data-edit-post]");
         if (authorBtn) {
           authorBtn.addEventListener("click", async () => {
             const targetUid = authorBtn.getAttribute("data-open-user");
             if (!targetUid) return;
             await openPublicProfile(targetUid);
+          });
+        }
+        if (editBtn) {
+          editBtn.addEventListener("click", async () => {
+            await editRegularPost(docSnap.id, data);
           });
         }
         const likeStatBtn = card.querySelector('[data-like-btn="1"]');
@@ -4088,6 +4316,204 @@
         return card;
       }
 
+      function isAdVisibleForLang(adData) {
+        const target = String(adData.targetLang || "all");
+        return target === "all" || target === currentLang;
+      }
+
+      async function getUserAdInteraction(adId) {
+        if (!currentUser || !db) return null;
+        const refNode = doc(db, "users", currentUser.uid, "adInteractions", adId);
+        const snap = await getDoc(refNode);
+        if (!snap.exists()) return null;
+        return snap.data();
+      }
+
+      async function registerAdView(adId, interaction) {
+        if (!currentUser || !db || (interaction && interaction.viewed)) return;
+        await runTransaction(db, async (tx) => {
+          const interRef = doc(db, "users", currentUser.uid, "adInteractions", adId);
+          const interSnap = await tx.get(interRef);
+          const interData = interSnap.exists() ? interSnap.data() : {};
+          if (interData.viewed) return;
+          const adRef = doc(db, "ads", adId);
+          tx.update(adRef, { viewsCount: increment(1) });
+          tx.set(
+            interRef,
+            {
+              viewed: true,
+              viewedAt: serverTimestamp(),
+              adId,
+              viewerUid: currentUser.uid,
+              viewerPseudo: currentPseudo || currentUser.email || "fan",
+            },
+            { merge: true }
+          );
+        });
+      }
+
+      async function registerAdClick(adId) {
+        if (!currentUser || !db) return;
+        await runTransaction(db, async (tx) => {
+          const interRef = doc(db, "users", currentUser.uid, "adInteractions", adId);
+          const interSnap = await tx.get(interRef);
+          const interData = interSnap.exists() ? interSnap.data() : {};
+          if (interData.clicked) return;
+          const adRef = doc(db, "ads", adId);
+          tx.update(adRef, { clicksCount: increment(1) });
+          tx.set(
+            interRef,
+            {
+              clicked: true,
+              clickedAt: serverTimestamp(),
+              adId,
+              viewerUid: currentUser.uid,
+              viewerPseudo: currentPseudo || currentUser.email || "fan",
+            },
+            { merge: true }
+          );
+        });
+      }
+
+      async function toggleAdLike(adId, alreadyLiked) {
+        if (!currentUser || !db) return;
+        await runTransaction(db, async (tx) => {
+          const adRef = doc(db, "ads", adId);
+          const interRef = doc(db, "users", currentUser.uid, "adInteractions", adId);
+          const adSnap = await tx.get(adRef);
+          if (!adSnap.exists()) return;
+          if (alreadyLiked) {
+            tx.update(adRef, { likesCount: increment(-1) });
+            tx.set(interRef, { liked: false, unlikedAt: serverTimestamp() }, { merge: true });
+            return;
+          }
+          tx.update(adRef, { likesCount: increment(1) });
+          tx.set(
+            interRef,
+            {
+              liked: true,
+              likedAt: serverTimestamp(),
+              adId,
+              viewerUid: currentUser.uid,
+              viewerPseudo: currentPseudo || currentUser.email || "fan",
+            },
+            { merge: true }
+          );
+        });
+      }
+
+      async function renderAdCard(adDocSnap) {
+        const data = adDocSnap.data() || {};
+        if (!isAdVisibleForLang(data)) return null;
+        if (data.active === false) return null;
+        const interaction = (await getUserAdInteraction(adDocSnap.id)) || {};
+        await registerAdView(adDocSnap.id, interaction);
+        const ownerAvatar = await resolveUserAvatar(
+          String(data.ownerUid || ""),
+          data.ownerPseudo || "Fan",
+          data.ownerAvatarUrl || ""
+        );
+        const canEdit = Boolean(currentUser && String(data.ownerUid || "") === currentUser.uid);
+        const card = document.createElement("article");
+        card.className = "post-card ad-card";
+        card.dataset.adId = adDocSnap.id;
+        let likedState = Boolean(interaction.liked);
+        let likesCount = Number(data.likesCount || 0);
+        let clicksCount = Number(data.clicksCount || 0);
+        card.innerHTML =
+          '<div class="post-head"><button type="button" class="author-btn" data-open-user="' +
+          escapeHtml(data.ownerUid || "") +
+          '"><img class="avatar-sm" src="' +
+          escapeHtml(ownerAvatar) +
+          '" alt="avatar" /><div class="post-author">@' +
+          escapeHtml(data.ownerPseudo || "fan") +
+          '</div></button><div class="post-head-right">' +
+          (canEdit
+            ? '<button type="button" class="post-edit-btn" data-edit-ad="' +
+              escapeHtml(adDocSnap.id) +
+              '">' +
+              t("edit") +
+              "</button>"
+            : "") +
+          '<span class="ad-badge">' +
+          t("adBadge") +
+          '</span></div></div><div class="post-media"><img loading="lazy" src="' +
+          escapeHtml(data.imageUrl || "") +
+          '" alt="' +
+          escapeHtml(data.title || "ad") +
+          '" /></div><div class="post-body"><p class="post-desc"><strong>' +
+          escapeHtml(data.title || "") +
+          "</strong><br/>" +
+          escapeHtml(data.description || "") +
+          '</p><div class="post-stats"><button type="button" class="post-stat-like-btn' +
+          (likedState ? " done" : "") +
+          '" data-ad-like-btn="1">' +
+          getUiIcon("heart", likedState) +
+          '<span data-count-ad-likes="1">' +
+          likesCount +
+          "</span> " +
+          t("likes") +
+          '</button><span class="post-stat-item">' +
+          getUiIcon("eye") +
+          '<span data-count-ad-views="1">' +
+          Number(data.viewsCount || 0) +
+          "</span> " +
+          t("views") +
+          '</span><span class="post-stat-item">' +
+          getUiIcon("target") +
+          '<span data-count-ad-clicks="1">' +
+          clicksCount +
+          "</span> " +
+          t("clicks") +
+          '</span></div></div>';
+
+        const likeBtn = card.querySelector('[data-ad-like-btn="1"]');
+        const clickTarget = card.querySelector(".post-media img");
+        const descTarget = card.querySelector(".post-desc");
+        const authorBtn = card.querySelector("[data-open-user]");
+        const editBtn = card.querySelector("[data-edit-ad]");
+        if (authorBtn) {
+          authorBtn.addEventListener("click", async () => {
+            const targetUid = authorBtn.getAttribute("data-open-user");
+            if (targetUid) await openPublicProfile(targetUid);
+          });
+        }
+        if (editBtn) {
+          editBtn.addEventListener("click", async () => {
+            await editAdPost(adDocSnap.id, data);
+          });
+        }
+        if (likeBtn) {
+          likeBtn.addEventListener("click", async () => {
+            const prev = likedState;
+            likedState = !likedState;
+            likesCount = Math.max(0, likesCount + (likedState ? 1 : -1));
+            likeBtn.classList.toggle("done", likedState);
+            likeBtn.innerHTML =
+              getUiIcon("heart", likedState) +
+              '<span data-count-ad-likes="1">' +
+              likesCount +
+              "</span> " +
+              t("likes");
+            await toggleAdLike(adDocSnap.id, prev);
+          });
+        }
+        const openAdLink = async () => {
+          await registerAdClick(adDocSnap.id);
+          const nextClicks = card.querySelector('[data-count-ad-clicks="1"]');
+          if (nextClicks && !interaction.clicked) {
+            interaction.clicked = true;
+            clicksCount += 1;
+            nextClicks.textContent = String(clicksCount);
+          }
+          const url = String(data.redirectUrl || "").trim();
+          if (url) window.open(url, "_blank", "noopener,noreferrer");
+        };
+        if (clickTarget) clickTarget.addEventListener("click", openAdLink);
+        if (descTarget) descTarget.addEventListener("click", openAdLink);
+        return card;
+      }
+
       function updateFeedCardCounters(docSnap) {
         const card = feedList.querySelector('[data-post-id="' + docSnap.id + '"]');
         if (!card) return;
@@ -4100,18 +4526,43 @@
         if (partsNode) partsNode.textContent = String(Number(data.participantsCount || 0));
       }
 
+      function updateAdCardCounters(docSnap) {
+        const card = feedList.querySelector('[data-ad-id="' + docSnap.id + '"]');
+        if (!card) return;
+        const data = docSnap.data() || {};
+        const likesNode = card.querySelector('[data-count-ad-likes="1"]');
+        const viewsNode = card.querySelector('[data-count-ad-views="1"]');
+        const clicksNode = card.querySelector('[data-count-ad-clicks="1"]');
+        if (likesNode) likesNode.textContent = String(Number(data.likesCount || 0));
+        if (viewsNode) viewsNode.textContent = String(Number(data.viewsCount || 0));
+        if (clicksNode) clicksNode.textContent = String(Number(data.clicksCount || 0));
+      }
+
       async function renderFeedFromCache(forceRebuild = false) {
         if (!currentUser) return;
         const hasCards = feedList.querySelector(".post-card");
         if (!forceRebuild && hasCards) {
           feedCacheDocs.forEach((row) => updateFeedCardCounters(row));
+          adsCacheDocs.forEach((row) => updateAdCardCounters(row));
           setFeedFirstPostPromptVisibility();
           return;
         }
         feedList.innerHTML = "";
+        const visibleAds = adsCacheDocs.filter((row) => isAdVisibleForLang(row.data() || {}));
+        let adIndex = 0;
+        let postsRendered = 0;
         for (const row of feedCacheDocs) {
           const node = await renderFeedPost(row);
-          if (node) feedList.appendChild(node);
+          if (node) {
+            feedList.appendChild(node);
+            postsRendered += 1;
+          }
+          if (visibleAds.length && postsRendered > 0 && postsRendered % 3 === 0) {
+            const adDoc = visibleAds[adIndex % visibleAds.length];
+            adIndex += 1;
+            const adNode = await renderAdCard(adDoc);
+            if (adNode) feedList.appendChild(adNode);
+          }
         }
         if (!feedList.children.length) {
           feedList.innerHTML = '<div class="panel small">' + t("noPosts") + "</div>";
@@ -4205,11 +4656,19 @@
           query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(60))
         );
         const myPosts = postsSnap.docs.filter((row) => String(row.data().ownerUid || "") === targetUid);
+        const adsSnap = await getDocs(
+          query(collection(db, "ads"), orderBy("createdAt", "desc"), limit(60))
+        );
+        const myAds = adsSnap.docs.filter((row) => String(row.data().ownerUid || "") === targetUid);
         const computedLikes = myPosts.reduce(
           (acc, row) => acc + Number((row.data() && row.data().likesCount) || 0),
           0
         );
-        const likesTotal = Math.max(Number(userData.totalLikesReceived || 0), computedLikes);
+        const adLikes = myAds.reduce(
+          (acc, row) => acc + Number((row.data() && row.data().likesCount) || 0),
+          0
+        );
+        const likesTotal = Math.max(Number(userData.totalLikesReceived || 0), computedLikes + adLikes);
         publicProfileState.uid = targetUid;
         publicProfileState.followersCount = Number(userData.followersCount || 0);
         publicProfileState.likesTotal = likesTotal;
@@ -4239,19 +4698,44 @@
         publicFollowBtn.textContent = publicProfileState.following ? t("following") : t("follow");
 
         publicPostGrid.innerHTML = "";
-        myPosts.forEach((row) => {
-          const item = row.data();
-          const postId = row.id;
-          const firstImage = Array.isArray(item.imageUrls) && item.imageUrls[0] ? item.imageUrls[0] : "";
+        const allItems = [
+          ...myPosts.map((row) => {
+            const item = row.data() || {};
+            return {
+              id: row.id,
+              type: "post",
+              createdAt: item.createdAt,
+              image: Array.isArray(item.imageUrls) && item.imageUrls[0] ? item.imageUrls[0] : "",
+            };
+          }),
+          ...myAds.map((row) => {
+            const item = row.data() || {};
+            return {
+              id: row.id,
+              type: "ad",
+              createdAt: item.createdAt,
+              image: String(item.imageUrl || ""),
+            };
+          }),
+        ].sort((a, b) => {
+          const aMs = a.createdAt && typeof a.createdAt.toMillis === "function" ? a.createdAt.toMillis() : 0;
+          const bMs = b.createdAt && typeof b.createdAt.toMillis === "function" ? b.createdAt.toMillis() : 0;
+          return bMs - aMs;
+        });
+        allItems.forEach((item) => {
           const card = document.createElement("button");
           card.type = "button";
           card.className = "user-mini-card";
-          card.innerHTML = '<img src="' + escapeHtml(firstImage) + '" alt="post" />';
+          card.innerHTML = '<img src="' + escapeHtml(item.image) + '" alt="post" />';
           card.addEventListener("click", async () => {
             showScreen("feed");
             await loadFeed();
             setTimeout(() => {
-              const target = feedList.querySelector('[data-post-id="' + postId + '"]');
+              const selector =
+                item.type === "ad"
+                  ? '[data-ad-id="' + item.id + '"]'
+                  : '[data-post-id="' + item.id + '"]';
+              const target = feedList.querySelector(selector);
               if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
             }, 80);
           });
@@ -4519,12 +5003,36 @@
         );
       }
 
+      function startAdsRealtime() {
+        if (!db || !currentUser) return;
+        if (adsUnsubscribe) return;
+        const qAds = query(collection(db, "ads"), orderBy("createdAt", "desc"), limit(40));
+        adsUnsubscribe = onSnapshot(
+          qAds,
+          (snap) => {
+            adsCacheDocs = snap.docs;
+            const hasStructuralChange = snap.docChanges().some(
+              (change) => change.type === "added" || change.type === "removed"
+            );
+            renderFeedFromCache(hasStructuralChange).catch(console.error);
+          },
+          (err) => {
+            console.error(err);
+          }
+        );
+      }
+
       function stopFeedRealtime() {
         if (feedUnsubscribe) {
           feedUnsubscribe();
           feedUnsubscribe = null;
         }
         feedCacheDocs = [];
+        if (adsUnsubscribe) {
+          adsUnsubscribe();
+          adsUnsubscribe = null;
+        }
+        adsCacheDocs = [];
       }
 
       function setFeedFirstPostPromptVisibility() {
@@ -4579,8 +5087,10 @@
         if (!feedUnsubscribe) {
           feedList.innerHTML = '<div class="panel small">' + t("loadingTitle") + "</div>";
           startFeedRealtime();
+          startAdsRealtime();
           return;
         }
+        if (!adsUnsubscribe) startAdsRealtime();
         await renderFeedFromCache(true);
         setFeedFirstPostPromptVisibility();
       }
@@ -4671,6 +5181,8 @@
         profileTitle.textContent = t("profileTitle");
         profileChangeAvatar.textContent = t("changeAvatar");
         profileCreatorBtn.textContent = t("creatorDashboard");
+        profileAdBtn.textContent = t("profileAdBtn");
+        profileMyPostsBtn.textContent = t("myPostsBtn");
         profileLabelPseudo.textContent = t("pseudo");
         profilePseudoInput.placeholder = t("pseudoEditPlaceholder");
         profilePseudoSave.textContent = t("save");
@@ -4685,6 +5197,20 @@
         navProfile.textContent = t("navProfile");
         backFromUserProfile.textContent = "← " + t("backToFeed");
         backFromCreator.textContent = "← " + t("backProfile");
+        backFromAdShare.textContent = "← " + t("backFromAdShare");
+        adShareTitle.textContent = t("adShareTitle");
+        adShareSubtitle.textContent = t("adShareSubtitle");
+        adImageLabel.textContent = t("adImageLabel");
+        adTitleLabel.textContent = t("adTitleLabel");
+        adDescriptionLabel.textContent = t("adDescriptionLabel");
+        adLinkLabel.textContent = t("adLinkLabel");
+        adLangTargetLabel.textContent = t("adLangTargetLabel");
+        if (adLangTarget && adLangTarget.options.length >= 3) {
+          adLangTarget.options[0].textContent = t("adTargetAll");
+          adLangTarget.options[1].textContent = t("adTargetFr");
+          adLangTarget.options[2].textContent = t("adTargetEn");
+        }
+        adShareSubmit.textContent = t("adPublish");
         creatorTitle.textContent = t("creatorDashboard");
         creatorMonetizationTitle.textContent = t("creatorMonetizationTitle");
         creatorMonetizationLine1.textContent = t("creatorMonetizationLine1");
@@ -5286,9 +5812,18 @@
       profilePlayBtn.addEventListener("click", () => showScreen("level"));
       backFromUserProfile.addEventListener("click", () => showScreen("feed"));
       backFromCreator.addEventListener("click", () => showScreen("profile"));
+      backFromAdShare.addEventListener("click", () => showScreen("profile"));
       profileCreatorBtn.addEventListener("click", async () => {
         showScreen("creatorDashboard");
         await loadCreatorDashboard();
+      });
+      profileAdBtn.addEventListener("click", () => {
+        setAdShareMessage("");
+        showScreen("adShare");
+      });
+      profileMyPostsBtn.addEventListener("click", async () => {
+        if (!currentUser) return;
+        await openPublicProfile(currentUser.uid);
       });
       creatorCardFollowers.addEventListener("click", () => renderCreatorRows("followers"));
       creatorCardUnfollows.addEventListener("click", () => renderCreatorRows("unfollows"));
@@ -5450,12 +5985,14 @@
         currentLang = "fr";
         localStorage.setItem("avataronn_lang", currentLang);
         applyTranslations();
+        persistUserLanguagePreference().catch(console.error);
         closeLanguageModal(true);
       });
       langModalEn.addEventListener("click", () => {
         currentLang = "en";
         localStorage.setItem("avataronn_lang", currentLang);
         applyTranslations();
+        persistUserLanguagePreference().catch(console.error);
         closeLanguageModal(true);
       });
       langModal.addEventListener("click", (event) => {
@@ -5470,6 +6007,60 @@
       });
       galleryUpdateModal.addEventListener("click", (event) => {
         if (event.target === galleryUpdateModal) closeGalleryUpdateModal(true);
+      });
+
+      adShareForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!currentUser || !db) {
+          setAdShareMessage(t("shareNeedAuth"), true);
+          return;
+        }
+        const imageUrl = String(adImageUrl.value || "").trim();
+        const title = String(adTitleInput.value || "").trim();
+        const description = String(adDescriptionInput.value || "").trim();
+        const redirectUrl = String(adLinkUrl.value || "").trim();
+        const targetLang = String(adLangTarget.value || "all");
+
+        if (!title) {
+          setAdShareMessage(t("adNeedTitle"), true);
+          return;
+        }
+        if (!isValidHttpUrl(imageUrl)) {
+          setAdShareMessage(t("adNeedImage"), true);
+          return;
+        }
+        if (!isValidHttpUrl(redirectUrl)) {
+          setAdShareMessage(t("adNeedLink"), true);
+          return;
+        }
+        adShareSubmit.disabled = true;
+        try {
+          await addDoc(collection(db, "ads"), {
+            ownerUid: currentUser.uid,
+            ownerPseudo: currentPseudo || (currentUser.email || "fan").split("@")[0],
+            ownerAvatarUrl: currentUserAvatar || "",
+            imageUrl,
+            title: title.slice(0, 80),
+            description: description.slice(0, 220),
+            redirectUrl,
+            targetLang: targetLang === "fr" || targetLang === "en" ? targetLang : "all",
+            likesCount: 0,
+            viewsCount: 0,
+            clicksCount: 0,
+            active: true,
+            createdAt: serverTimestamp(),
+          });
+          adShareForm.reset();
+          adLangTarget.value = "all";
+          setAdShareMessage(t("adPublished"));
+          showScreen("feed");
+          await loadFeed();
+        } catch (err) {
+          console.error(err);
+          setAdShareMessage(t("errorPrefix") + ": " + (err.message || "operation impossible"), true);
+        } finally {
+          adShareSubmit.disabled = false;
+        }
       });
 
       shareForm.addEventListener("submit", async (event) => {
@@ -5593,6 +6184,7 @@
         currentLang = currentLang === "fr" ? "en" : "fr";
         localStorage.setItem("avataronn_lang", currentLang);
         applyTranslations();
+        persistUserLanguagePreference().catch(console.error);
         if (questionText.textContent.trim() && !resultBox.classList.contains("show")) {
           renderQuestion();
           applyStoredAnswerState();
@@ -5613,6 +6205,9 @@
           }
           if (screens.creatorDashboard.classList.contains("active")) {
             loadCreatorDashboard().catch(console.error);
+          }
+          if (screens.feed.classList.contains("active")) {
+            loadFeed().catch(console.error);
           }
         }
       });
@@ -5669,6 +6264,7 @@
               pseudo,
               pseudoLower: normalizePseudoValue(pseudo),
               email,
+              preferredLang: currentLang,
               avatarUrl: "",
               isCertified: false,
               followersCount: 0,
@@ -5730,6 +6326,11 @@
             currentPseudo = snap.exists() ? String(snap.data().pseudo || "") : "";
             currentUserAvatar = snap.exists() ? String(snap.data().avatarUrl || "") : "";
             currentUserCertified = snap.exists() ? Boolean(snap.data().isCertified) : false;
+            if (snap.exists() && snap.data().preferredLang && i18n[snap.data().preferredLang]) {
+              currentLang = String(snap.data().preferredLang);
+              localStorage.setItem("avataronn_lang", currentLang);
+              applyTranslations();
+            }
             userCertCache.set(user.uid, currentUserCertified);
           } catch (err) {
             console.error(err);
@@ -5740,6 +6341,7 @@
           }
 
           try {
+            await persistUserLanguagePreference();
             await loadLeaderboard();
           } catch (err) {
             console.error(err);
