@@ -3736,11 +3736,11 @@
 
       function refreshLangButton() {
         if (currentLang === "fr") {
-          langBtn.textContent = "🇬🇧 EN";
-          langBtn.setAttribute("aria-label", "Switch to English");
-        } else {
           langBtn.textContent = "🇫🇷 FR";
-          langBtn.setAttribute("aria-label", "Basculer en francais");
+          langBtn.setAttribute("aria-label", "Langue actuelle: Français. Cliquer pour English.");
+        } else {
+          langBtn.textContent = "🇬🇧 EN";
+          langBtn.setAttribute("aria-label", "Current language: English. Click for Français.");
         }
       }
 
@@ -4865,8 +4865,9 @@
         );
       }
 
-      async function renderFeedPost(docSnap) {
+      async function renderFeedPost(docSnap, forceVisible = false) {
         const data = docSnap.data();
+        if (!forceVisible && !isPostVisibleForLang(data || {})) return null;
         if (feedFilter !== "all" && data.postType !== feedFilter) return null;
         const interaction = (await getUserPostInteraction(docSnap.id)) || {};
         await registerPostView(docSnap.id, data.ownerUid, interaction);
@@ -5138,6 +5139,11 @@
 
       function isAdVisibleForLang(adData) {
         const target = String(adData.targetLang || "all");
+        return target === "all" || target === currentLang;
+      }
+
+      function isPostVisibleForLang(postData) {
+        const target = String(postData.targetLang || postData.postLang || "all").toLowerCase();
         return target === "all" || target === currentLang;
       }
 
@@ -5500,6 +5506,7 @@
 
       function matchPostSearch(row, q) {
         const d = row.data() || {};
+        if (!isPostVisibleForLang(d)) return false;
         const tags = (String(d.description || "").match(/#[\p{L}\p{N}_-]+/gu) || []).map((x) => x.toLowerCase());
         const questionText =
           Array.isArray(d.questions) && d.questions[0]
@@ -5584,6 +5591,16 @@
         setTimeout(() => searchInput.focus(), 0);
       }
 
+      function setPublicationEditVisibility(visible) {
+        if (visible) {
+          publicationEditForm.classList.remove("hidden");
+          publicationEditForm.style.display = "grid";
+          return;
+        }
+        publicationEditForm.classList.add("hidden");
+        publicationEditForm.style.display = "none";
+      }
+
       async function isFollowingUser(targetUid) {
         if (!currentUser || !db || !targetUid || targetUid === currentUser.uid) return false;
         const snap = await getDoc(doc(db, "users", currentUser.uid, "following", targetUid));
@@ -5629,7 +5646,7 @@
         currentPublicationType = type === "ad" ? "ad" : "post";
         currentPublicationId = id;
         publicationDetailCard.innerHTML = '<div class="panel small">' + t("loadingTitle") + "</div>";
-        publicationEditForm.classList.add("hidden");
+        setPublicationEditVisibility(false);
         setPublicationEditMessage("");
         showScreen("publicationDetail");
 
@@ -5646,12 +5663,15 @@
         const cardNode =
           currentPublicationType === "ad"
             ? await renderAdCard(snap, true)
-            : await renderFeedPost(snap);
+            : await renderFeedPost(snap, true);
         publicationDetailCard.innerHTML = "";
         if (cardNode) publicationDetailCard.appendChild(cardNode);
 
-        if (!canEdit) return;
-        publicationEditForm.classList.remove("hidden");
+        if (!canEdit) {
+          setPublicationEditVisibility(false);
+          return;
+        }
+        setPublicationEditVisibility(true);
         if (currentPublicationType === "ad") {
           publicationEditLabelTitle.classList.remove("hidden");
           publicationEditTitle.classList.remove("hidden");
@@ -6022,7 +6042,7 @@
       function startFeedRealtime() {
         if (!db || !currentUser) return;
         if (feedUnsubscribe) return;
-        const qPosts = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(200));
+        const qPosts = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(1000));
         feedUnsubscribe = onSnapshot(
           qPosts,
           (snap) => {
@@ -6043,7 +6063,7 @@
       function startAdsRealtime() {
         if (!db || !currentUser) return;
         if (adsUnsubscribe) return;
-        const qAds = query(collection(db, "ads"), orderBy("createdAt", "desc"), limit(200));
+        const qAds = query(collection(db, "ads"), orderBy("createdAt", "desc"), limit(1000));
         adsUnsubscribe = onSnapshot(
           qAds,
           (snap) => {
@@ -7429,6 +7449,19 @@
           }
           if (screens.feed.classList.contains("active")) {
             loadFeed().catch(console.error);
+          }
+          if (feedUnsubscribe) {
+            renderFeedFromCache(true).catch(console.error);
+          }
+          if (screens.search.classList.contains("active")) {
+            renderSearchResults(searchInput.value).catch(console.error);
+          }
+          if (
+            screens.publicationDetail.classList.contains("active") &&
+            currentPublicationId &&
+            (currentPublicationType === "post" || currentPublicationType === "ad")
+          ) {
+            openPublicationDetail(currentPublicationType, currentPublicationId).catch(console.error);
           }
         }
       });
