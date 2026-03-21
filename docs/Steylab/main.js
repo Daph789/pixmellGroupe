@@ -275,6 +275,8 @@ const translations = {
 
 const langButtons = document.querySelectorAll(".lang-btn, .lang-modal [data-lang]");
 const modal = document.querySelector(".lang-modal");
+const menuToggle = document.querySelector(".menu-toggle");
+const nav = document.querySelector(".nav");
 
 const applyLanguage = (lang) => {
   const dict = translations[lang] || translations.fr;
@@ -304,3 +306,11 @@ langButtons.forEach((btn) => {
     if (modal) modal.classList.remove("is-visible");
   });
 });
+
+if (menuToggle && nav) {
+  menuToggle.addEventListener("click", () => {
+    const isOpen = nav.classList.toggle("is-open");
+    menuToggle.classList.toggle("is-open", isOpen);
+    menuToggle.setAttribute("aria-expanded", String(isOpen));
+  });
+}
