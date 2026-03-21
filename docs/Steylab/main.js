@@ -186,7 +186,7 @@ const translations = {
     "cta.lead":
       "SteyLab t'accompagne chaque jour. Entraînement, nutrition, progression : tout est dans la même app.",
     "cta.button": "Télécharger l'app",
-    footer: "SteyLab © 2025 — Application sportive pour femmes & hommes.",
+    footer: "SteyLab © 2026 — Application sportive pour femmes & hommes.",
     "lang.title": "Choisis ta langue",
     "lang.subtitle": "Tu pourras changer à tout moment.",
   },
@@ -267,7 +267,7 @@ const translations = {
     "cta.lead":
       "SteyLab supports you every day. Training, nutrition, progression: everything in one app.",
     "cta.button": "Download the app",
-    footer: "SteyLab © 2025 — Sports app for women & men.",
+    footer: "SteyLab © 2026 — Sports app for women & men.",
     "lang.title": "Choose your language",
     "lang.subtitle": "You can change it anytime.",
   },
