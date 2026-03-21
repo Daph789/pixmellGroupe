@@ -577,7 +577,7 @@ main {
   .site-header {
     display: grid;
     grid-template-columns: 1fr auto auto;
-    gap: 12px;
+    gap: 10px;
   }
 
   .nav {
@@ -604,10 +604,29 @@ main {
 
   .menu-toggle {
     display: inline-flex;
+    justify-self: end;
   }
 
   .header-actions {
     justify-self: end;
+  }
+
+  .header-actions .cta {
+    display: none;
+  }
+
+  .lang-switch {
+    flex: 0 0 auto;
+  }
+
+  .lang-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .cta {
+    padding: 10px 18px;
+    font-size: 13px;
   }
 
   .dark,
