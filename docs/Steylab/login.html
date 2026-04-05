@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SteyLab — Connexion</title>
+    <meta name="description" content="Connecte-toi pour accéder à SteyLab." />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="app-page">
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <header class="app-header-bar">
+      <div class="logo">SteyLab</div>
+    </header>
+
+    <main class="app-main">
+      <section class="section app-section auth-section">
+        <div class="section-head settings-head">
+          <div>
+            <h2>Connexion</h2>
+            <p>Connecte-toi pour retrouver ton profil sur tous tes appareils.</p>
+          </div>
+        </div>
+        <div class="app-shell">
+          <div class="app-panel">
+            <form class="app-form" id="login-form">
+              <label class="full">
+                <span>Email</span>
+                <input type="email" name="email" placeholder="toi@email.com" required />
+              </label>
+              <label class="full">
+                <span>Mot de passe</span>
+                <input type="password" name="password" minlength="6" required />
+              </label>
+              <div class="form-actions">
+                <button class="cta" type="submit">Se connecter</button>
+                <a class="ghost" href="./signup.html">Créer un compte</a>
+              </div>
+              <p class="form-status" id="login-status"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>SteyLab © 2026 — Application sportive pour femmes & hommes.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="./login.js"></script>
+  </body>
+</html>

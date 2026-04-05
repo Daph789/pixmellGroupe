@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SteyLab — Progrès</title>
+    <meta name="description" content="Suis ta progression." />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="app-page">
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <header class="app-header-bar">
+      <div class="logo">SteyLab</div>
+      <div class="app-header-actions">
+        <a class="icon-btn" href="./app.html" aria-label="Retour accueil">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 6 9 12l6 6" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <main class="day-page">
+      <div class="day-card">
+        <h2>Mes progrès</h2>
+        <p>Section en cours d’intégration (photos, niveaux, stats).</p>
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="./supabase.js"></script>
+    <script src="./progress.js"></script>
+  </body>
+</html>

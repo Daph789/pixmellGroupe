@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SteyLab — Repas du jour</title>
+    <meta name="description" content="Ton repas du jour personnalisé." />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="app-page">
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <header class="app-header-bar">
+      <div class="logo">SteyLab</div>
+      <div class="app-header-actions">
+        <a class="icon-btn" href="./app.html" aria-label="Retour accueil">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 6 9 12l6 6" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <main class="day-page">
+      <div class="day-header">
+        <div>
+          <h2>Repas du jour</h2>
+          <div class="day-meta" id="day-meta"></div>
+        </div>
+        <a class="ghost" href="./workout.html">Aller à la séance</a>
+      </div>
+
+      <div class="day-card goal-card" id="goal-card" hidden>
+        <div>
+          <h3>Objectif démarré</h3>
+          <p id="goal-started-text"></p>
+        </div>
+        <div class="goal-day" id="goal-day">Jour 0</div>
+      </div>
+
+      <div class="day-card">
+        <p id="day-message">
+          Si tu cliques sur “Commencer”, le compteur démarre. En ratant une journée, tu perds tes points.
+        </p>
+        <div class="form-actions" id="start-actions">
+          <button class="cta" id="start-btn" type="button">Commencer</button>
+        </div>
+        <p class="form-hint" id="started-info"></p>
+      </div>
+
+      <div class="day-card meal-grid">
+        <div class="meal-card">
+          <img id="meal-image" src="./assets/meal-placeholder.jpg" alt="Petit déjeuner" />
+        </div>
+        <div>
+          <h3 id="meal-title">Petit déjeuner du matin</h3>
+          <p id="meal-desc"></p>
+          <div class="meal-macros">
+            <div><span>Calories</span><strong id="meal-calories">-</strong></div>
+            <div><span>Protéines</span><strong id="meal-protein">-</strong></div>
+            <div><span>Glucides</span><strong id="meal-carbs">-</strong></div>
+            <div><span>Lipides</span><strong id="meal-fat">-</strong></div>
+          </div>
+          <div class="form-actions" style="margin-top:16px;">
+            <a class="cta" id="recipe-link" href="./recipe.html">Faire la préparation</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <h3>Petits déjeuners disponibles</h3>
+        <p class="form-hint" id="unlock-hint">
+          Le petit déjeuner du jour est débloqué. Les autres se débloquent les jours suivants.
+        </p>
+        <div class="meal-list" id="meal-list"></div>
+        <p class="form-status" id="meal-message"></p>
+      </div>
+    </main>
+
+    <div class="overlay" id="overlay">
+      <div class="overlay-card">
+        <p id="overlay-text">Tu dois d’abord cliquer sur “Commencer”.</p>
+        <button class="cta" id="overlay-close">OK</button>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="./supabase.js"></script>
+    <script src="./meal.js"></script>
+  </body>
+</html>

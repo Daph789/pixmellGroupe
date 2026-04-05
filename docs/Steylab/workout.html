@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SteyLab — Séance du jour</title>
+    <meta name="description" content="Ta séance du jour personnalisée." />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="app-page">
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <header class="app-header-bar">
+      <div class="logo">SteyLab</div>
+      <div class="app-header-actions">
+        <a class="icon-btn" href="./app.html" aria-label="Retour accueil">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 6 9 12l6 6" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <main class="day-page">
+      <div class="day-header">
+        <div>
+          <h2>Séance du jour</h2>
+          <div class="day-meta" id="day-meta"></div>
+        </div>
+        <a class="ghost" href="./meal.html">Aller aux repas</a>
+      </div>
+
+      <div class="day-card goal-card" id="goal-card" hidden>
+        <div>
+          <h3>Objectif démarré</h3>
+          <p id="goal-started-text"></p>
+        </div>
+        <div class="goal-day" id="goal-day">Jour 0</div>
+      </div>
+
+      <div class="day-card">
+        <p id="day-message">
+          En cliquant sur “Commencer”, tu lances ton objectif et les jours sont comptés pour l’atteindre.
+          Si tu rates une journée, tu perds tes points.
+        </p>
+        <div class="form-actions" id="start-actions">
+          <button class="cta" id="start-btn" type="button">Commencer</button>
+        </div>
+        <p class="form-hint" id="started-info"></p>
+      </div>
+
+      <div class="day-card">
+        <h3>Plan hebdomadaire</h3>
+        <div class="workout-grid" id="workout-grid">
+          <div class="workout-card" data-day="1">
+            <img src="./assets/workout-day1.jpg" alt="Jour 1" />
+            <div class="workout-body">
+              <strong>Jour 1 — Poussée (Haut du corps)</strong>
+              <p>Pectoraux, Épaules, Triceps. Pour la carrure.</p>
+            </div>
+          </div>
+          <div class="workout-card" data-day="2">
+            <img src="./assets/workout-day2.jpg" alt="Jour 2" />
+            <div class="workout-body">
+              <strong>Jour 2 — Tirage (Haut du corps)</strong>
+              <p>Dos, Biceps. Pour la posture et la largeur du dos.</p>
+            </div>
+          </div>
+          <div class="workout-card" data-day="3">
+            <img src="./assets/workout-day3.jpg" alt="Jour 3" />
+            <div class="workout-body">
+              <strong>Jour 3 — Bas du corps (Jambes/Fessiers)</strong>
+              <p>Quadriceps, Ischios, Fessiers. C'est la séance la plus dure.</p>
+            </div>
+          </div>
+          <div class="workout-card" data-day="4">
+            <img src="./assets/workout-day4.jpg" alt="Jour 4" />
+            <div class="workout-body">
+              <strong>Jour 4 — Abdos & Cardio / Gainage</strong>
+              <p>Focus sur le centre du corps pour un ventre plat et solide.</p>
+            </div>
+          </div>
+          <div class="workout-card" data-day="5">
+            <img src="./assets/workout-day5.jpg" alt="Jour 5" />
+            <div class="workout-body">
+              <strong>Jour 5 — Full Body (Rappel)</strong>
+              <p>Un mix léger de tout le corps pour brûler un max de calories avant le repos.</p>
+            </div>
+          </div>
+          <div class="workout-card rest" data-day="6">
+            <img src="./assets/workout-rest.jpg" alt="Jour 6 repos" />
+            <div class="workout-body">
+              <strong>Jour 6 — Repos</strong>
+              <p>Ton plan alimentaire sert à la récupération.</p>
+            </div>
+          </div>
+          <div class="workout-card rest" data-day="7">
+            <img src="./assets/workout-rest.jpg" alt="Jour 7 repos" />
+            <div class="workout-body">
+              <strong>Jour 7 — Repos</strong>
+              <p>Préparation mentale et physique pour la semaine suivante.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="./supabase.js"></script>
+    <script src="./workout.js"></script>
+  </body>
+</html>

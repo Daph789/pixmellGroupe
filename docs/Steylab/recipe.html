@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SteyLab — Recette</title>
+    <meta name="description" content="Recette du petit déjeuner du jour." />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="app-page">
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <header class="app-header-bar">
+      <div class="logo">SteyLab</div>
+      <div class="app-header-actions">
+        <a class="icon-btn" href="./meal.html" aria-label="Retour repas">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 6 9 12l6 6" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <main class="recipe-page">
+      <div class="day-header">
+        <div>
+          <h2 id="recipe-title">Recette</h2>
+          <div class="day-meta" id="recipe-meta"></div>
+        </div>
+      </div>
+
+      <div class="day-card recipe-hero">
+        <div>
+          <img id="recipe-image" src="./assets/meal-placeholder.jpg" alt="Recette" />
+          <button class="cta done-btn" id="meal-done-btn" type="button">Préparation terminée</button>
+          <div class="done-state" id="meal-done-state" hidden>
+            <span class="done-icon">✓</span>
+            <span>Fait</span>
+          </div>
+        </div>
+        <div>
+          <p id="recipe-desc"></p>
+          <div class="meal-macros">
+            <div>
+              <span class="macro-label"><span class="macro-dot"></span>Calories</span>
+              <strong id="recipe-calories">-</strong>
+            </div>
+            <div>
+              <span class="macro-label"><span class="macro-dot"></span>Protéines</span>
+              <strong id="recipe-protein">-</strong>
+            </div>
+            <div>
+              <span class="macro-label"><span class="macro-dot"></span>Glucides</span>
+              <strong id="recipe-carbs">-</strong>
+            </div>
+            <div>
+              <span class="macro-label"><span class="macro-dot"></span>Lipides</span>
+              <strong id="recipe-fat">-</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <h3>Préparation</h3>
+        <div class="recipe-steps" id="recipe-steps"></div>
+      </div>
+
+      <div class="day-card whey-card" id="whey-card" hidden>
+        <div class="whey-media">
+          <img src="./assets/whey.jpg" alt="Whey protéine" />
+        </div>
+        <div class="whey-body">
+          <h3>Whey Pro</h3>
+          <p>
+            Tu peux le faire sans whey, mais l'effet est beaucoup plus rapide avec la whey :
+            plus de protéines disponibles pour le muscle pendant l'effort et une meilleure récupération.
+          </p>
+          <ul class="whey-benefits">
+            <li>Stimule la synthèse protéique pendant et après l'entraînement.</li>
+            <li>Améliore la récupération musculaire et limite la fatigue.</li>
+            <li>Apporte des acides aminés rapidement assimilés.</li>
+          </ul>
+          <div class="whey-buy">
+            <span class="whey-price">32,99 €</span>
+            <a class="cta" href="https://buy.stripe.com/aFa5kD5aQcvBbwdcEq2B20Y">Acheter</a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="overlay" id="confirm-overlay">
+      <div class="overlay-card">
+        <p>Avez-vous terminé de faire votre petit déj ?</p>
+        <div class="form-actions">
+          <button class="cta" id="confirm-yes">Oui</button>
+          <button class="ghost" id="confirm-no">Non</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="points-overlay">
+      <div class="overlay-card">
+        <div class="points-pop">
+          <div class="points-icon">★</div>
+          <div>
+            <strong>+5 points</strong>
+            <p>Bien joué, continue comme ça !</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="./supabase.js"></script>
+    <script src="./recipe.js"></script>
+  </body>
+</html>

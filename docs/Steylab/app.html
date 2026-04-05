@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SteyLab App — Profil</title>
+    <meta
+      name="description"
+      content="Crée ton profil sportif SteyLab en quelques étapes. Données stockées en local."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="app-page">
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <header class="app-header-bar">
+      <div class="logo">SteyLab</div>
+      <div class="app-header-actions">
+        <a class="icon-btn" href="./settings.html" aria-label="Paramètres">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 8.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Zm9.2 3.2-.9-.5.2-1.1-1.2-2.1-1.1.2-.9-.5-.4-1.1H14l-.4 1.1-.9.5-1.1-.2-1.2 2.1.2 1.1-.9.5.9 2.1 1.1-.2.9.5.4 1.1h2.6l.4-1.1.9-.5 1.1.2 1.2-2.1-.2-1.1.9-.5Z"
+              fill="currentColor"
+            />
+          </svg>
+        </a>
+        <button class="icon-btn" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 21a2.2 2.2 0 0 0 2.2-2.2H9.8A2.2 2.2 0 0 0 12 21Zm7-5.6v-3.7a7 7 0 1 0-14 0v3.7l-1.6 1.6v1.1h17.2v-1.1L19 15.4Z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <section class="section app-section" id="app-settings" hidden>
+        <div class="section-head settings-head">
+          <div>
+            <h2>Paramètres • Profil sportif</h2>
+            <p>
+              Gère ton profil sportif. Tes données restent en local pour personnaliser tes séances et ta
+              nutrition.
+            </p>
+          </div>
+        </div>
+
+        <div class="app-shell">
+          <aside class="app-sidebar">
+            <div class="app-brand">SteyLab OS</div>
+            <div class="app-nav">
+              <button class="app-tab is-active" type="button" data-i18n="app.tab.profile">Profil</button>
+              <button class="app-tab" type="button" data-i18n="app.tab.goal">Objectif</button>
+              <button class="app-tab" type="button" data-i18n="app.tab.plan">Plan du jour</button>
+            </div>
+            <div class="app-progress">
+              <span data-i18n="app.progress">Progression</span>
+              <div class="progress-mini">
+                <div class="progress-mini-fill"></div>
+              </div>
+              <small data-i18n="app.progressHint">Niveau 12 / 60</small>
+            </div>
+          </aside>
+
+          <div class="app-panel">
+            <div class="app-header">
+              <div>
+                <p class="app-eyebrow" data-i18n="app.headerTag">Données locales</p>
+                <h3 data-i18n="app.headerTitle">Ton profil sportif</h3>
+              </div>
+              <div class="app-status">
+                <span class="dot"></span>
+                <span data-i18n="app.headerStatus">Sauvegarde locale active</span>
+              </div>
+            </div>
+
+            <div class="step-progress">
+              <div class="step-progress-bar">
+                <div class="step-progress-fill"></div>
+              </div>
+              <div class="step-progress-label">
+                <span id="step-label">1 / 7</span>
+              </div>
+            </div>
+
+            <form class="app-form wizard" id="profile-form">
+              <div class="form-step is-active" data-step="1">
+                <label>
+                  <span data-i18n="app.form.type">Type de profil</span>
+                  <select name="profileType" required>
+                    <option value="" data-i18n="app.form.typePlaceholder">Choisir</option>
+                    <option value="homme" data-i18n="app.form.typeMan">Homme</option>
+                    <option value="femme" data-i18n="app.form.typeWoman">Femme</option>
+                    <option value="autre" data-i18n="app.form.typeOther">Autre</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="form-step" data-step="2">
+                <label>
+                  <span data-i18n="app.form.name">Nom</span>
+                  <input type="text" name="name" placeholder="Ex: Sam" required />
+                </label>
+              </div>
+
+              <div class="form-step" data-step="3">
+                <label>
+                  <span data-i18n="app.form.birthdate">Date de naissance</span>
+                  <input type="date" name="birthdate" required />
+                </label>
+              </div>
+
+              <div class="form-step" data-step="4">
+                <label>
+                  <span data-i18n="app.form.height">Taille (cm)</span>
+                  <input type="number" name="height" min="120" max="230" placeholder="175" required />
+                </label>
+              </div>
+
+              <div class="form-step" data-step="5">
+                <label>
+                  <span data-i18n="app.form.weight">Poids (kg)</span>
+                  <input type="number" name="weight" min="35" max="200" placeholder="70" required />
+                </label>
+              </div>
+
+              <div class="form-step" data-step="6">
+                <label>
+                  <span data-i18n="app.form.goal">Objectif</span>
+                  <select name="goal" required>
+                    <option value="" data-i18n="app.form.goalPlaceholder">Sélectionner</option>
+                    <option value="masse" data-i18n="app.form.goalMass">Prise de masse</option>
+                    <option value="seche" data-i18n="app.form.goalCut">Sèche</option>
+                    <option value="force" data-i18n="app.form.goalStrength">Force</option>
+                    <option value="tonus" data-i18n="app.form.goalTone">Tonus</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="form-step" data-step="7">
+                <label class="full">
+                  <span data-i18n="app.form.focus">Zones à travailler</span>
+                  <input
+                    type="text"
+                    name="focus"
+                    placeholder="Pecs, dos, bras..."
+                    data-i18n-placeholder="app.form.focusPlaceholder"
+                    required
+                  />
+                </label>
+              </div>
+
+              <div class="wizard-actions">
+                <button class="ghost" type="button" id="prev-step">Retour</button>
+                <button class="cta" type="button" id="next-step">Suivant</button>
+                <button class="cta" type="submit" id="finish-step" data-i18n="app.form.save">
+                  Sauvegarder en local
+                </button>
+              </div>
+
+              <p class="form-status" id="profile-status"></p>
+              <div class="wizard-footer">
+                <p class="form-hint" data-i18n="app.form.hint">
+                  Les données restent dans ton navigateur, pas dans le cloud.
+                </p>
+                <button class="ghost" type="button" id="clear-profile" data-i18n="app.form.clear">
+                  Effacer
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="app-home" id="app-home" hidden>
+        <div class="app-topbar">
+          <div class="app-top-left">
+            <div class="app-avatar"></div>
+            <div>
+              <h3 id="home-name">SteyLab User</h3>
+            </div>
+          </div>
+          <div class="app-top-right">
+            <div class="app-chip">
+              <span data-i18n="app.home.age">Âge</span>
+              <strong id="home-age">25</strong>
+            </div>
+            <div class="app-chip">
+              <span data-i18n="app.home.weight">Poids</span>
+              <strong id="home-weight">70 kg</strong>
+            </div>
+            <div class="app-chip">
+              <span>Points</span>
+              <strong id="home-points">0</strong>
+            </div>
+            <button class="cta app-rank" type="button" data-i18n="app.home.rank">Voir le classement</button>
+          </div>
+        </div>
+
+        <div class="app-tiles">
+          <a class="app-tile" href="./meal.html">
+            <img src="./assets/app-meal.jpg" alt="Repas du jour" />
+            <div class="app-tile-body">
+              <h4 data-i18n="app.home.meal">Repas du jour</h4>
+              <p data-i18n="app.home.mealText">Plan nutritionnel personnalisé.</p>
+            </div>
+          </a>
+          <a class="app-tile" href="./workout.html">
+            <img src="./assets/app-workout.jpg" alt="Séance du jour" />
+            <div class="app-tile-body">
+              <h4 data-i18n="app.home.workout">Séance du jour</h4>
+              <p data-i18n="app.home.workoutText">Guidée + check des séries.</p>
+            </div>
+          </a>
+          <a class="app-tile" href="./progress.html">
+            <img src="./assets/app-progress.jpg" alt="Voir mes progrès" />
+            <div class="app-tile-body">
+              <h4 data-i18n="app.home.progressTile">Voir mes progrès</h4>
+              <p data-i18n="app.home.progressTileText">Photos + niveaux + stats.</p>
+            </div>
+          </a>
+        </div>
+
+        <nav class="app-bottom-nav">
+          <button class="app-nav-btn is-active" data-i18n="app.nav.home">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 4 3 12h2v7h5v-4h4v4h5v-7h2z" fill="currentColor" />
+            </svg>
+            <span>Accueil</span>
+          </button>
+          <button class="app-nav-btn" data-i18n="app.nav.exos">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 10h16v4H4zM2 9h2v6H2zm18 0h2v6h-2z" fill="currentColor" />
+            </svg>
+            <span>Exos</span>
+          </button>
+          <button class="app-nav-btn" data-i18n="app.nav.nutrition">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3c4 3 6 7 6 11a6 6 0 1 1-12 0c0-4 2-8 6-11z" fill="currentColor" />
+            </svg>
+            <span>Nutrition</span>
+          </button>
+          <button class="app-nav-btn" data-i18n="app.nav.profile">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm-7 8a7 7 0 0 1 14 0z" fill="currentColor" />
+            </svg>
+            <span>Profil</span>
+          </button>
+        </nav>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p data-i18n="footer">SteyLab © 2026 — Application sportive pour femmes & hommes.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

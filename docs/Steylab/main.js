@@ -110,6 +110,7 @@ if (progressTrack) observer.observe(progressTrack);
 
 const translations = {
   fr: {
+    "nav.app": "Interface",
     "nav.concept": "Concept",
     "nav.progress": "Progression",
     "nav.nutrition": "Nutrition",
@@ -182,6 +183,60 @@ const translations = {
     "bonus.card3Title": "Récompense Jour 60",
     "bonus.card3Text":
       "Si tu ne sautes aucun jour jusqu'au niveau 60, SteyLab offre un ensemble de sport ou de la créatine de notre boutique.",
+    "app.title": "Passe à l'interface application",
+    "app.lead":
+      "Découvre l'interface complète : un onboarding en étapes, un profil sportif pro, et une sauvegarde locale sécurisée.",
+    "app.previewTitle": "Interface 100% orientée performance",
+    "app.previewText":
+      "Tu complètes ton profil en quelques étapes. Chaque donnée est stockée en local et sert à personnaliser tes séances et ta nutrition.",
+    "app.previewTag": "Onboarding guidé",
+    "app.previewField1": "Type de profil",
+    "app.previewField2": "Objectif",
+    "app.open": "Ouvrir l'interface",
+    "app.home.age": "Âge",
+    "app.home.weight": "Poids",
+    "app.home.rank": "Voir le classement",
+    "app.home.meal": "Repas du jour",
+    "app.home.mealText": "Plan nutritionnel personnalisé.",
+    "app.home.workout": "Séance du jour",
+    "app.home.workoutText": "Guidée + check des séries.",
+    "app.home.progressTile": "Voir mes progrès",
+    "app.home.progressTileText": "Photos + niveaux + stats.",
+    "app.nav.home": "Accueil",
+    "app.nav.exos": "Exos",
+    "app.nav.nutrition": "Nutrition",
+    "app.nav.profile": "Profil",
+    "app.nav.settings": "Paramètres",
+    "app.tab.profile": "Profil",
+    "app.tab.goal": "Objectif",
+    "app.tab.plan": "Plan du jour",
+    "app.progress": "Progression",
+    "app.progressHint": "Niveau 12 / 60",
+    "app.headerTag": "Données locales",
+    "app.headerTitle": "Ton profil sportif",
+    "app.headerStatus": "Sauvegarde locale active",
+    "app.form.type": "Type de profil",
+    "app.form.typePlaceholder": "Choisir",
+    "app.form.typeMan": "Homme",
+    "app.form.typeWoman": "Femme",
+    "app.form.typeOther": "Autre",
+    "app.form.name": "Nom",
+    "app.form.birthdate": "Date de naissance",
+    "app.form.height": "Taille (cm)",
+    "app.form.weight": "Poids (kg)",
+    "app.form.goal": "Objectif",
+    "app.form.goalPlaceholder": "Sélectionner",
+    "app.form.goalMass": "Prise de masse",
+    "app.form.goalCut": "Sèche",
+    "app.form.goalStrength": "Force",
+    "app.form.goalTone": "Tonus",
+    "app.form.focus": "Zones à travailler",
+    "app.form.focusPlaceholder": "Pecs, dos, bras...",
+    "app.form.save": "Sauvegarder en local",
+    "app.form.clear": "Effacer",
+    "app.form.hint": "Les données restent dans ton navigateur, pas dans le cloud.",
+    "app.form.saved": "Profil enregistré en local.",
+    "app.form.cleared": "Profil effacé.",
     "cta.title": "Prêt à lancer ta transformation ?",
     "cta.lead":
       "SteyLab t'accompagne chaque jour. Entraînement, nutrition, progression : tout est dans la même app.",
@@ -195,6 +250,7 @@ const translations = {
     "nav.progress": "Progress",
     "nav.nutrition": "Nutrition",
     "nav.bonus": "Bonus",
+    "nav.app": "Interface",
     "header.cta": "Join the beta",
     "hero.eyebrow": "Sports app for women & men",
     "hero.titleLine1": "Reach your goal",
@@ -263,6 +319,60 @@ const translations = {
     "bonus.card3Title": "Day 60 reward",
     "bonus.card3Text":
       "If you don’t skip any day until level 60, SteyLab offers a sports set or creatine from our shop.",
+    "app.title": "Go to the in‑app interface",
+    "app.lead":
+      "Discover the full interface: step‑by‑step onboarding, a pro profile, and secure local storage.",
+    "app.previewTitle": "Performance-first interface",
+    "app.previewText":
+      "Complete your profile in a few steps. Every data point is stored locally to personalize workouts and nutrition.",
+    "app.previewTag": "Guided onboarding",
+    "app.previewField1": "Profile type",
+    "app.previewField2": "Goal",
+    "app.open": "Open the interface",
+    "app.home.age": "Age",
+    "app.home.weight": "Weight",
+    "app.home.rank": "See rankings",
+    "app.home.meal": "Meal of the day",
+    "app.home.mealText": "Personalized nutrition plan.",
+    "app.home.workout": "Workout of the day",
+    "app.home.workoutText": "Guided + set tracking.",
+    "app.home.progressTile": "See my progress",
+    "app.home.progressTileText": "Photos + levels + stats.",
+    "app.nav.home": "Home",
+    "app.nav.exos": "Exercises",
+    "app.nav.nutrition": "Nutrition",
+    "app.nav.profile": "Profile",
+    "app.nav.settings": "Settings",
+    "app.tab.profile": "Profile",
+    "app.tab.goal": "Goal",
+    "app.tab.plan": "Today's plan",
+    "app.progress": "Progress",
+    "app.progressHint": "Level 12 / 60",
+    "app.headerTag": "Local data",
+    "app.headerTitle": "Your sports profile",
+    "app.headerStatus": "Local save active",
+    "app.form.type": "Profile type",
+    "app.form.typePlaceholder": "Choose",
+    "app.form.typeMan": "Man",
+    "app.form.typeWoman": "Woman",
+    "app.form.typeOther": "Other",
+    "app.form.name": "Name",
+    "app.form.birthdate": "Birth date",
+    "app.form.height": "Height (cm)",
+    "app.form.weight": "Weight (kg)",
+    "app.form.goal": "Goal",
+    "app.form.goalPlaceholder": "Select",
+    "app.form.goalMass": "Bulking",
+    "app.form.goalCut": "Cutting",
+    "app.form.goalStrength": "Strength",
+    "app.form.goalTone": "Tone",
+    "app.form.focus": "Focus areas",
+    "app.form.focusPlaceholder": "Chest, back, arms...",
+    "app.form.save": "Save locally",
+    "app.form.clear": "Clear",
+    "app.form.hint": "Your data stays in your browser, not in the cloud.",
+    "app.form.saved": "Profile saved locally.",
+    "app.form.cleared": "Profile cleared.",
     "cta.title": "Ready to start your transformation?",
     "cta.lead":
       "SteyLab supports you every day. Training, nutrition, progression: everything in one app.",
@@ -277,12 +387,19 @@ const langButtons = document.querySelectorAll(".lang-btn, .lang-modal [data-lang
 const modal = document.querySelector(".lang-modal");
 const menuToggle = document.querySelector(".menu-toggle");
 const nav = document.querySelector(".nav");
+const profileForm = document.querySelector("#profile-form");
+const profileStatus = document.querySelector("#profile-status");
+const clearProfileBtn = document.querySelector("#clear-profile");
 
 const applyLanguage = (lang) => {
   const dict = translations[lang] || translations.fr;
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
     if (dict[key]) el.textContent = dict[key];
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    if (dict[key]) el.setAttribute("placeholder", dict[key]);
   });
 
   document.querySelectorAll(".lang-btn").forEach((btn) => {
@@ -306,6 +423,43 @@ langButtons.forEach((btn) => {
     if (modal) modal.classList.remove("is-visible");
   });
 });
+
+const loadProfile = () => {
+  if (!profileForm) return;
+  const raw = localStorage.getItem("steylab_profile");
+  if (!raw) return;
+  const data = JSON.parse(raw);
+  Array.from(profileForm.elements).forEach((field) => {
+    if (field.name && data[field.name] !== undefined) {
+      field.value = data[field.name];
+    }
+  });
+};
+
+const saveProfile = (values) => {
+  localStorage.setItem("steylab_profile", JSON.stringify(values));
+};
+
+if (profileForm) {
+  loadProfile();
+  profileForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(profileForm);
+    const payload = Object.fromEntries(formData.entries());
+    saveProfile(payload);
+    const lang = localStorage.getItem("steylab_lang") || "fr";
+    if (profileStatus) profileStatus.textContent = translations[lang]["app.form.saved"];
+  });
+}
+
+if (clearProfileBtn && profileForm) {
+  clearProfileBtn.addEventListener("click", () => {
+    localStorage.removeItem("steylab_profile");
+    profileForm.reset();
+    const lang = localStorage.getItem("steylab_lang") || "fr";
+    if (profileStatus) profileStatus.textContent = translations[lang]["app.form.cleared"];
+  });
+}
 
 if (menuToggle && nav) {
   menuToggle.addEventListener("click", () => {

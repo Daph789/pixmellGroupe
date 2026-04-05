@@ -1,0 +1,286 @@
+const meta = document.querySelector("#day-meta");
+const message = document.querySelector("#day-message");
+const startBtn = document.querySelector("#start-btn");
+const startActions = document.querySelector("#start-actions");
+const startedInfo = document.querySelector("#started-info");
+const mealImage = document.querySelector("#meal-image");
+const mealTitle = document.querySelector("#meal-title");
+const mealDesc = document.querySelector("#meal-desc");
+const mealCalories = document.querySelector("#meal-calories");
+const mealProtein = document.querySelector("#meal-protein");
+const mealCarbs = document.querySelector("#meal-carbs");
+const mealFat = document.querySelector("#meal-fat");
+const recipeLink = document.querySelector("#recipe-link");
+const mealList = document.querySelector("#meal-list");
+const mealMessage = document.querySelector("#meal-message");
+const goalCard = document.querySelector("#goal-card");
+const goalStartedText = document.querySelector("#goal-started-text");
+const goalDay = document.querySelector("#goal-day");
+const overlay = document.querySelector("#overlay");
+const overlayClose = document.querySelector("#overlay-close");
+const overlayText = document.querySelector("#overlay-text");
+
+const sb = window.sb;
+let hasStarted = false;
+let startedAtValue = null;
+
+const toLocalDate = (d = new Date()) => d.toISOString().slice(0, 10);
+
+const formatDateTime = (date) =>
+  new Intl.DateTimeFormat("fr-FR", {
+    dateStyle: "full",
+    timeStyle: "short",
+  }).format(date);
+
+const setMeta = () => {
+  const now = new Date();
+  if (meta) {
+    meta.textContent = `${formatDateTime(now)}`;
+  }
+};
+
+const ensureSession = async () => {
+  if (!sb) return null;
+  const {
+    data: { session },
+  } = await sb.auth.getSession();
+  if (!session) {
+    window.location.href = "./login.html";
+    return null;
+  }
+  return session;
+};
+
+const getDailyProgress = async (userId, day) => {
+  const { data } = await sb
+    .from("daily_progress")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("day", day)
+    .maybeSingle();
+  return data || null;
+};
+
+const getProfile = async (userId) => {
+  const { data } = await sb.from("profiles").select("*").eq("user_id", userId).single();
+  return data || null;
+};
+
+const setObjectiveStart = async (userId, startedAt) => {
+  await sb.from("profiles").update({ started_at: startedAt }).eq("user_id", userId);
+};
+
+const showGoalCard = (startedAt) => {
+  if (!goalCard) return;
+  const startedDate = new Date(startedAt);
+  const days =
+    Math.floor((new Date().setHours(0, 0, 0, 0) - startedDate.setHours(0, 0, 0, 0)) / 86400000) || 0;
+  goalCard.hidden = false;
+  if (goalStartedText) {
+    goalStartedText.textContent = `Vous avez commencé votre objectif le ${formatDateTime(
+      new Date(startedAt)
+    )}. Les jours sont comptés pour atteindre votre objectif.`;
+  }
+  if (goalDay) goalDay.textContent = `Jour ${days}`;
+};
+
+const showStarted = (startedAt) => {
+  if (startActions) startActions.style.display = "none";
+  if (message) message.textContent = "Départ confirmé.";
+  if (startedInfo) startedInfo.textContent = `Commencé le ${formatDateTime(new Date(startedAt))}`;
+  hasStarted = true;
+  startedAtValue = startedAt;
+  showGoalCard(startedAt);
+};
+
+const handleStart = async (userId, day) => {
+  const now = new Date().toISOString();
+  hasStarted = true;
+  startedAtValue = now;
+  await sb.from("daily_progress").upsert(
+    {
+      user_id: userId,
+      day,
+      started_at: now,
+    },
+    { onConflict: "user_id,day" }
+  );
+  const profile = await getProfile(userId);
+  if (profile && !profile.started_at) {
+    await setObjectiveStart(userId, now);
+  }
+  showStarted(now);
+};
+
+const isMorning = () => {
+  const now = new Date();
+  const h = now.getHours();
+  const m = now.getMinutes();
+  return h < 11 || (h === 11 && m <= 30);
+};
+
+const pickBreakfast = async (dayIndex) => {
+  const { data: all } = await sb
+    .from("breakfasts")
+    .select("*")
+    .order("sort_order", { ascending: true })
+    .order("name", { ascending: true });
+  if (!all || all.length === 0) return null;
+  const index = ((dayIndex || 0) % all.length + all.length) % all.length;
+  return all[index];
+};
+
+const renderMeal = (meal) => {
+  if (!meal) return;
+  if (mealImage) mealImage.src = meal.image_path || "./assets/meal-placeholder.jpg";
+  if (mealTitle) mealTitle.textContent = meal.name;
+  if (mealDesc) mealDesc.textContent = meal.description || "";
+  if (mealCalories) mealCalories.textContent = `${meal.calories} kcal`;
+  if (mealProtein) mealProtein.textContent = `${meal.protein_g} g`;
+  if (mealCarbs) mealCarbs.textContent = `${meal.carbs_g} g`;
+  if (mealFat) mealFat.textContent = `${meal.fat_g} g`;
+  if (recipeLink) recipeLink.href = `./recipe.html?id=${meal.id}`;
+};
+
+const renderMealList = (meals, todayMealId, unlockedOrder, startedAt, doneMealId) => {
+  if (!mealList) return;
+  mealList.innerHTML = "";
+  meals.forEach((meal) => {
+    const card = document.createElement("div");
+    card.className = "meal-thumb";
+    const isToday = meal.id === todayMealId;
+    const isLocked = meal.sort_order && meal.sort_order > unlockedOrder;
+    if (!isToday || isLocked) card.classList.add("locked");
+    if (doneMealId && meal.id === doneMealId) card.classList.add("done");
+    card.innerHTML = `
+      <img src="${meal.image_path || "./assets/meal-placeholder.jpg"}" alt="${meal.name}" />
+      <div class="thumb-body">
+        <strong>${meal.name}</strong>
+        ${doneMealId && meal.id === doneMealId ? '<span class="done-badge">✓ Fait</span>' : ""}
+      </div>
+    `;
+    card.addEventListener("click", () => {
+      if (isToday && !isLocked) {
+        window.location.href = `./recipe.html?id=${meal.id}`;
+        return;
+      }
+      if (!startedAt) {
+        if (mealMessage) mealMessage.textContent = "Clique d'abord sur “Commencer” pour lancer l'objectif.";
+        return;
+      }
+      if (!isMorning()) {
+        if (mealMessage) mealMessage.textContent = "Vous devez attendre le matin.";
+        return;
+      }
+      if (meal.sort_order && meal.sort_order > unlockedOrder) {
+        const remaining = meal.sort_order - unlockedOrder;
+        if (mealMessage) {
+          mealMessage.textContent = `Veuillez attendre ${remaining} jour${remaining > 1 ? "s" : ""}.`;
+        }
+        return;
+      }
+      if (mealMessage) mealMessage.textContent = "Ce petit déjeuner se débloque un autre jour.";
+    });
+    mealList.appendChild(card);
+  });
+};
+
+const init = async () => {
+  setMeta();
+  const session = await ensureSession();
+  if (!session) return;
+  const userId = session.user.id;
+  const day = toLocalDate();
+
+  const progress = await getDailyProgress(userId, day);
+  if (progress?.started_at) showStarted(progress.started_at);
+
+  if (startBtn) {
+    startBtn.addEventListener("click", () => {
+      hasStarted = true;
+      startedAtValue = new Date().toISOString();
+      if (overlay) overlay.classList.remove("is-open");
+      handleStart(userId, day);
+    });
+  }
+
+  if (!isMorning() && message) {
+    message.textContent =
+      "Le petit déjeuner est prévu le matin. En cliquant sur “Commencer”, tu lances ton objectif et les jours sont comptés.";
+  }
+
+  const profile = await getProfile(userId);
+  const startedAt = profile?.started_at ? new Date(profile.started_at) : null;
+  if (profile?.started_at) {
+    hasStarted = true;
+    startedAtValue = profile.started_at;
+  }
+  if (startedAt) {
+    showGoalCard(profile.started_at);
+  }
+  const dayIndex = startedAt
+    ? Math.floor((new Date().setHours(0, 0, 0, 0) - startedAt.setHours(0, 0, 0, 0)) / 86400000)
+    : 0;
+  const unlockedOrder = dayIndex + 1;
+
+  const meal = await pickBreakfast(dayIndex);
+  renderMeal(meal);
+
+  const { data: allMealsRaw } = await sb
+    .from("breakfasts")
+    .select("*")
+    .order("sort_order", { ascending: true })
+    .order("name", { ascending: true });
+  const allMeals = [];
+  const seen = new Set();
+  (allMealsRaw || []).forEach((m) => {
+    const key = `${m.name}`.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      allMeals.push(m);
+    }
+  });
+
+  const { data: done } = await sb
+    .from("meal_completions")
+    .select("breakfast_id")
+    .eq("user_id", userId)
+    .eq("day", day)
+    .maybeSingle();
+
+  if (allMeals && meal) {
+    renderMealList(allMeals, meal.id, unlockedOrder, profile?.started_at, done?.breakfast_id);
+  }
+
+  if (recipeLink) {
+    recipeLink.addEventListener("click", (event) => {
+      if (!hasStarted) {
+        event.preventDefault();
+        if (overlayText) overlayText.textContent = "Tu dois d’abord cliquer sur “Commencer”.";
+        if (overlay) overlay.classList.add("is-open");
+        return;
+      }
+
+      if (!isMorning()) {
+        event.preventDefault();
+        const now = new Date();
+        const nextMorning = new Date();
+        nextMorning.setDate(nextMorning.getDate() + 1);
+        nextMorning.setHours(7, 0, 0, 0);
+        if (overlayText) {
+          overlayText.textContent = `Le petit déjeuner est disponible jusqu'à 11h30. Reviens demain matin (${formatDateTime(
+            nextMorning
+          )}).`;
+        }
+        if (overlay) overlay.classList.add("is-open");
+      }
+    });
+  }
+};
+
+init();
+if (overlayClose) {
+  overlayClose.addEventListener("click", () => {
+    if (overlay) overlay.classList.remove("is-open");
+  });
+}

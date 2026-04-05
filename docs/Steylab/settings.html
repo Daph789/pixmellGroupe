@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SteyLab App — Paramètres</title>
+    <meta name="description" content="Modifie ton profil SteyLab. Données stockées en local." />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="app-page">
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <header class="app-header-bar">
+      <div class="logo">SteyLab</div>
+      <div class="app-header-actions">
+        <a class="icon-btn" href="./app.html" aria-label="Retour accueil">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 6 9 12l6 6" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <section class="section app-section">
+        <div class="section-head settings-head">
+          <div>
+            <h2>Paramètres • Profil sportif</h2>
+            <p>Modifie tes infos locales. Ces données restent uniquement sur ton appareil.</p>
+          </div>
+        </div>
+
+        <div class="app-shell">
+          <aside class="app-sidebar">
+            <div class="app-brand">SteyLab OS</div>
+            <div class="app-nav">
+              <button class="app-tab is-active" type="button">Profil</button>
+              <button class="app-tab" type="button">Objectif</button>
+              <button class="app-tab" type="button">Plan du jour</button>
+            </div>
+            <div class="app-progress">
+              <span>Progression</span>
+              <div class="progress-mini">
+                <div class="progress-mini-fill"></div>
+              </div>
+              <small>Niveau 12 / 60</small>
+            </div>
+          </aside>
+
+          <div class="app-panel">
+            <div class="app-header">
+              <div>
+                <p class="app-eyebrow">Données locales</p>
+                <h3>Ton profil sportif</h3>
+              </div>
+              <div class="app-status">
+                <span class="dot"></span>
+                <span>Sauvegarde locale active</span>
+              </div>
+            </div>
+
+            <form class="app-form" id="settings-form">
+              <label>
+                <span>Type de profil</span>
+                <select name="profileType" required>
+                  <option value="">Choisir</option>
+                  <option value="homme">Homme</option>
+                  <option value="femme">Femme</option>
+                  <option value="autre">Autre</option>
+                </select>
+              </label>
+              <label>
+                <span>Nom</span>
+                <input type="text" name="name" placeholder="Ex: Sam" required />
+              </label>
+              <label>
+                <span>Date de naissance</span>
+                <input type="date" name="birthdate" required />
+              </label>
+              <label>
+                <span>Taille (cm)</span>
+                <input type="number" name="height" min="120" max="230" placeholder="175" required />
+              </label>
+              <label>
+                <span>Poids (kg)</span>
+                <input type="number" name="weight" min="35" max="200" placeholder="70" required />
+              </label>
+              <label class="full">
+                <span>Objectif</span>
+                <select name="goal" required>
+                  <option value="">Sélectionner</option>
+                  <option value="masse">Prise de masse</option>
+                  <option value="seche">Sèche</option>
+                  <option value="force">Force</option>
+                  <option value="tonus">Tonus</option>
+                </select>
+              </label>
+              <label class="full">
+                <span>Zones à travailler</span>
+                <input type="text" name="focus" placeholder="Pecs, dos, bras..." required />
+              </label>
+              <div class="form-actions">
+                <button class="cta" type="submit">Mettre à jour</button>
+                <button class="ghost" type="button" id="clear-profile">Effacer</button>
+              </div>
+              <p class="form-status" id="settings-status"></p>
+              <p class="form-hint">Les données restent dans ton navigateur, pas dans le cloud.</p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>SteyLab © 2026 — Application sportive pour femmes & hommes.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="./settings.js"></script>
+  </body>
+</html>
