@@ -77,17 +77,26 @@ const showGoalCard = (startedAt) => {
     Math.floor((new Date().setHours(0, 0, 0, 0) - startedDate.setHours(0, 0, 0, 0)) / 86400000) || 0;
   goalCard.hidden = false;
   if (goalStartedText) {
-    goalStartedText.textContent = `Vous avez commencé votre objectif le ${formatDateTime(
-      new Date(startedAt)
-    )}. Les jours sont comptés pour atteindre votre objectif.`;
+    const text = window.i18n?.t("app.goal.startedText", { date: formatDateTime(new Date(startedAt)) });
+    goalStartedText.textContent =
+      text ||
+      `Vous avez commencé votre objectif le ${formatDateTime(
+        new Date(startedAt)
+      )}. Les jours sont comptés pour atteindre votre objectif.`;
   }
-  if (goalDay) goalDay.textContent = `Jour ${days}`;
+  if (goalDay) {
+    const txt = window.i18n?.t("app.goal.day", { day: days });
+    goalDay.textContent = txt || `Jour ${days}`;
+  }
 };
 
 const showStarted = (startedAt) => {
   if (startActions) startActions.style.display = "none";
-  if (message) message.textContent = "Départ confirmé.";
-  if (startedInfo) startedInfo.textContent = `Commencé le ${formatDateTime(new Date(startedAt))}`;
+  if (message) message.textContent = window.i18n?.t("app.start.confirmed") || "Départ confirmé.";
+  if (startedInfo)
+    startedInfo.textContent =
+      window.i18n?.t("app.start.startedAt", { date: formatDateTime(new Date(startedAt)) }) ||
+      `Commencé le ${formatDateTime(new Date(startedAt))}`;
   hasStarted = true;
   startedAtValue = startedAt;
   showGoalCard(startedAt);
@@ -165,17 +174,25 @@ const renderMealList = (meals, todayMealId, unlockedOrder, startedAt, doneMealId
         return;
       }
       if (!startedAt) {
-        if (mealMessage) mealMessage.textContent = "Clique d'abord sur “Commencer” pour lancer l'objectif.";
+        if (mealMessage)
+          mealMessage.textContent =
+            window.i18n?.t("app.meal.needStart") ||
+            "Clique d'abord sur “Commencer” pour lancer l'objectif.";
         return;
       }
       if (!isMorning()) {
-        if (mealMessage) mealMessage.textContent = "Vous devez attendre le matin.";
+        if (mealMessage)
+          mealMessage.textContent =
+            window.i18n?.t("app.meal.lockedMorning") || "Vous devez attendre le matin.";
         return;
       }
       if (meal.sort_order && meal.sort_order > unlockedOrder) {
         const remaining = meal.sort_order - unlockedOrder;
         if (mealMessage) {
-          mealMessage.textContent = `Veuillez attendre ${remaining} jour${remaining > 1 ? "s" : ""}.`;
+          const txt =
+            window.i18n?.t("app.meal.lockedDays", { days: remaining }) ||
+            `Veuillez attendre ${remaining} jour${remaining > 1 ? "s" : ""}.`;
+          mealMessage.textContent = txt;
         }
         return;
       }
@@ -206,6 +223,7 @@ const init = async () => {
 
   if (!isMorning() && message) {
     message.textContent =
+      window.i18n?.t("app.start.message") ||
       "Le petit déjeuner est prévu le matin. En cliquant sur “Commencer”, tu lances ton objectif et les jours sont comptés.";
   }
 
@@ -256,7 +274,9 @@ const init = async () => {
     recipeLink.addEventListener("click", (event) => {
       if (!hasStarted) {
         event.preventDefault();
-        if (overlayText) overlayText.textContent = "Tu dois d’abord cliquer sur “Commencer”.";
+        if (overlayText)
+          overlayText.textContent =
+            window.i18n?.t("app.overlay.needStart") || "Tu dois d’abord cliquer sur “Commencer”.";
         if (overlay) overlay.classList.add("is-open");
         return;
       }
@@ -268,9 +288,12 @@ const init = async () => {
         nextMorning.setDate(nextMorning.getDate() + 1);
         nextMorning.setHours(7, 0, 0, 0);
         if (overlayText) {
-          overlayText.textContent = `Le petit déjeuner est disponible jusqu'à 11h30. Reviens demain matin (${formatDateTime(
-            nextMorning
-          )}).`;
+          const txt =
+            window.i18n?.t("app.overlay.waitMorning", { date: formatDateTime(nextMorning) }) ||
+            `Le petit déjeuner est disponible jusqu'à 11h30. Reviens demain matin (${formatDateTime(
+              nextMorning
+            )}).`;
+          overlayText.textContent = txt;
         }
         if (overlay) overlay.classList.add("is-open");
       }

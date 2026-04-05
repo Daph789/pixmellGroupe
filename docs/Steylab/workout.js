@@ -61,11 +61,14 @@ const showGoalCard = (startedAt) => {
     Math.floor((new Date().setHours(0, 0, 0, 0) - startedDate.setHours(0, 0, 0, 0)) / 86400000) || 0;
   goalCard.hidden = false;
   if (goalStartedText) {
-    goalStartedText.textContent = `Vous avez commencé votre objectif le ${formatDateTime(
-      new Date(startedAt)
-    )}.`;
+    const txt = window.i18n?.t("app.goal.startedText", { date: formatDateTime(new Date(startedAt)) });
+    goalStartedText.textContent =
+      txt || `Vous avez commencé votre objectif le ${formatDateTime(new Date(startedAt))}.`;
   }
-  if (goalDay) goalDay.textContent = `Jour ${days}`;
+  if (goalDay) {
+    const txt = window.i18n?.t("app.goal.day", { day: days });
+    goalDay.textContent = txt || `Jour ${days}`;
+  }
   const dayIndex = ((days % 7) + 7) % 7;
   const today = dayIndex + 1;
   workoutCards.forEach((card) => {
@@ -77,7 +80,7 @@ const showGoalCard = (startedAt) => {
     if (isToday && !existingTag) {
       const tag = document.createElement("div");
       tag.className = "workout-tag";
-      tag.textContent = "Aujourd'hui";
+      tag.textContent = window.i18n?.t("app.workout.today") || "Aujourd’hui";
       card.appendChild(tag);
     }
     const existingBtn = card.querySelector(".start-workout");
@@ -85,7 +88,7 @@ const showGoalCard = (startedAt) => {
       const btn = document.createElement("button");
       btn.className = "cta start-workout";
       btn.type = "button";
-      btn.textContent = "Commencer la séance du jour";
+      btn.textContent = window.i18n?.t("app.workout.start") || "Commencer la séance du jour";
       card.querySelector(".workout-body").appendChild(btn);
     }
   });

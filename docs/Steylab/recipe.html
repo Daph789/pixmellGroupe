@@ -15,6 +15,11 @@
     <header class="app-header-bar">
       <div class="logo">SteyLab</div>
       <div class="app-header-actions">
+        <button class="icon-btn" id="lang-toggle" aria-label="Change language">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm6.9 6h-3.2a15.3 15.3 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8ZM12 4.1A13.6 13.6 0 0 1 13.6 8H10.4A13.6 13.6 0 0 1 12 4.1ZM4.1 14a8 8 0 0 1 0-4h3.5a17 17 0 0 0 0 4Zm.1 2h3.2a15.3 15.3 0 0 0 1.4 3.6A8 8 0 0 1 4.2 16Zm3.2-8H4.2a8 8 0 0 1 4.7-3.6A15.3 15.3 0 0 0 7.4 8ZM12 19.9A13.6 13.6 0 0 1 10.4 16h3.2A13.6 13.6 0 0 1 12 19.9ZM14.4 14h-4.8a14.9 14.9 0 0 1 0-4h4.8a14.9 14.9 0 0 1 0 4Zm.7 5.6a15.3 15.3 0 0 0 1.4-3.6h3.2a8 8 0 0 1-4.6 3.6Zm1.5-5.6a17 17 0 0 0 0-4h3.5a8 8 0 0 1 0 4Z" fill="currentColor"/>
+          </svg>
+        </button>
         <a class="icon-btn" href="./meal.html" aria-label="Retour repas">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M15 6 9 12l6 6" fill="none" stroke="currentColor" stroke-width="2" />
@@ -26,7 +31,7 @@
     <main class="recipe-page">
       <div class="day-header">
         <div>
-          <h2 id="recipe-title">Recette</h2>
+          <h2 id="recipe-title" data-i18n="app.recipe.title">Recette</h2>
           <div class="day-meta" id="recipe-meta"></div>
         </div>
       </div>
@@ -34,29 +39,31 @@
       <div class="day-card recipe-hero">
         <div>
           <img id="recipe-image" src="./assets/meal-placeholder.jpg" alt="Recette" />
-          <button class="cta done-btn" id="meal-done-btn" type="button">Préparation terminée</button>
+          <button class="cta done-btn" id="meal-done-btn" type="button" data-i18n="app.recipe.prepDone">
+            Préparation terminée
+          </button>
           <div class="done-state" id="meal-done-state" hidden>
             <span class="done-icon">✓</span>
-            <span>Fait</span>
+            <span data-i18n="app.recipe.done">Fait</span>
           </div>
         </div>
         <div>
           <p id="recipe-desc"></p>
           <div class="meal-macros">
             <div>
-              <span class="macro-label"><span class="macro-dot"></span>Calories</span>
+              <span class="macro-label"><span class="macro-dot"></span><span data-i18n="macro.calories">Calories</span></span>
               <strong id="recipe-calories">-</strong>
             </div>
             <div>
-              <span class="macro-label"><span class="macro-dot"></span>Protéines</span>
+              <span class="macro-label"><span class="macro-dot"></span><span data-i18n="macro.protein">Protéines</span></span>
               <strong id="recipe-protein">-</strong>
             </div>
             <div>
-              <span class="macro-label"><span class="macro-dot"></span>Glucides</span>
+              <span class="macro-label"><span class="macro-dot"></span><span data-i18n="macro.carbs">Glucides</span></span>
               <strong id="recipe-carbs">-</strong>
             </div>
             <div>
-              <span class="macro-label"><span class="macro-dot"></span>Lipides</span>
+              <span class="macro-label"><span class="macro-dot"></span><span data-i18n="macro.fat">Lipides</span></span>
               <strong id="recipe-fat">-</strong>
             </div>
           </div>
@@ -64,7 +71,7 @@
       </div>
 
       <div class="day-card">
-        <h3>Préparation</h3>
+        <h3 data-i18n="app.recipe.prepTitle">Préparation</h3>
         <div class="recipe-steps" id="recipe-steps"></div>
       </div>
 
@@ -93,10 +100,10 @@
 
     <div class="overlay" id="confirm-overlay">
       <div class="overlay-card">
-        <p>Avez-vous terminé de faire votre petit déj ?</p>
+        <p data-i18n="app.recipe.confirmTitle">Avez-vous terminé de faire votre petit déj ?</p>
         <div class="form-actions">
-          <button class="cta" id="confirm-yes">Oui</button>
-          <button class="ghost" id="confirm-no">Non</button>
+          <button class="cta" id="confirm-yes" data-i18n="app.recipe.confirmYes">Oui</button>
+          <button class="ghost" id="confirm-no" data-i18n="app.recipe.confirmNo">Non</button>
         </div>
       </div>
     </div>
@@ -106,8 +113,8 @@
         <div class="points-pop">
           <div class="points-icon">★</div>
           <div>
-            <strong>+5 points</strong>
-            <p>Bien joué, continue comme ça !</p>
+            <strong data-i18n="app.recipe.points">+5 points</strong>
+            <p data-i18n="app.recipe.pointsSub">Bien joué, continue comme ça !</p>
           </div>
         </div>
       </div>
@@ -115,6 +122,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
     <script src="./supabase.js"></script>
+    <script src="./i18n.js"></script>
     <script src="./recipe.js"></script>
+    <script>
+      window.i18n.initLanguageUI();
+    </script>
   </body>
 </html>

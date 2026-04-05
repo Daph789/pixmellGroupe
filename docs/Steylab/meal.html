@@ -15,6 +15,11 @@
     <header class="app-header-bar">
       <div class="logo">SteyLab</div>
       <div class="app-header-actions">
+        <button class="icon-btn" id="lang-toggle" aria-label="Change language">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm6.9 6h-3.2a15.3 15.3 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8ZM12 4.1A13.6 13.6 0 0 1 13.6 8H10.4A13.6 13.6 0 0 1 12 4.1ZM4.1 14a8 8 0 0 1 0-4h3.5a17 17 0 0 0 0 4Zm.1 2h3.2a15.3 15.3 0 0 0 1.4 3.6A8 8 0 0 1 4.2 16Zm3.2-8H4.2a8 8 0 0 1 4.7-3.6A15.3 15.3 0 0 0 7.4 8ZM12 19.9A13.6 13.6 0 0 1 10.4 16h3.2A13.6 13.6 0 0 1 12 19.9ZM14.4 14h-4.8a14.9 14.9 0 0 1 0-4h4.8a14.9 14.9 0 0 1 0 4Zm.7 5.6a15.3 15.3 0 0 0 1.4-3.6h3.2a8 8 0 0 1-4.6 3.6Zm1.5-5.6a17 17 0 0 0 0-4h3.5a8 8 0 0 1 0 4Z" fill="currentColor"/>
+          </svg>
+        </button>
         <a class="icon-btn" href="./app.html" aria-label="Retour accueil">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M15 6 9 12l6 6" fill="none" stroke="currentColor" stroke-width="2" />
@@ -26,26 +31,26 @@
     <main class="day-page">
       <div class="day-header">
         <div>
-          <h2>Repas du jour</h2>
+          <h2 data-i18n="app.meal.today">Repas du jour</h2>
           <div class="day-meta" id="day-meta"></div>
         </div>
-        <a class="ghost" href="./workout.html">Aller à la séance</a>
+        <a class="ghost" href="./workout.html" data-i18n="app.home.toWorkout">Aller à la séance</a>
       </div>
 
       <div class="day-card goal-card" id="goal-card" hidden>
         <div>
-          <h3>Objectif démarré</h3>
+          <h3 data-i18n="app.goal.started">Objectif démarré</h3>
           <p id="goal-started-text"></p>
         </div>
         <div class="goal-day" id="goal-day">Jour 0</div>
       </div>
 
       <div class="day-card">
-        <p id="day-message">
-          Si tu cliques sur “Commencer”, le compteur démarre. En ratant une journée, tu perds tes points.
+        <p id="day-message" data-i18n="app.start.message">
+          Le petit déjeuner est prévu le matin. En cliquant sur “Commencer”, tu lances ton objectif et les jours sont comptés.
         </p>
         <div class="form-actions" id="start-actions">
-          <button class="cta" id="start-btn" type="button">Commencer</button>
+          <button class="cta" id="start-btn" type="button" data-i18n="app.start.cta">Commencer</button>
         </div>
         <p class="form-hint" id="started-info"></p>
       </div>
@@ -58,20 +63,20 @@
           <h3 id="meal-title">Petit déjeuner du matin</h3>
           <p id="meal-desc"></p>
           <div class="meal-macros">
-            <div><span>Calories</span><strong id="meal-calories">-</strong></div>
-            <div><span>Protéines</span><strong id="meal-protein">-</strong></div>
-            <div><span>Glucides</span><strong id="meal-carbs">-</strong></div>
-            <div><span>Lipides</span><strong id="meal-fat">-</strong></div>
+            <div><span data-i18n="macro.calories">Calories</span><strong id="meal-calories">-</strong></div>
+            <div><span data-i18n="macro.protein">Protéines</span><strong id="meal-protein">-</strong></div>
+            <div><span data-i18n="macro.carbs">Glucides</span><strong id="meal-carbs">-</strong></div>
+            <div><span data-i18n="macro.fat">Lipides</span><strong id="meal-fat">-</strong></div>
           </div>
           <div class="form-actions" style="margin-top:16px;">
-            <a class="cta" id="recipe-link" href="./recipe.html">Faire la préparation</a>
+            <a class="cta" id="recipe-link" href="./recipe.html" data-i18n="app.meal.prep">Faire la préparation</a>
           </div>
         </div>
       </div>
 
       <div class="day-card">
-        <h3>Petits déjeuners disponibles</h3>
-        <p class="form-hint" id="unlock-hint">
+        <h3 data-i18n="app.meal.available">Petits déjeuners disponibles</h3>
+        <p class="form-hint" id="unlock-hint" data-i18n="app.meal.availableHint">
           Le petit déjeuner du jour est débloqué. Les autres se débloquent les jours suivants.
         </p>
         <div class="meal-list" id="meal-list"></div>
@@ -81,13 +86,17 @@
 
     <div class="overlay" id="overlay">
       <div class="overlay-card">
-        <p id="overlay-text">Tu dois d’abord cliquer sur “Commencer”.</p>
-        <button class="cta" id="overlay-close">OK</button>
+        <p id="overlay-text" data-i18n="app.overlay.needStart">Tu dois d’abord cliquer sur “Commencer”.</p>
+        <button class="cta" id="overlay-close" data-i18n="app.overlay.ok">OK</button>
       </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
     <script src="./supabase.js"></script>
+    <script src="./i18n.js"></script>
     <script src="./meal.js"></script>
+    <script>
+      window.i18n.initLanguageUI();
+    </script>
   </body>
 </html>
