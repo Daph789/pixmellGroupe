@@ -58,58 +58,65 @@
       <div class="day-card">
         <h3 data-i18n="app.workout.plan">Plan hebdomadaire</h3>
         <div class="workout-grid" id="workout-grid">
-          <div class="workout-card" data-day="1">
+          <a class="workout-card" data-day="1" href="./workout-day.html?day=1">
             <img src="./assets/workout-day1.jpg" alt="Jour 1" />
             <div class="workout-body">
-              <strong>Jour 1 — Poussée (Haut du corps)</strong>
-              <p>Pectoraux, Épaules, Triceps. Pour la carrure.</p>
+              <strong data-i18n="app.workout.day1.title">Jour 1 — Poussée (Haut du corps)</strong>
+              <p data-i18n="app.workout.day1.desc">Pectoraux, Épaules, Triceps. Pour la carrure.</p>
             </div>
-          </div>
-          <div class="workout-card" data-day="2">
+          </a>
+          <a class="workout-card" data-day="2" href="./workout-day.html?day=2">
             <img src="./assets/workout-day2.jpg" alt="Jour 2" />
             <div class="workout-body">
-              <strong>Jour 2 — Tirage (Haut du corps)</strong>
-              <p>Dos, Biceps. Pour la posture et la largeur du dos.</p>
+              <strong data-i18n="app.workout.day2.title">Jour 2 — Tirage (Haut du corps)</strong>
+              <p data-i18n="app.workout.day2.desc">Dos, Biceps. Pour la posture et la largeur du dos.</p>
             </div>
-          </div>
-          <div class="workout-card" data-day="3">
+          </a>
+          <a class="workout-card" data-day="3" href="./workout-day.html?day=3">
             <img src="./assets/workout-day3.jpg" alt="Jour 3" />
             <div class="workout-body">
-              <strong>Jour 3 — Bas du corps (Jambes/Fessiers)</strong>
-              <p>Quadriceps, Ischios, Fessiers. C'est la séance la plus dure.</p>
+              <strong data-i18n="app.workout.day3.title">Jour 3 — Bas du corps (Jambes/Fessiers)</strong>
+              <p data-i18n="app.workout.day3.desc">Quadriceps, Ischios, Fessiers. C'est la séance la plus dure.</p>
             </div>
-          </div>
-          <div class="workout-card" data-day="4">
+          </a>
+          <a class="workout-card" data-day="4" href="./workout-day.html?day=4">
             <img src="./assets/workout-day4.jpg" alt="Jour 4" />
             <div class="workout-body">
-              <strong>Jour 4 — Abdos & Cardio / Gainage</strong>
-              <p>Focus sur le centre du corps pour un ventre plat et solide.</p>
+              <strong data-i18n="app.workout.day4.title">Jour 4 — Abdos & Cardio / Gainage</strong>
+              <p data-i18n="app.workout.day4.desc">Focus sur le centre du corps pour un ventre plat et solide.</p>
             </div>
-          </div>
-          <div class="workout-card" data-day="5">
+          </a>
+          <a class="workout-card" data-day="5" href="./workout-day.html?day=5">
             <img src="./assets/workout-day5.jpg" alt="Jour 5" />
             <div class="workout-body">
-              <strong>Jour 5 — Full Body (Rappel)</strong>
-              <p>Un mix léger de tout le corps pour brûler un max de calories avant le repos.</p>
+              <strong data-i18n="app.workout.day5.title">Jour 5 — Full Body (Rappel)</strong>
+              <p data-i18n="app.workout.day5.desc">Un mix léger de tout le corps pour brûler un max de calories avant le repos.</p>
             </div>
-          </div>
-          <div class="workout-card rest" data-day="6">
+          </a>
+          <a class="workout-card rest" data-day="6" href="#" aria-disabled="true">
             <img src="./assets/workout-rest.jpg" alt="Jour 6 repos" />
             <div class="workout-body">
-              <strong>Jour 6 — Repos</strong>
-              <p>Ton plan alimentaire sert à la récupération.</p>
+              <strong data-i18n="app.workout.day6.title">Jour 6 — Repos</strong>
+              <p data-i18n="app.workout.day6.desc">Ton plan alimentaire sert à la récupération.</p>
             </div>
-          </div>
-          <div class="workout-card rest" data-day="7">
+          </a>
+          <a class="workout-card rest" data-day="7" href="#" aria-disabled="true">
             <img src="./assets/workout-rest.jpg" alt="Jour 7 repos" />
             <div class="workout-body">
-              <strong>Jour 7 — Repos</strong>
-              <p>Préparation mentale et physique pour la semaine suivante.</p>
+              <strong data-i18n="app.workout.day7.title">Jour 7 — Repos</strong>
+              <p data-i18n="app.workout.day7.desc">Préparation mentale et physique pour la semaine suivante.</p>
             </div>
-          </div>
+          </a>
         </div>
       </div>
     </main>
+
+    <div class="overlay" id="workout-overlay">
+      <div class="overlay-card">
+        <p id="workout-overlay-text">Veuillez attendre...</p>
+        <button class="cta" id="workout-overlay-close">OK</button>
+      </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
     <script src="./supabase.js"></script>

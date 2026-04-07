@@ -23,6 +23,23 @@ const overlayText = document.querySelector("#overlay-text");
 const sb = window.sb;
 let hasStarted = false;
 let startedAtValue = null;
+const mealKeyMap = {
+  "Bowl grec protéiné": "meal.bowl",
+  "Omelette muscu": "meal.omelette",
+  "Overnight oats": "meal.oats",
+  "Pancakes protéinés": "meal.pancakes",
+};
+
+const translateMeal = (meal) => {
+  if (!meal) return meal;
+  const key = mealKeyMap[meal.name];
+  if (!key || !window.i18n) return meal;
+  return {
+    ...meal,
+    name: window.i18n.t(`${key}.title`),
+    description: window.i18n.t(`${key}.desc`),
+  };
+};
 
 const toLocalDate = (d = new Date()) => d.toISOString().slice(0, 10);
 
@@ -128,22 +145,12 @@ const isMorning = () => {
   return h < 11 || (h === 11 && m <= 30);
 };
 
-const pickBreakfast = async (dayIndex) => {
-  const { data: all } = await sb
-    .from("breakfasts")
-    .select("*")
-    .order("sort_order", { ascending: true })
-    .order("name", { ascending: true });
-  if (!all || all.length === 0) return null;
-  const index = ((dayIndex || 0) % all.length + all.length) % all.length;
-  return all[index];
-};
-
 const renderMeal = (meal) => {
   if (!meal) return;
-  if (mealImage) mealImage.src = meal.image_path || "./assets/meal-placeholder.jpg";
-  if (mealTitle) mealTitle.textContent = meal.name;
-  if (mealDesc) mealDesc.textContent = meal.description || "";
+  const display = translateMeal(meal);
+  if (mealImage) mealImage.src = display.image_path || "./assets/meal-placeholder.jpg";
+  if (mealTitle) mealTitle.textContent = display.name;
+  if (mealDesc) mealDesc.textContent = display.description || "";
   if (mealCalories) mealCalories.textContent = `${meal.calories} kcal`;
   if (mealProtein) mealProtein.textContent = `${meal.protein_g} g`;
   if (mealCarbs) mealCarbs.textContent = `${meal.carbs_g} g`;
@@ -154,18 +161,27 @@ const renderMeal = (meal) => {
 const renderMealList = (meals, todayMealId, unlockedOrder, startedAt, doneMealId) => {
   if (!mealList) return;
   mealList.innerHTML = "";
+  const total = meals.length || 1;
   meals.forEach((meal) => {
+    const display = translateMeal(meal);
     const card = document.createElement("div");
     card.className = "meal-thumb";
     const isToday = meal.id === todayMealId;
-    const isLocked = meal.sort_order && meal.sort_order > unlockedOrder;
-    if (!isToday || isLocked) card.classList.add("locked");
+    const isLocked = !isToday || !startedAt;
+    if (!isToday || isLocked) {
+      card.classList.add("locked");
+      card.setAttribute("data-lock", window.i18n?.t("app.meal.lockedLabel") || "Verrouillé");
+    }
     if (doneMealId && meal.id === doneMealId) card.classList.add("done");
     card.innerHTML = `
-      <img src="${meal.image_path || "./assets/meal-placeholder.jpg"}" alt="${meal.name}" />
+      <img src="${display.image_path || "./assets/meal-placeholder.jpg"}" alt="${display.name}" />
       <div class="thumb-body">
-        <strong>${meal.name}</strong>
-        ${doneMealId && meal.id === doneMealId ? '<span class="done-badge">✓ Fait</span>' : ""}
+        <strong>${display.name}</strong>
+        ${
+          doneMealId && meal.id === doneMealId
+            ? `<span class="done-badge">${window.i18n?.t("app.workout.done") || "✓ Fait"}</span>`
+            : ""
+        }
       </div>
     `;
     card.addEventListener("click", () => {
@@ -173,30 +189,33 @@ const renderMealList = (meals, todayMealId, unlockedOrder, startedAt, doneMealId
         window.location.href = `./recipe.html?id=${meal.id}`;
         return;
       }
+      const currentOrder = unlockedOrder;
+      const targetOrder = meal.sort_order || 1;
+      const remaining = ((targetOrder - currentOrder) % total + total) % total;
+      if (remaining > 0) {
+        const txt =
+          window.i18n?.t("app.meal.lockedDays", { days: remaining }) ||
+          `Veuillez attendre ${remaining} jour${remaining > 1 ? "s" : ""}.`;
+        if (overlayText) overlayText.textContent = txt;
+        if (overlay) overlay.classList.add("is-open");
+        return;
+      }
       if (!startedAt) {
-        if (mealMessage)
-          mealMessage.textContent =
-            window.i18n?.t("app.meal.needStart") ||
-            "Clique d'abord sur “Commencer” pour lancer l'objectif.";
+        const txt =
+          window.i18n?.t("app.meal.needStart") ||
+          "Clique d'abord sur “Commencer” pour lancer l'objectif.";
+        if (overlayText) overlayText.textContent = txt;
+        if (overlay) overlay.classList.add("is-open");
         return;
       }
       if (!isMorning()) {
-        if (mealMessage)
-          mealMessage.textContent =
-            window.i18n?.t("app.meal.lockedMorning") || "Vous devez attendre le matin.";
+        const txt =
+          window.i18n?.t("app.meal.lockedMorning") || "Vous devez attendre le matin.";
+        if (overlayText) overlayText.textContent = txt;
+        if (overlay) overlay.classList.add("is-open");
         return;
       }
-      if (meal.sort_order && meal.sort_order > unlockedOrder) {
-        const remaining = meal.sort_order - unlockedOrder;
-        if (mealMessage) {
-          const txt =
-            window.i18n?.t("app.meal.lockedDays", { days: remaining }) ||
-            `Veuillez attendre ${remaining} jour${remaining > 1 ? "s" : ""}.`;
-          mealMessage.textContent = txt;
-        }
-        return;
-      }
-      if (mealMessage) mealMessage.textContent = "Ce petit déjeuner se débloque un autre jour.";
+      // no-op: already handled by cases above
     });
     mealList.appendChild(card);
   });
@@ -236,14 +255,6 @@ const init = async () => {
   if (startedAt) {
     showGoalCard(profile.started_at);
   }
-  const dayIndex = startedAt
-    ? Math.floor((new Date().setHours(0, 0, 0, 0) - startedAt.setHours(0, 0, 0, 0)) / 86400000)
-    : 0;
-  const unlockedOrder = dayIndex + 1;
-
-  const meal = await pickBreakfast(dayIndex);
-  renderMeal(meal);
-
   const { data: allMealsRaw } = await sb
     .from("breakfasts")
     .select("*")
@@ -258,6 +269,18 @@ const init = async () => {
       allMeals.push(m);
     }
   });
+
+  const { data: completions } = await sb
+    .from("meal_completions")
+    .select("breakfast_id, day")
+    .eq("user_id", userId);
+  const completedBeforeToday = (completions || []).filter((row) => row.day < day).length;
+  const currentIndex = allMeals.length
+    ? ((completedBeforeToday % allMeals.length) + allMeals.length) % allMeals.length
+    : 0;
+  const unlockedOrder = currentIndex + 1;
+  const meal = allMeals[currentIndex] || null;
+  renderMeal(meal);
 
   const { data: done } = await sb
     .from("meal_completions")
@@ -298,6 +321,14 @@ const init = async () => {
         if (overlay) overlay.classList.add("is-open");
       }
     });
+  }
+
+  const langToggle = document.querySelector("#lang-toggle");
+  if (langToggle && !langToggle.dataset.rerender) {
+    langToggle.addEventListener("click", () => {
+      setTimeout(init, 0);
+    });
+    langToggle.dataset.rerender = "1";
   }
 };
 

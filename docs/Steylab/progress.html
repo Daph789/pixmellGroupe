@@ -15,6 +15,11 @@
     <header class="app-header-bar">
       <div class="logo">SteyLab</div>
       <div class="app-header-actions">
+        <button class="icon-btn" id="lang-toggle" aria-label="Change language">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm6.9 6h-3.2a15.3 15.3 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8ZM12 4.1A13.6 13.6 0 0 1 13.6 8H10.4A13.6 13.6 0 0 1 12 4.1ZM4.1 14a8 8 0 0 1 0-4h3.5a17 17 0 0 0 0 4Zm.1 2h3.2a15.3 15.3 0 0 0 1.4 3.6A8 8 0 0 1 4.2 16Zm3.2-8H4.2a8 8 0 0 1 4.7-3.6A15.3 15.3 0 0 0 7.4 8ZM12 19.9A13.6 13.6 0 0 1 10.4 16h3.2A13.6 13.6 0 0 1 12 19.9ZM14.4 14h-4.8a14.9 14.9 0 0 1 0-4h4.8a14.9 14.9 0 0 1 0 4Zm.7 5.6a15.3 15.3 0 0 0 1.4-3.6h3.2a8 8 0 0 1-4.6 3.6Zm1.5-5.6a17 17 0 0 0 0-4h3.5a8 8 0 0 1 0 4Z" fill="currentColor"/>
+          </svg>
+        </button>
         <a class="icon-btn" href="./app.html" aria-label="Retour accueil">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M15 6 9 12l6 6" fill="none" stroke="currentColor" stroke-width="2" />
@@ -24,14 +29,52 @@
     </header>
 
     <main class="day-page">
-      <div class="day-card">
-        <h2>Mes progrès</h2>
-        <p>Section en cours d’intégration (photos, niveaux, stats).</p>
+      <div class="day-card progress-card">
+        <div class="progress-header">
+          <div>
+            <h2 data-i18n="app.progress.title">Mes progrès</h2>
+            <p data-i18n="app.progress.subtitle">Suis ta progression avec des stats claires.</p>
+          </div>
+          <div class="progress-pill" id="progress-started"></div>
+        </div>
+        <div class="progress-grid">
+          <div class="progress-stat">
+            <span data-i18n="app.progress.points">Points</span>
+            <strong id="progress-points">0</strong>
+          </div>
+          <div class="progress-stat">
+            <span data-i18n="app.progress.streak">Jours consécutifs</span>
+            <strong id="progress-streak">0</strong>
+            <button class="detail-btn" type="button" data-detail="streak" data-i18n="app.progress.details">
+              Détails
+            </button>
+          </div>
+          <div class="progress-stat">
+            <span data-i18n="app.progress.skipped">Jours sautés</span>
+            <strong id="progress-skipped">0</strong>
+            <button class="detail-btn" type="button" data-detail="skipped" data-i18n="app.progress.details">
+              Détails
+            </button>
+          </div>
+        </div>
+        <div class="progress-hint" id="progress-hint"></div>
       </div>
     </main>
 
+    <div class="overlay" id="progress-overlay">
+      <div class="overlay-card">
+        <h3 id="progress-overlay-title"></h3>
+        <div class="progress-list" id="progress-overlay-list"></div>
+        <button class="cta" id="progress-overlay-close" type="button" data-i18n="app.overlay.ok">OK</button>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
     <script src="./supabase.js"></script>
+    <script src="./i18n.js"></script>
     <script src="./progress.js"></script>
+    <script>
+      window.i18n.initLanguageUI();
+    </script>
   </body>
 </html>

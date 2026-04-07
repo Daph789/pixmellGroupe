@@ -16,6 +16,12 @@ const confirmNo = document.querySelector("#confirm-no");
 const pointsOverlay = document.querySelector("#points-overlay");
 
 const sb = window.sb;
+const mealKeyMap = {
+  "Bowl grec protéiné": "meal.bowl",
+  "Omelette muscu": "meal.omelette",
+  "Overnight oats": "meal.oats",
+  "Pancakes protéinés": "meal.pancakes",
+};
 const toLocalDate = (d = new Date()) => {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -23,8 +29,9 @@ const toLocalDate = (d = new Date()) => {
   return `${year}-${month}-${day}`;
 };
 
+const getLocale = () => (window.i18n?.getLang() === "en" ? "en-US" : "fr-FR");
 const formatDate = (date) =>
-  new Intl.DateTimeFormat("fr-FR", { dateStyle: "full" }).format(date);
+  new Intl.DateTimeFormat(getLocale(), { dateStyle: "full" }).format(date);
 
 const ensureSession = async () => {
   if (!sb) return null;
@@ -100,21 +107,29 @@ const checkMealDone = async (userId, day) => {
 
 const render = (meal) => {
   if (!meal) return;
-  if (titleEl) titleEl.textContent = meal.name;
+  const key = mealKeyMap[meal.name];
+  const displayName = key && window.i18n ? window.i18n.t(`${key}.title`) : meal.name;
+  const displayDesc = key && window.i18n ? window.i18n.t(`${key}.desc`) : meal.description || "";
+  const steps =
+    key && window.i18n
+      ? [1, 2, 3, 4].map((n) => window.i18n.t(`${key}.step${n}`))
+      : meal.recipe_steps || [];
+  if (titleEl) titleEl.textContent = displayName;
   if (metaEl) metaEl.textContent = formatDate(new Date());
   if (imageEl) imageEl.src = meal.image_path || "./assets/meal-placeholder.jpg";
-  if (descEl) descEl.textContent = meal.description || "";
+  if (descEl) descEl.textContent = displayDesc;
   if (caloriesEl) caloriesEl.textContent = `${meal.calories} kcal`;
   if (proteinEl) proteinEl.textContent = `${meal.protein_g} g`;
   if (carbsEl) carbsEl.textContent = `${meal.carbs_g} g`;
   if (fatEl) fatEl.textContent = `${meal.fat_g} g`;
   if (stepsEl) {
     stepsEl.innerHTML = "";
-    const steps = meal.recipe_steps || [];
     steps.forEach((step, index) => {
       const div = document.createElement("div");
       div.className = "recipe-step";
-      div.innerHTML = `<strong>Étape ${index + 1}</strong>${step}`;
+      const label =
+        window.i18n?.t("app.recipe.step", { n: index + 1 }) || `Étape ${index + 1}`;
+      div.innerHTML = `<strong>${label}</strong><span>${step}</span>`;
       stepsEl.appendChild(div);
     });
   }
@@ -167,6 +182,17 @@ const init = async () => {
       }
     });
   }
+
+  const langToggle = document.querySelector("#lang-toggle");
+  if (langToggle && !langToggle.dataset.rerender) {
+    langToggle.addEventListener("click", () => {
+      setTimeout(init, 0);
+    });
+    langToggle.dataset.rerender = "1";
+  }
 };
 
 init();
+window.addEventListener("pageshow", () => {
+  init();
+});

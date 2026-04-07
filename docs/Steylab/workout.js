@@ -7,8 +7,12 @@ const goalCard = document.querySelector("#goal-card");
 const goalStartedText = document.querySelector("#goal-started-text");
 const goalDay = document.querySelector("#goal-day");
 const workoutCards = document.querySelectorAll(".workout-card");
+const workoutOverlay = document.querySelector("#workout-overlay");
+const workoutOverlayText = document.querySelector("#workout-overlay-text");
+const workoutOverlayClose = document.querySelector("#workout-overlay-close");
 
 const sb = window.sb;
+let workoutDoneDays = new Set();
 
 const toLocalDate = (d = new Date()) => d.toISOString().slice(0, 10);
 
@@ -54,28 +58,37 @@ const setObjectiveStart = async (userId, startedAt) => {
   await sb.from("profiles").update({ started_at: startedAt }).eq("user_id", userId);
 };
 
-const showGoalCard = (startedAt) => {
-  if (!goalCard) return;
-  const startedDate = new Date(startedAt);
-  const days =
-    Math.floor((new Date().setHours(0, 0, 0, 0) - startedDate.setHours(0, 0, 0, 0)) / 86400000) || 0;
-  goalCard.hidden = false;
-  if (goalStartedText) {
-    const txt = window.i18n?.t("app.goal.startedText", { date: formatDateTime(new Date(startedAt)) });
-    goalStartedText.textContent =
-      txt || `Vous avez commencé votre objectif le ${formatDateTime(new Date(startedAt))}.`;
-  }
-  if (goalDay) {
-    const txt = window.i18n?.t("app.goal.day", { day: days });
-    goalDay.textContent = txt || `Jour ${days}`;
-  }
-  const dayIndex = ((days % 7) + 7) % 7;
-  const today = dayIndex + 1;
+const applyWorkoutLocks = (today, doneDays = new Set()) => {
   workoutCards.forEach((card) => {
     const day = Number(card.dataset.day);
     const isToday = day === today;
+    const isLocked = day !== today;
     card.classList.toggle("is-today", isToday);
-    card.classList.toggle("is-locked", day > today);
+    card.classList.toggle("is-locked", isLocked);
+    if (isLocked) {
+      card.setAttribute("aria-disabled", "true");
+      card.style.cursor = "not-allowed";
+      card.setAttribute("data-lock", window.i18n?.t("app.workout.lockedLabel") || "Verrouillé");
+      if (!card.dataset.lockBound) {
+        card.addEventListener("click", (e) => {
+          e.preventDefault();
+          const remaining = ((day - today) % 7 + 7) % 7 || 7;
+          const txt =
+            window.i18n?.t("app.workout.waitDays", { days: remaining }) ||
+            `Veuillez attendre ${remaining} jour${remaining > 1 ? "s" : ""}.`;
+          if (workoutOverlayText) workoutOverlayText.textContent = txt;
+          if (workoutOverlay) workoutOverlay.classList.add("is-open");
+        });
+        card.dataset.lockBound = "1";
+      }
+    } else {
+      card.style.cursor = "pointer";
+    }
+    if (doneDays.has(day)) {
+      const doneLabel = window.i18n?.t("app.workout.done") || "✓ Fait";
+      card.classList.add("done");
+      card.setAttribute("data-done", doneLabel);
+    }
     const existingTag = card.querySelector(".workout-tag");
     if (isToday && !existingTag) {
       const tag = document.createElement("div");
@@ -93,6 +106,30 @@ const showGoalCard = (startedAt) => {
     }
   });
 };
+
+const showGoalCard = (startedAt) => {
+  if (!goalCard) return;
+  const startedDate = new Date(startedAt);
+  const days =
+    Math.floor((new Date().setHours(0, 0, 0, 0) - startedDate.setHours(0, 0, 0, 0)) / 86400000) || 0;
+  goalCard.hidden = false;
+  if (goalStartedText) {
+    const txt = window.i18n?.t("app.goal.startedText", { date: formatDateTime(new Date(startedAt)) });
+    goalStartedText.textContent =
+      txt || `Vous avez commencé votre objectif le ${formatDateTime(new Date(startedAt))}.`;
+  }
+  if (goalDay) {
+    const txt = window.i18n?.t("app.goal.day", { day: days });
+    goalDay.textContent = txt || `Jour ${days}`;
+  }
+  // locking handled in init based on completions
+};
+
+if (workoutOverlayClose) {
+  workoutOverlayClose.addEventListener("click", () => {
+    if (workoutOverlay) workoutOverlay.classList.remove("is-open");
+  });
+}
 
 const showStarted = (startedAt) => {
   if (startActions) startActions.style.display = "none";
@@ -124,18 +161,35 @@ const init = async () => {
   if (!session) return;
   const userId = session.user.id;
   const day = toLocalDate();
+  const { data: workoutDone } = await sb
+    .from("workout_completions")
+    .select("day")
+    .eq("user_id", userId);
+  const completedBeforeToday = (workoutDone || []).filter((row) => row.day < day).length;
+  const currentDay = Math.min(completedBeforeToday + 1, 7);
+  const doneToday = (workoutDone || []).some((row) => row.day === day);
+  workoutDoneDays = new Set(doneToday ? [currentDay] : []);
 
   const progress = await getDailyProgress(userId, day);
   if (progress?.started_at) showStarted(progress.started_at);
 
   if (startBtn) {
-    startBtn.addEventListener("click", () => handleStart(userId, day));
+    startBtn.onclick = () => handleStart(userId, day);
   }
 
   const profile = await getProfile(userId);
   if (profile?.started_at) {
     showGoalCard(profile.started_at);
+  } else {
+    // default: day 1 unlocked when objective not started yet
+    applyWorkoutLocks(1, workoutDoneDays);
+  }
+  if (profile?.started_at) {
+    applyWorkoutLocks(currentDay, workoutDoneDays);
   }
 };
 
 init();
+window.addEventListener("pageshow", () => {
+  init();
+});
